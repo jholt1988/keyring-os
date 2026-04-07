@@ -14,7 +14,6 @@ export type FeedDomain =
   | 'leasing'
   | 'screening'
   | 'maintenance'
-  | 'renewals'
   | 'calendar';
 
 export interface FeedAction {
@@ -26,22 +25,24 @@ export interface FeedAction {
 
 export interface FeedItem {
   id: string;
-  kind: FeedItemKind;
+  kind: FeedItemType;
   domain: FeedDomain;
   title: string;
   summary: string;
-  priority: number; // raw system priority
-  timestamp?: string;
+  /** Priority score 0–100. Pre-computed by backend; do not re-score on the frontend. */
+  priority: number;
+  timestamp: string;
   actions: FeedAction[];
-
-  // visibility
   allowedRoles: UserRole[];
-
-  // optional role boosts/penalties
   roleWeights?: Partial<Record<UserRole, number>>;
-
-  // optional metadata for ranking
   financialImpact?: number;
   urgencyHours?: number;
   propertyId?: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface FeedResponse {
+  items: FeedItem[];
+  role: UserRole;
+  generatedAt: string;
 }
