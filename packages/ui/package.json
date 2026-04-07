@@ -4,9 +4,17 @@
   "private": true,
   "type": "module",
   "main": "./src/index.ts",
-  "types": "./types/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
   "peerDependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@keyring/types": "workspace:*",
+    "@types/react": "^19",
+    "typescript": "^5.0.0"
   }
 }

@@ -1,5 +1,7 @@
 import type { FeedItem } from './feed';
 
+const NOW = new Date().toISOString();
+
 export const mockFeed: FeedItem[] = [
   {
     id: 'repair-1',
@@ -8,6 +10,7 @@ export const mockFeed: FeedItem[] = [
     title: 'HVAC failure likely — Unit 101',
     summary: '85% failure probability in 5–7 days. Estimated exposure: $1,200.',
     priority: 95,
+    timestamp: NOW,
     financialImpact: 1200,
     urgencyHours: 24,
     allowedRoles: ['owner', 'property_manager', 'maintenance'],
@@ -28,6 +31,7 @@ export const mockFeed: FeedItem[] = [
     title: 'Late notice ready — Unit 3C',
     summary: '$1,250 overdue. Grace period has ended.',
     priority: 92,
+    timestamp: NOW,
     financialImpact: 1250,
     urgencyHours: 8,
     allowedRoles: ['owner', 'property_manager'],
@@ -47,6 +51,7 @@ export const mockFeed: FeedItem[] = [
     title: 'Conditional applicant review — Sarah M.',
     summary: 'Income below 4x rent. Recommend co-signer or higher deposit.',
     priority: 88,
+    timestamp: NOW,
     urgencyHours: 12,
     allowedRoles: ['property_manager', 'leasing'],
     roleWeights: {
@@ -61,10 +66,11 @@ export const mockFeed: FeedItem[] = [
   {
     id: 'renewal-1',
     kind: 'critical_signal',
-    domain: 'renewals',
+    domain: 'leasing',
     title: 'Lease expires soon — Unit 204',
     summary: 'Expires in 14 days. Vacancy risk: $1,250/month.',
     priority: 80,
+    timestamp: NOW,
     financialImpact: 1250,
     urgencyHours: 72,
     allowedRoles: ['owner', 'property_manager', 'leasing'],
@@ -85,6 +91,7 @@ export const mockFeed: FeedItem[] = [
     title: 'Inspection — Oak St at 10:00 AM',
     summary: 'Move-in inspection scheduled for today.',
     priority: 70,
+    timestamp: NOW,
     urgencyHours: 3,
     allowedRoles: ['property_manager', 'maintenance'],
     roleWeights: {
