@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { Building2 } from 'lucide-react';
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { Button } from '@/components/ui/button';
-
+import { fetchPropertyWorkspace } from '@/lib/copilot-api';
 
 export default function PropertyPage() {
   const params = useParams();
@@ -16,11 +16,12 @@ export default function PropertyPage() {
   const [rollup, setRollup] = useState<any>(null);
 
   useEffect(() => {
-    // Mock loading
-    setTimeout(() => {
-      setProperty({ name: 'Sample Property', address: '123 Main St', units: [] });
-      setRollup({ totalUnits: 10, vacantCount: 2, expiringCount: 1, repairRiskCount: 0, signals: [] });
-    }, 1000);
+    if (id) {
+      fetchPropertyWorkspace(id).then((res) => {
+        setProperty(res.property);
+        setRollup(res.rollup);
+      });
+    }
   }, [id]);
 
   if (!property || !rollup) return <div className="text-muted-foreground p-8">Loading Property...</div>;
@@ -28,7 +29,7 @@ export default function PropertyPage() {
   return (
     <WorkspaceShell
       title={property.name}
-      subtitle={`${property.address} · ${rollup.totalUnits} Units · ${rollup.vacantCount} Vacant · ${rollup.expiringCount} Expiring · ${rollup.repairRiskCount} Risk`}
+      subtitle={`${property.address} · ${rollup.totalUnits || 0} Units · ${rollup.vacantCount || 0} Vacant · ${rollup.expiringCount || 0} Expiring · ${rollup.repairRiskCount || 0} Risk`}
       icon={Building2}
     >
       <div className="flex gap-4 mb-8">
@@ -53,7 +54,7 @@ export default function PropertyPage() {
 
       <h3 className="text-lg font-semibold mb-4">Unit Grid</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {property.units.length === 0 ? (
+        {!property.units || property.units.length === 0 ? (
           <p className="text-muted-foreground">No units found.</p>
         ) : (
           property.units.map((unit: any) => (
