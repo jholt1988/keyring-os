@@ -7,26 +7,26 @@ interface MetricCardProps {
 }
 
 const variantStyles: Record<string, string> = {
-  default: 'border-border',
-  danger: 'border-red-500/20 bg-red-500/5',
-  warning: 'border-amber-500/20 bg-amber-500/5',
-  info: 'border-blue-500/20 bg-blue-500/5',
-  success: 'border-green-500/20 bg-green-500/5',
+  default: 'border-[#1E3350] bg-[#13233C]',
+  danger: 'border-[#F43F5E]/20 bg-[#F43F5E]/5',
+  warning: 'border-[#F59E0B]/20 bg-[#F59E0B]/5',
+  info: 'border-[#38BDF8]/20 bg-[#38BDF8]/5',
+  success: 'border-[#10B981]/20 bg-[#10B981]/5',
 };
 
 const valueColor: Record<string, string> = {
-  default: 'text-foreground',
-  danger: 'text-red-500',
-  warning: 'text-amber-500',
-  info: 'text-blue-500',
-  success: 'text-green-500',
+  default: 'text-[#F8FAFC]',
+  danger: 'text-[#F43F5E]',
+  warning: 'text-[#F59E0B]',
+  info: 'text-[#38BDF8]',
+  success: 'text-[#10B981]',
 };
 
 export function MetricCard({ value, label, variant = 'default' }: MetricCardProps) {
   return (
-    <div className={cn('rounded-xl border p-4 text-center', variantStyles[variant])}>
-      <p className={cn('text-2xl font-light', valueColor[variant])}>{value}</p>
-      <p className="mt-1 font-mono text-xs uppercase text-muted-foreground">{label}</p>
+    <div className={cn('rounded-[18px] border p-4 text-center', variantStyles[variant])}>
+      <p className={cn('font-[family-name:var(--font-space)] text-2xl font-bold', valueColor[variant])}>{value}</p>
+      <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-[#94A3B8]">{label}</p>
     </div>
   );
 }

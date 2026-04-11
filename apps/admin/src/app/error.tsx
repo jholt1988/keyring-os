@@ -14,12 +14,12 @@ export default function Error({ error, reset }: ErrorProps) {
   }, [error]);
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-8">
-      <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-6">
-        <h2 className="text-sm font-semibold text-destructive">
+    <main className="mx-auto max-w-2xl px-6 py-8">
+      <div className="rounded-[18px] border border-[#F43F5E]/20 bg-[#F43F5E]/5 p-6">
+        <h2 className="font-[family-name:var(--font-space)] text-sm font-semibold text-[#F43F5E]">
           Feed unavailable
         </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="mt-1 text-sm text-[#94A3B8]">
           {error.message ?? 'An unexpected error occurred loading the feed.'}
         </p>
         <Button

@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Space_Grotesk, Geist_Mono } from "next/font/google";
 import Providers from "./providers";
 import "./globals.css";
+import { GlobalSidebar } from "@/components/shell/global-sidebar";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space",
   subsets: ["latin"],
 });
 
@@ -14,8 +20,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Co-Pilot Feed — keyring-os',
-  description: 'Decision-first property management feed',
+  title: 'Keyring OS — Decision Operations',
+  description: 'Decision-driven property operations',
 };
 
 export default function RootLayout({
@@ -26,10 +32,15 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`dark ${inter.variable} ${spaceGrotesk.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
-        <Providers>{children}</Providers>
+      <body className="min-h-full flex bg-[#07111F]">
+        <Providers>
+          <GlobalSidebar />
+          <main className="flex-1 ml-[88px] min-h-screen overflow-y-auto">
+            {children}
+          </main>
+        </Providers>
       </body>
     </html>
   );

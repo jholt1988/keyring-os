@@ -261,3 +261,132 @@ export async function transitionUnitState(unitId: string, status: string) {
     body: JSON.stringify({ status })
   });
 }
+
+export async function fetchWorkflows() {
+  try {
+    return await api('/workflows');
+  } catch {
+    return [];
+  }
+}
+
+export async function fetchWorkflowExecutions() {
+  try {
+    return await api('/workflows/executions?limit=20');
+  } catch {
+    return [];
+  }
+}
+
+export async function triggerWorkflow(id: string, input: Record<string, unknown>) {
+  return api(`/workflows/${id}/execute`, {
+    method: 'POST',
+    body: JSON.stringify(input)
+  });
+}
+
+export async function fetchUnitRepairs(unitId: string) {
+  try {
+    const res = await api<any>(`/maintenance?unitId=${unitId}`);
+    return Array.isArray(res) ? res : res.data || [];
+  } catch {
+    return [];
+  }
+}
+
+export async function fetchPropertyRepairs(propertyId: string) {
+  try {
+    const res = await api<any>(`/maintenance?propertyId=${propertyId}`);
+    return Array.isArray(res) ? res : res.data || [];
+  } catch {
+    return [];
+  }
+}
+
+export async function fetchAuditLogs(entityId: string) {
+  // Mock audit logs for the timeline since the backend AuditLogController is not exposed yet
+  return [
+    { id: '1', date: new Date(Date.now() - 86400000 * 2).toISOString(), action: 'State Transition', details: 'Status changed to VACANT', actor: 'System' },
+    { id: '2', date: new Date(Date.now() - 86400000 * 1).toISOString(), action: 'Maintenance Requested', details: 'HVAC repair requested', actor: 'Tenant' },
+    { id: '3', date: new Date().toISOString(), action: 'Inspection Scheduled', details: 'Move-out inspection', actor: 'Property Manager' },
+  ];
+}
+
+export async function fetchPortfolioAuditLogs() {
+  return [
+    { id: 'p1', date: new Date(Date.now() - 86400000 * 2).toISOString(), action: 'Property Onboarded', details: 'Added 123 Main St', actor: 'Admin' },
+    { id: 'p2', date: new Date(Date.now() - 86400000 * 1).toISOString(), action: 'Rent Adjustment', details: 'Increased base rent across 5 units', actor: 'Manager' },
+    { id: 'p3', date: new Date().toISOString(), action: 'Maintenance Batch', details: 'Approved $4500 for roof repairs', actor: 'Admin' },
+  ];
+}
+
+export async function fetchPortfolioRepairs() {
+  try {
+    const res = await api<any>('/maintenance');
+    return Array.isArray(res) ? res : res.data || [];
+  } catch {
+    return [];
+  }
+}
+
+// ── Tenant Management ──────────────────────────────────────
+
+export async function fetchTenants(params?: Record<string, string>) {
+  try {
+    const qs = params ? '?' + new URLSearchParams(params).toString() : '';
+    const res = await api<any>(`/tenants${qs}`);
+    return res;
+  } catch {
+    return { data: [], total: 0, skip: 0, take: 25 };
+  }
+}
+
+export async function fetchTenantById(id: string) {
+  return api<any>(`/tenants/${id}`);
+}
+
+export async function fetchTenantWorkspace(id: string) {
+  try {
+    return await api<any>(`/tenants/${id}/workspace`);
+  } catch {
+    return null;
+  }
+}
+
+export async function fetchTenantHealth(id: string) {
+  try {
+    return await api<any>(`/tenants/${id}/health`);
+  } catch {
+    return null;
+  }
+}
+
+export async function fetchTenantActivity(id: string, limit = 50) {
+  try {
+    return await api<any[]>(`/tenants/${id}/activity?limit=${limit}`);
+  } catch {
+    return [];
+  }
+}
+
+export async function updateTenantProfile(id: string, data: Record<string, unknown>) {
+  return api(`/tenants/${id}/profile`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function addHouseholdMember(tenantId: string, data: Record<string, unknown>) {
+  return api(`/tenants/${tenantId}/household`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function addViolation(tenantId: string, data: Record<string, unknown>) {
+  return api(`/tenants/${tenantId}/violations`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+

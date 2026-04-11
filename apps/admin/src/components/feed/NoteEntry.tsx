@@ -1,4 +1,3 @@
-// components/feed/NoteEntry.tsx
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { MessageSquare, Save, Loader2 } from 'lucide-react';
@@ -32,7 +31,7 @@ export const NoteEntry = ({ itemId, existingNote }: Props) => {
     return (
       <button 
         onClick={() => setIsEditing(true)}
-        className="mt-2 flex items-center gap-1.5 text-[10px] font-bold text-blue-600 hover:text-blue-800 uppercase tracking-tight"
+        className="mt-2 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-tight text-[#3B82F6] hover:text-[#60A5FA]"
       >
         <MessageSquare size={12} />
         Add Adjuster Narrative
@@ -41,14 +40,14 @@ export const NoteEntry = ({ itemId, existingNote }: Props) => {
   }
 
   return (
-    <div className="mt-3 space-y-2 border-t pt-2">
+    <div className="mt-3 space-y-2 border-t border-[#1E3350] pt-2">
       <div className="flex items-center justify-between">
-        <label className="text-[10px] font-bold text-gray-400 uppercase">Adjuster Notes</label>
+        <label className="text-[10px] font-bold uppercase text-[#94A3B8]">Adjuster Notes</label>
         {isEditing && (
            <button 
              onClick={() => mutate(note)}
              disabled={isPending}
-             className="flex items-center gap-1 text-[10px] font-bold text-green-600 hover:text-green-700"
+             className="flex items-center gap-1 text-[10px] font-bold text-[#10B981] hover:text-[#10B981]/80"
            >
              {isPending ? <Loader2 size={10} className="animate-spin" /> : <Save size={10} />}
              COMMIT TO LEDGER
@@ -61,15 +60,15 @@ export const NoteEntry = ({ itemId, existingNote }: Props) => {
           value={note}
           onChange={(e) => setNote(e.target.value)}
           autoFocus
-          className="w-full rounded border bg-white p-2 text-xs font-medium focus:ring-1 focus:ring-primary min-h-[80px] shadow-inner"
+          className="min-h-[80px] w-full rounded-[10px] border border-[#1E3350] bg-[#0F1B31] p-3 text-xs font-medium text-[#F8FAFC] shadow-inner focus:border-[#60A5FA] focus:outline-none focus:ring-1 focus:ring-[#60A5FA]/30"
           placeholder="Enter peril context, depreciation logic, or site observations..."
         />
       ) : (
         <p 
           onClick={() => setIsEditing(true)}
-          className="cursor-pointer text-xs italic text-gray-700 hover:bg-gray-50 p-1 rounded transition"
+          className="cursor-pointer rounded-[10px] p-2 text-xs italic text-[#CBD5E1] transition-colors hover:bg-[#17304E]"
         >
-          "{note}"
+          &ldquo;{note}&rdquo;
         </p>
       )}
     </div>
