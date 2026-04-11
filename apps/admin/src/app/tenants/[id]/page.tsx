@@ -27,10 +27,18 @@ import {
   Calendar,
   ArrowLeft,
 } from 'lucide-react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { Modal } from '@/components/ui/modal';
 import { SectionCard, MetricCard, RiskMeter } from '@/components/copilot';
 import { TenantHealthBadge, CommunicationTimeline } from '@/components/tenant';
 import { useTenantWorkspace, useTenantActivity } from '@/app/hooks/useWorkspace';
+import {
+  createConversation, recordLeaseNotice, logManualPayment,
+  createMaintenanceRequest, updateTenantProfile, addHouseholdMember, addViolation,
+} from '@/lib/copilot-api';
+import { useToast } from '@/components/ui/toast';
 import { cn } from '@/lib/utils';
 import type { Severity } from '@keyring/types';
 
@@ -48,9 +56,111 @@ const tabs = [
 
 export default function TenantWorkspacePage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
+  const qc = useQueryClient();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('profile');
-  const { data: workspace, isLoading } = useTenantWorkspace(id);
+  const { data: workspace, isLoading, refetch } = useTenantWorkspace(id);
   const { data: activityEvents } = useTenantActivity(id);
+
+  // Modal state
+  const [msgOpen, setMsgOpen] = useState(false);
+  const [msgSubject, setMsgSubject] = useState('Message from Property Manager');
+  const [msgBody, setMsgBody] = useState('');
+
+  const [noticeOpen, setNoticeOpen] = useState(false);
+  const [noticeType, setNoticeType] = useState('OTHER');
+  const [noticeDelivery, setNoticeDelivery] = useState('EMAIL');
+  const [noticeMsg, setNoticeMsg] = useState('');
+
+  const [payOpen, setPayOpen] = useState(false);
+  const [payForm, setPayForm] = useState({ amountDollars: '', method: 'CASH', reference: '', receivedAt: '', appliedTo: 'RENT', memo: '' });
+
+  const [maintOpen, setMaintOpen] = useState(false);
+  const [maintForm, setMaintForm] = useState({ title: '', category: 'OTHER', priority: 'MEDIUM', description: '' });
+
+  // Profile edit state
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [profileForm, setProfileForm] = useState<Record<string, string>>({});
+
+  // Household member state
+  const [householdOpen, setHouseholdOpen] = useState(false);
+  const [householdForm, setHouseholdForm] = useState({ name: '', relationship: '', phone: '', isOnLease: false, isEmergency: false });
+
+  // Violation state
+  const [violationOpen, setViolationOpen] = useState(false);
+  const [violationForm, setViolationForm] = useState({ type: 'LEASE_VIOLATION', date: '', severity: 'MEDIUM', notes: '' });
+
+  const invalidate = () => { qc.invalidateQueries({ queryKey: ['tenant', 'workspace', id] }); refetch(); };
+
+  const messageMutation = useMutation({
+    mutationFn: () => createConversation({ subject: msgSubject, content: msgBody }),
+    onSuccess: (conv: any) => { toast('Message sent'); setMsgOpen(false); setMsgBody(''); router.push(`/messages/${conv.id}`); },
+    onError: () => toast('Failed to send message', 'error'),
+  });
+
+  const noticeMutation = useMutation({
+    mutationFn: () => {
+      const leaseId = workspace?.lease?.id;
+      if (!leaseId) throw new Error('No active lease');
+      return recordLeaseNotice(leaseId, { type: noticeType, deliveryMethod: noticeDelivery, message: noticeMsg || undefined });
+    },
+    onSuccess: () => { toast('Notice sent'); setNoticeOpen(false); setNoticeMsg(''); invalidate(); },
+    onError: () => toast('Failed to send notice', 'error'),
+  });
+
+  const payMutation = useMutation({
+    mutationFn: () => {
+      const lease = workspace?.lease;
+      if (!lease) throw new Error('No active lease');
+      return logManualPayment({
+        leaseId: lease.id,
+        propertyId: lease.propertyId ?? '',
+        unitId: lease.unitId ?? undefined,
+        tenantId: id,
+        amountCents: Math.round(parseFloat(payForm.amountDollars) * 100),
+        method: payForm.method,
+        referenceNumber: payForm.reference || undefined,
+        receivedAt: payForm.receivedAt || undefined,
+        appliedTo: payForm.appliedTo || undefined,
+        memo: payForm.memo || undefined,
+      });
+    },
+    onSuccess: () => { toast('Payment logged'); setPayOpen(false); setPayForm({ amountDollars: '', method: 'CASH', reference: '', receivedAt: '', appliedTo: 'RENT', memo: '' }); invalidate(); },
+    onError: () => toast('Failed to log payment', 'error'),
+  });
+
+  const maintMutation = useMutation({
+    mutationFn: () => {
+      const lease = workspace?.lease;
+      return createMaintenanceRequest({
+        ...maintForm,
+        unitId: lease?.unitId ?? undefined,
+        propertyId: lease?.propertyId ?? undefined,
+        tenantId: id,
+      });
+    },
+    onSuccess: () => { toast('Maintenance request created'); setMaintOpen(false); setMaintForm({ title: '', category: 'OTHER', priority: 'MEDIUM', description: '' }); invalidate(); },
+    onError: () => toast('Failed to create request', 'error'),
+  });
+
+  const profileMutation = useMutation({
+    mutationFn: () => updateTenantProfile(id, profileForm),
+    onSuccess: () => { toast('Profile updated'); setEditingProfile(false); invalidate(); },
+    onError: () => toast('Failed to update profile', 'error'),
+  });
+
+  const householdMutation = useMutation({
+    mutationFn: () => addHouseholdMember(id, householdForm),
+    onSuccess: () => { toast('Household member added'); setHouseholdOpen(false); setHouseholdForm({ name: '', relationship: '', phone: '', isOnLease: false, isEmergency: false }); invalidate(); },
+    onError: () => toast('Failed to add member', 'error'),
+  });
+
+  const violationMutation = useMutation({
+    mutationFn: () => addViolation(id, violationForm),
+    onSuccess: () => { toast('Violation logged'); setViolationOpen(false); setViolationForm({ type: 'LEASE_VIOLATION', date: '', severity: 'MEDIUM', notes: '' }); invalidate(); },
+    onError: () => toast('Failed to log violation', 'error'),
+  });
 
   if (isLoading || !workspace) {
     return (
@@ -75,6 +185,7 @@ export default function TenantWorkspacePage() {
   const fullName = [profile.firstName, profile.lastName].filter(Boolean).join(' ') || 'Unknown';
 
   return (
+    <>
     <div className="mx-auto max-w-[1440px] space-y-6 px-6 py-8">
       {/* Header */}
       <div className="flex items-start justify-between">
@@ -104,12 +215,18 @@ export default function TenantWorkspacePage() {
 
       {/* Primary Action Bar */}
       <div className="flex flex-wrap items-center gap-2">
-        <Button size="sm"><MessageSquare size={12} /> Message Tenant</Button>
-        <Button size="sm" variant="outline"><DollarSign size={12} /> View Ledger</Button>
-        <Button size="sm" variant="outline"><Send size={12} /> Send Notice</Button>
-        <Button size="sm" variant="outline"><RefreshCw size={12} /> Start Renewal</Button>
-        <Button size="sm" variant="outline"><DollarSign size={12} /> Log Payment</Button>
-        <Button size="sm" variant="outline"><Wrench size={12} /> Open Maintenance</Button>
+        <Button size="sm" onClick={() => setMsgOpen(true)}><MessageSquare size={12} /> Message Tenant</Button>
+        <Button size="sm" variant="outline"
+          onClick={() => {
+            const l = workspace?.lease;
+            if (l?.propertyId && l?.unitId) router.push(`/properties/${l.propertyId}/units/${l.unitId}`);
+            else toast('No active lease found', 'error');
+          }}
+        ><DollarSign size={12} /> View Ledger</Button>
+        <Button size="sm" variant="outline" onClick={() => setNoticeOpen(true)}><Send size={12} /> Send Notice</Button>
+        <Button size="sm" variant="outline" onClick={() => router.push(`/renewals?tenantId=${id}`)}><RefreshCw size={12} /> Start Renewal</Button>
+        <Button size="sm" variant="outline" onClick={() => setPayOpen(true)}><DollarSign size={12} /> Log Payment</Button>
+        <Button size="sm" variant="outline" onClick={() => setMaintOpen(true)}><Wrench size={12} /> Open Maintenance</Button>
       </div>
 
       {/* Summary Strip */}
@@ -163,7 +280,17 @@ export default function TenantWorkspacePage() {
       {/* Tab Content */}
       <div className="min-h-[400px]">
         {activeTab === 'profile' && (
-          <ProfileSection profile={profile} />
+          <ProfileSection
+            profile={profile}
+            editingProfile={editingProfile}
+            profileForm={profileForm}
+            onEditStart={() => { setProfileForm({ firstName: profile.firstName ?? '', lastName: profile.lastName ?? '', phone: profile.phone ?? '', email: profile.email ?? '', preferredName: profile.preferredName ?? '' }); setEditingProfile(true); }}
+            onEditCancel={() => setEditingProfile(false)}
+            onProfileChange={(k, v) => setProfileForm((p) => ({ ...p, [k]: v }))}
+            onProfileSave={() => profileMutation.mutate()}
+            profileSaving={profileMutation.isPending}
+            onAddHousehold={() => setHouseholdOpen(true)}
+          />
         )}
         {activeTab === 'lease' && (
           <LeaseSection lease={lease} />
@@ -181,7 +308,7 @@ export default function TenantWorkspacePage() {
           <DocumentsSection documents={documents} />
         )}
         {activeTab === 'compliance' && (
-          <ComplianceSection violations={violations} notices={notices} />
+          <ComplianceSection violations={violations} notices={notices} onLogViolation={() => setViolationOpen(true)} />
         )}
         {activeTab === 'health' && (
           <HealthSection health={health} />
@@ -191,30 +318,281 @@ export default function TenantWorkspacePage() {
         )}
       </div>
     </div>
+
+    {/* Message Tenant modal */}
+    <Modal open={msgOpen} onClose={() => setMsgOpen(false)} title="Message Tenant"
+      footer={<>
+        <Button variant="outline" size="sm" onClick={() => setMsgOpen(false)}>Cancel</Button>
+        <Button size="sm" onClick={() => messageMutation.mutate()} disabled={!msgBody.trim() || messageMutation.isPending}>
+          {messageMutation.isPending ? <RefreshCw size={12} className="animate-spin" /> : <MessageSquare size={12} />} Send
+        </Button>
+      </>}
+    >
+      <div className="space-y-3">
+        <div>
+          <label className="mb-1 block text-xs font-medium text-[#94A3B8]">Subject</label>
+          <input value={msgSubject} onChange={(e) => setMsgSubject(e.target.value)}
+            className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] outline-none focus:border-[#3B82F6]" />
+        </div>
+        <div>
+          <label className="mb-1 block text-xs font-medium text-[#94A3B8]">Message <span className="text-[#F43F5E]">*</span></label>
+          <textarea value={msgBody} onChange={(e) => setMsgBody(e.target.value)} rows={4}
+            className="w-full resize-none rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]" />
+        </div>
+      </div>
+    </Modal>
+
+    {/* Send Notice modal */}
+    <Modal open={noticeOpen} onClose={() => setNoticeOpen(false)} title="Send Notice"
+      footer={<>
+        <Button variant="outline" size="sm" onClick={() => setNoticeOpen(false)}>Cancel</Button>
+        <Button size="sm" onClick={() => noticeMutation.mutate()} disabled={noticeMutation.isPending}>
+          {noticeMutation.isPending ? <RefreshCw size={12} className="animate-spin" /> : <Send size={12} />} Send
+        </Button>
+      </>}
+    >
+      <div className="space-y-3">
+        <div>
+          <label className="mb-1 block text-xs font-medium text-[#94A3B8]">Notice type</label>
+          <select value={noticeType} onChange={(e) => setNoticeType(e.target.value)}
+            className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] outline-none focus:border-[#3B82F6]">
+            {['MOVE_OUT','RENT_INCREASE','OTHER'].map(t => <option key={t} value={t}>{t.replace('_',' ')}</option>)}
+          </select>
+        </div>
+        <div>
+          <label className="mb-1 block text-xs font-medium text-[#94A3B8]">Delivery method</label>
+          <select value={noticeDelivery} onChange={(e) => setNoticeDelivery(e.target.value)}
+            className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] outline-none focus:border-[#3B82F6]">
+            {['EMAIL','SMS','PORTAL','PRINT','OTHER'].map(m => <option key={m} value={m}>{m}</option>)}
+          </select>
+        </div>
+        <div>
+          <label className="mb-1 block text-xs font-medium text-[#94A3B8]">Message (optional)</label>
+          <textarea value={noticeMsg} onChange={(e) => setNoticeMsg(e.target.value)} rows={2}
+            className="w-full resize-none rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] outline-none focus:border-[#3B82F6]" />
+        </div>
+      </div>
+    </Modal>
+
+    {/* Log Payment modal */}
+    <Modal open={payOpen} onClose={() => setPayOpen(false)} title="Log Manual Payment"
+      footer={<>
+        <Button variant="outline" size="sm" onClick={() => setPayOpen(false)}>Cancel</Button>
+        <Button size="sm" onClick={() => payMutation.mutate()} disabled={!payForm.amountDollars || payMutation.isPending}>
+          {payMutation.isPending ? <RefreshCw size={12} className="animate-spin" /> : <DollarSign size={12} />} Log Payment
+        </Button>
+      </>}
+    >
+      <div className="space-y-3">
+        {[
+          { label: 'Amount ($) *', key: 'amountDollars', type: 'number', placeholder: '1200' },
+          { label: 'Reference number', key: 'reference', type: 'text', placeholder: 'CHK-1234' },
+          { label: 'Date received', key: 'receivedAt', type: 'date', placeholder: '' },
+          { label: 'Memo', key: 'memo', type: 'text', placeholder: 'Optional note' },
+        ].map(({ label, key, type, placeholder }) => (
+          <div key={key}>
+            <label className="mb-1 block text-xs font-medium text-[#94A3B8]">{label}</label>
+            <input type={type} value={(payForm as any)[key]} placeholder={placeholder}
+              onChange={(e) => setPayForm((p) => ({ ...p, [key]: e.target.value }))}
+              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6] [color-scheme:dark]" />
+          </div>
+        ))}
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="mb-1 block text-xs font-medium text-[#94A3B8]">Method</label>
+            <select value={payForm.method} onChange={(e) => setPayForm((p) => ({ ...p, method: e.target.value }))}
+              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] outline-none focus:border-[#3B82F6]">
+              {['CASH','CHECK','MONEY_ORDER'].map(m => <option key={m} value={m}>{m.replace('_',' ')}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-medium text-[#94A3B8]">Applied to</label>
+            <select value={payForm.appliedTo} onChange={(e) => setPayForm((p) => ({ ...p, appliedTo: e.target.value }))}
+              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] outline-none focus:border-[#3B82F6]">
+              {['RENT','LATE_FEE','UTILITY','OTHER'].map(a => <option key={a} value={a}>{a.replace('_',' ')}</option>)}
+            </select>
+          </div>
+        </div>
+      </div>
+    </Modal>
+
+    {/* Open Maintenance modal */}
+    <Modal open={maintOpen} onClose={() => setMaintOpen(false)} title="Open Maintenance Request"
+      footer={<>
+        <Button variant="outline" size="sm" onClick={() => setMaintOpen(false)}>Cancel</Button>
+        <Button size="sm" onClick={() => maintMutation.mutate()} disabled={!maintForm.title.trim() || !maintForm.description.trim() || maintMutation.isPending}>
+          {maintMutation.isPending ? <RefreshCw size={12} className="animate-spin" /> : <Wrench size={12} />} Submit
+        </Button>
+      </>}
+    >
+      <div className="space-y-3">
+        <div>
+          <label className="mb-1 block text-xs font-medium text-[#94A3B8]">Title <span className="text-[#F43F5E]">*</span></label>
+          <input value={maintForm.title} onChange={(e) => setMaintForm((p) => ({ ...p, title: e.target.value }))}
+            className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] outline-none focus:border-[#3B82F6]" />
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="mb-1 block text-xs font-medium text-[#94A3B8]">Category</label>
+            <select value={maintForm.category} onChange={(e) => setMaintForm((p) => ({ ...p, category: e.target.value }))}
+              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] outline-none focus:border-[#3B82F6]">
+              {['PLUMBING','ELECTRICAL','HVAC','APPLIANCE','STRUCTURAL','PEST','OTHER'].map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-medium text-[#94A3B8]">Priority</label>
+            <select value={maintForm.priority} onChange={(e) => setMaintForm((p) => ({ ...p, priority: e.target.value }))}
+              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] outline-none focus:border-[#3B82F6]">
+              {['LOW','MEDIUM','HIGH','EMERGENCY'].map(p => <option key={p} value={p}>{p}</option>)}
+            </select>
+          </div>
+        </div>
+        <div>
+          <label className="mb-1 block text-xs font-medium text-[#94A3B8]">Description <span className="text-[#F43F5E]">*</span></label>
+          <textarea value={maintForm.description} onChange={(e) => setMaintForm((p) => ({ ...p, description: e.target.value }))} rows={3}
+            className="w-full resize-none rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] outline-none focus:border-[#3B82F6]" />
+        </div>
+      </div>
+    </Modal>
+
+    {/* Add Household Member modal */}
+    <Modal open={householdOpen} onClose={() => setHouseholdOpen(false)} title="Add Household Member"
+      footer={<>
+        <Button variant="outline" size="sm" onClick={() => setHouseholdOpen(false)}>Cancel</Button>
+        <Button size="sm" onClick={() => householdMutation.mutate()} disabled={!householdForm.name.trim() || !householdForm.relationship.trim() || householdMutation.isPending}>
+          {householdMutation.isPending ? <RefreshCw size={12} className="animate-spin" /> : null} Add Member
+        </Button>
+      </>}
+    >
+      <div className="space-y-3">
+        {[
+          { label: 'Full name *', key: 'name', placeholder: 'Jane Smith' },
+          { label: 'Relationship *', key: 'relationship', placeholder: 'Spouse, Child, Roommate…' },
+          { label: 'Phone', key: 'phone', placeholder: '+1 555 000 0000' },
+        ].map(({ label, key, placeholder }) => (
+          <div key={key}>
+            <label className="mb-1 block text-xs font-medium text-[#94A3B8]">{label}</label>
+            <input value={(householdForm as any)[key]} placeholder={placeholder}
+              onChange={(e) => setHouseholdForm((p) => ({ ...p, [key]: e.target.value }))}
+              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]" />
+          </div>
+        ))}
+        <div className="flex gap-4">
+          {[{ key: 'isOnLease', label: 'On lease' }, { key: 'isEmergency', label: 'Emergency contact' }].map(({ key, label }) => (
+            <label key={key} className="flex items-center gap-2 cursor-pointer text-sm text-[#94A3B8]">
+              <input type="checkbox" checked={(householdForm as any)[key]}
+                onChange={(e) => setHouseholdForm((p) => ({ ...p, [key]: e.target.checked }))}
+                className="accent-[#3B82F6]" />
+              {label}
+            </label>
+          ))}
+        </div>
+      </div>
+    </Modal>
+
+    {/* Log Violation modal */}
+    <Modal open={violationOpen} onClose={() => setViolationOpen(false)} title="Log Violation"
+      footer={<>
+        <Button variant="outline" size="sm" onClick={() => setViolationOpen(false)}>Cancel</Button>
+        <Button variant="destructive" size="sm" onClick={() => violationMutation.mutate()} disabled={!violationForm.date || violationMutation.isPending}>
+          {violationMutation.isPending ? <RefreshCw size={12} className="animate-spin" /> : <AlertTriangle size={12} />} Log Violation
+        </Button>
+      </>}
+    >
+      <div className="space-y-3">
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="mb-1 block text-xs font-medium text-[#94A3B8]">Type</label>
+            <select value={violationForm.type} onChange={(e) => setViolationForm((p) => ({ ...p, type: e.target.value }))}
+              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] outline-none focus:border-[#3B82F6]">
+              {['NOISE','LEASE_VIOLATION','PROPERTY_DAMAGE','UNAUTHORIZED_OCCUPANT','PET_VIOLATION','OTHER'].map(t => (
+                <option key={t} value={t}>{t.replace(/_/g,' ')}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-medium text-[#94A3B8]">Severity</label>
+            <select value={violationForm.severity} onChange={(e) => setViolationForm((p) => ({ ...p, severity: e.target.value }))}
+              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] outline-none focus:border-[#3B82F6]">
+              {['LOW','MEDIUM','HIGH'].map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
+        </div>
+        <div>
+          <label className="mb-1 block text-xs font-medium text-[#94A3B8]">Date <span className="text-[#F43F5E]">*</span></label>
+          <input type="date" value={violationForm.date} onChange={(e) => setViolationForm((p) => ({ ...p, date: e.target.value }))}
+            className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] outline-none focus:border-[#3B82F6] [color-scheme:dark]" />
+        </div>
+        <div>
+          <label className="mb-1 block text-xs font-medium text-[#94A3B8]">Notes</label>
+          <textarea value={violationForm.notes} onChange={(e) => setViolationForm((p) => ({ ...p, notes: e.target.value }))} rows={2}
+            className="w-full resize-none rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] outline-none focus:border-[#3B82F6]" />
+        </div>
+      </div>
+    </Modal>
+    </>
   );
 }
 
-function ProfileSection({ profile }: { profile: any }) {
+function ProfileSection({ profile, editingProfile, profileForm, onEditStart, onEditCancel, onProfileChange, onProfileSave, profileSaving, onAddHousehold }: {
+  profile: any; editingProfile: boolean; profileForm: Record<string, string>;
+  onEditStart: () => void; onEditCancel: () => void;
+  onProfileChange: (k: string, v: string) => void; onProfileSave: () => void;
+  profileSaving: boolean; onAddHousehold: () => void;
+}) {
+  const editableFields = [
+    { label: 'First Name', key: 'firstName' },
+    { label: 'Last Name', key: 'lastName' },
+    { label: 'Preferred Name', key: 'preferredName' },
+    { label: 'Email', key: 'email' },
+    { label: 'Phone', key: 'phone' },
+  ];
+
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-      <SectionCard title="Personal Information" subtitle="Identity & contact details">
-        <div className="space-y-3">
-          {[
-            { label: 'Legal Name', value: [profile.firstName, profile.lastName].filter(Boolean).join(' ') },
-            { label: 'Preferred Name', value: profile.preferredName ?? '—' },
-            { label: 'Email', value: profile.email ?? '—', icon: Mail },
-            { label: 'Phone', value: profile.phone ?? '—', icon: Phone },
-            { label: 'ID Verified', value: profile.idVerified ? 'Yes' : 'Not verified' },
-          ].map((row) => (
-            <div key={row.label} className="flex items-center justify-between rounded-[10px] border border-[#1E3350]/50 bg-[#0B1628] px-3 py-2">
-              <span className="text-xs text-[#94A3B8]">{row.label}</span>
-              <span className="text-xs font-medium text-[#F8FAFC]">{row.value}</span>
+      <SectionCard title="Personal Information" subtitle="Identity & contact details"
+        actions={
+          editingProfile ? (
+            <div className="flex gap-2">
+              <Button size="sm" variant="outline" onClick={onEditCancel}>Cancel</Button>
+              <Button size="sm" onClick={onProfileSave} disabled={profileSaving}>
+                {profileSaving ? <RefreshCw size={11} className="animate-spin" /> : <CheckCircle size={11} />} Save
+              </Button>
             </div>
-          ))}
+          ) : (
+            <Button size="sm" variant="outline" onClick={onEditStart}>Edit</Button>
+          )
+        }
+      >
+        <div className="space-y-3">
+          {editingProfile ? (
+            editableFields.map(({ label, key }) => (
+              <div key={key}>
+                <label className="mb-1 block text-[10px] text-[#94A3B8]">{label}</label>
+                <input value={profileForm[key] ?? ''} onChange={(e) => onProfileChange(key, e.target.value)}
+                  className="w-full rounded-lg border border-[#1E3350] bg-[#0B1628] px-3 py-1.5 text-xs text-[#F8FAFC] outline-none focus:border-[#3B82F6]" />
+              </div>
+            ))
+          ) : (
+            [
+              { label: 'Legal Name', value: [profile.firstName, profile.lastName].filter(Boolean).join(' ') },
+              { label: 'Preferred Name', value: profile.preferredName ?? '—' },
+              { label: 'Email', value: profile.email ?? '—' },
+              { label: 'Phone', value: profile.phone ?? '—' },
+              { label: 'ID Verified', value: profile.idVerified ? 'Yes' : 'Not verified' },
+            ].map((row) => (
+              <div key={row.label} className="flex items-center justify-between rounded-[10px] border border-[#1E3350]/50 bg-[#0B1628] px-3 py-2">
+                <span className="text-xs text-[#94A3B8]">{row.label}</span>
+                <span className="text-xs font-medium text-[#F8FAFC]">{row.value}</span>
+              </div>
+            ))
+          )}
         </div>
       </SectionCard>
 
-      <SectionCard title="Household" subtitle="Occupants & emergency contacts">
+      <SectionCard title="Household" subtitle="Occupants & emergency contacts"
+        actions={<Button size="sm" variant="outline" onClick={onAddHousehold}><Users size={11} /> Add Member</Button>}
+      >
         {(profile.householdMembers ?? []).length === 0 ? (
           <p className="py-4 text-center text-xs text-[#64748B]">No household members recorded</p>
         ) : (
@@ -457,10 +835,12 @@ function DocumentsSection({ documents }: { documents: any[] }) {
   );
 }
 
-function ComplianceSection({ violations, notices }: { violations: any[]; notices: any[] }) {
+function ComplianceSection({ violations, notices, onLogViolation }: { violations: any[]; notices: any[]; onLogViolation: () => void }) {
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-      <SectionCard title="Violations" subtitle="Lease violations & warnings">
+      <SectionCard title="Violations" subtitle="Lease violations & warnings"
+        actions={<Button size="sm" variant="outline" onClick={onLogViolation}><AlertTriangle size={11} /> Log Violation</Button>}
+      >
         {(violations ?? []).length === 0 ? (
           <p className="flex items-center gap-2 py-4 text-center text-xs text-[#10B981]"><CheckCircle size={12} /> No open violations</p>
         ) : (

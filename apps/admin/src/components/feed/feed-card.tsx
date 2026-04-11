@@ -15,6 +15,7 @@ const kindLabel: Record<FeedItemType, string> = {
   critical_signal: 'Critical',
   decision: 'Decision',
   scheduled_event: 'Scheduled',
+  update: 'Update',
 };
 
 const kindVariant: Record<
@@ -24,6 +25,7 @@ const kindVariant: Record<
   critical_signal: 'destructive',
   decision: 'default',
   scheduled_event: 'secondary',
+  update: 'secondary',
 };
 
 const actionVariant = (

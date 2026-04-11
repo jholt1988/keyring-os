@@ -1,9 +1,14 @@
 'use client';
 
-import { Wrench, CheckCircle, Clock, User } from 'lucide-react';
+import { useState } from 'react';
+import { Wrench, CheckCircle, Clock, User, RefreshCw } from 'lucide-react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
+import { Modal } from '@/components/ui/modal';
 import { WorkspaceShell, RiskMeter, ExplainableAction, SectionCard, MetricCard } from '@/components/copilot';
 import { useRepairsWorkspace } from '@/app/hooks/useWorkspace';
+import { approveEstimate, rejectEstimate } from '@/lib/copilot-api';
+import { useToast } from '@/components/ui/toast';
 import type { Severity } from '@keyring/types';
 
 const priorityToSeverity = (p: string): Severity => {
@@ -16,7 +21,25 @@ const priorityToSeverity = (p: string): Severity => {
 };
 
 export default function RepairsPage() {
-  const { data, isLoading } = useRepairsWorkspace();
+  const { data, isLoading, refetch } = useRepairsWorkspace();
+  const qc = useQueryClient();
+  const { toast } = useToast();
+  const [rejectTarget, setRejectTarget] = useState<any>(null);
+  const [rejectReason, setRejectReason] = useState('');
+
+  const invalidate = () => { qc.invalidateQueries({ queryKey: ['workspace', 'repairs'] }); refetch(); };
+
+  const approveMutation = useMutation({
+    mutationFn: (id: string) => approveEstimate(id),
+    onSuccess: () => { toast('Estimate approved'); invalidate(); },
+    onError: () => toast('Failed to approve estimate', 'error'),
+  });
+
+  const rejectMutation = useMutation({
+    mutationFn: ({ id, reason }: { id: string; reason?: string }) => rejectEstimate(id, reason),
+    onSuccess: () => { toast('Estimate rejected'); setRejectTarget(null); setRejectReason(''); invalidate(); },
+    onError: () => toast('Failed to reject estimate', 'error'),
+  });
 
   if (isLoading) {
     return (
@@ -39,6 +62,7 @@ export default function RepairsPage() {
   const totalCostExposure = pendingEstimates.reduce((s, e) => s + (e.totalProjectCost ?? 0), 0);
 
   return (
+    <>
     <WorkspaceShell title="Repairs" subtitle="Predictive Action Layer" icon={Wrench}>
       <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4">
         <MetricCard value={emergencyCount} label="Emergency" variant="danger" />
@@ -101,8 +125,15 @@ export default function RepairsPage() {
                   </div>
                   <p className="mb-2 text-xs text-[#94A3B8]">Labor: ${(est.totalLaborCost ?? 0).toLocaleString()} | Materials: ${(est.totalMaterialCost ?? 0).toLocaleString()}</p>
                   <div className="flex gap-2">
-                    <Button size="sm">Approve</Button>
-                    <Button size="sm" variant="destructive">Reject</Button>
+                    <Button size="sm"
+                      disabled={approveMutation.isPending}
+                      onClick={() => approveMutation.mutate(est.id)}
+                    >
+                      {approveMutation.isPending ? <RefreshCw size={12} className="animate-spin" /> : <CheckCircle size={12} />} Approve
+                    </Button>
+                    <Button size="sm" variant="destructive" onClick={() => setRejectTarget(est)}>
+                      Reject
+                    </Button>
                   </div>
                 </div>
               ))}
@@ -124,5 +155,27 @@ export default function RepairsPage() {
         </SectionCard>
       </div>
     </WorkspaceShell>
+
+      {/* Reject estimate modal */}
+
+      <Modal open={!!rejectTarget} onClose={() => { setRejectTarget(null); setRejectReason(''); }} title="Reject Estimate"
+        footer={<>
+          <Button variant="outline" size="sm" onClick={() => { setRejectTarget(null); setRejectReason(''); }}>Cancel</Button>
+          <Button variant="destructive" size="sm"
+            onClick={() => rejectMutation.mutate({ id: rejectTarget?.id, reason: rejectReason || undefined })}
+            disabled={rejectMutation.isPending}
+          >
+            {rejectMutation.isPending ? <RefreshCw size={12} className="animate-spin" /> : null} Reject
+          </Button>
+        </>}
+      >
+        <div>
+          <label className="mb-1.5 block text-sm font-medium text-[#94A3B8]">Reason (optional)</label>
+          <textarea value={rejectReason} onChange={(e) => setRejectReason(e.target.value)} rows={3}
+            placeholder="Explain why this estimate is being rejected…"
+            className="w-full resize-none rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]" />
+        </div>
+      </Modal>
+    </>
   );
 }
