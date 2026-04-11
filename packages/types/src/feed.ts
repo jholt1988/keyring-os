@@ -7,7 +7,8 @@ export type UserRole =
 export type FeedItemType =
   | 'critical_signal'
   | 'decision'
-  | 'scheduled_event';
+  | 'scheduled_event'
+  | 'update';
 
 export type FeedDomain =
   | 'payments'
@@ -79,4 +80,43 @@ export interface PropertyManagerMetadata {
       depreciationApplied: boolean;
     };
   };
+}
+
+// ─── Tenant Portal Feed ───────────────────────────────────────────────────────
+
+export type TenantFeedDomain =
+  | 'payments'
+  | 'maintenance'
+  | 'lease'
+  | 'inspection'
+  | 'document'
+  | 'message'
+  | 'renewal'
+  | 'move_out';
+
+/**
+ * A single item in the tenant's operational feed.
+ * Structurally compatible with FeedItem but scoped to tenant-facing domains
+ * and simplified actions (navigate or dismiss only — no inline mutations).
+ */
+export interface TenantFeedItem {
+  id: string;
+  kind: FeedItemType;
+  domain: TenantFeedDomain;
+  title: string;
+  summary: string;
+  /** Pre-computed priority score 0–100. Higher = shown first. */
+  priority: number;
+  timestamp: string;
+  /** Route the "View" button navigates to. */
+  navigateTo: string;
+  financialImpact?: number;
+  urgencyHours?: number;
+  isDismissed?: boolean;
+  metadata?: Record<string, unknown>;
+}
+
+export interface TenantFeedResponse {
+  items: TenantFeedItem[];
+  generatedAt: string;
 }

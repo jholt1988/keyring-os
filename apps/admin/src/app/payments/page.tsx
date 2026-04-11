@@ -1,13 +1,44 @@
 'use client';
 
-import { Wallet, CheckCircle, Bell, AlertTriangle, Send } from 'lucide-react';
+import { useState } from 'react';
+import { Wallet, CheckCircle, Bell, AlertTriangle, Send, RefreshCw } from 'lucide-react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
+import { Modal } from '@/components/ui/modal';
 import { WorkspaceShell, RiskMeter, SectionCard, MetricCard } from '@/components/copilot';
 import { usePaymentsWorkspace } from '@/app/hooks/useWorkspace';
+import { issueDelinquencyNotice } from '@/lib/copilot-api';
+import { useToast } from '@/components/ui/toast';
 import type { Severity } from '@keyring/types';
 
 export default function PaymentsPage() {
-  const { data, isLoading } = usePaymentsWorkspace();
+  const { data, isLoading, refetch } = usePaymentsWorkspace();
+  const qc = useQueryClient();
+  const { toast } = useToast();
+  const [remindTarget, setRemindTarget] = useState<any>(null);
+  const [deliveryMethod, setDeliveryMethod] = useState('EMAIL');
+  const [remindMessage, setRemindMessage] = useState('');
+  const [confirmed, setConfirmed] = useState(false);
+
+  const invalidate = () => { qc.invalidateQueries({ queryKey: ['workspace', 'payments'] }); refetch(); };
+
+  const remindMutation = useMutation({
+    mutationFn: () => issueDelinquencyNotice({
+      leaseId: remindTarget.leaseId ?? remindTarget.id,
+      deliveryMethod,
+      approvalConfirmed: true,
+      message: remindMessage || undefined,
+    }),
+    onSuccess: () => {
+      toast('Reminder sent');
+      setRemindTarget(null);
+      setDeliveryMethod('EMAIL');
+      setRemindMessage('');
+      setConfirmed(false);
+      invalidate();
+    },
+    onError: () => toast('Failed to send reminder', 'error'),
+  });
 
   if (isLoading) {
     return (
@@ -29,6 +60,7 @@ export default function PaymentsPage() {
   );
 
   return (
+    <>
     <WorkspaceShell title="Payments" subtitle="Collection & Risk Engine" icon={Wallet}>
       <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4">
         <MetricCard value={`$${totalAtRisk.toLocaleString()}`} label="At Risk" variant="danger" />
@@ -59,7 +91,9 @@ export default function PaymentsPage() {
                         </div>
                         <div className="flex items-center justify-between">
                           <RiskMeter level={severity} className="mr-4 flex-1" />
-                          <Button size="sm" variant="outline"><Send size={12} /> Remind</Button>
+                          <Button size="sm" variant="outline" onClick={() => setRemindTarget(item)}>
+                            <Send size={12} /> Remind
+                          </Button>
                         </div>
                         <p className="mt-1 font-mono text-[10px] text-[#94A3B8]">{days} days overdue | {item.noticeStatus ?? 'No notice'}</p>
                       </div>
@@ -133,5 +167,40 @@ export default function PaymentsPage() {
         </SectionCard>
       </div>
     </WorkspaceShell>
+
+      {/* Remind modal */}
+      <Modal open={!!remindTarget} onClose={() => { setRemindTarget(null); setConfirmed(false); }} title="Send Payment Reminder"
+        footer={<>
+          <Button variant="outline" size="sm" onClick={() => { setRemindTarget(null); setConfirmed(false); }}>Cancel</Button>
+          <Button size="sm" onClick={() => remindMutation.mutate()} disabled={!confirmed || remindMutation.isPending}>
+            {remindMutation.isPending ? <RefreshCw size={12} className="animate-spin" /> : <Send size={12} />} Send Reminder
+          </Button>
+        </>}
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-[#94A3B8]">
+            Tenant: <span className="text-[#F8FAFC]">{remindTarget?.tenantName ?? 'Tenant'}</span> —{' '}
+            <span className="text-[#F43F5E]">${(remindTarget?.outstandingAmount ?? remindTarget?.amount ?? 0).toLocaleString()} overdue</span>
+          </p>
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-[#94A3B8]">Delivery method</label>
+            <select value={deliveryMethod} onChange={(e) => setDeliveryMethod(e.target.value)}
+              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] outline-none focus:border-[#3B82F6]">
+              {['EMAIL','SMS','PORTAL','PRINT','OTHER'].map(m => <option key={m} value={m}>{m}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-[#94A3B8]">Message (optional)</label>
+            <textarea value={remindMessage} onChange={(e) => setRemindMessage(e.target.value)} rows={2}
+              placeholder="Your rent payment is overdue. Please remit payment immediately."
+              className="w-full resize-none rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]" />
+          </div>
+          <label className="flex items-start gap-2 cursor-pointer">
+            <input type="checkbox" checked={confirmed} onChange={(e) => setConfirmed(e.target.checked)} className="mt-0.5 accent-[#3B82F6]" />
+            <span className="text-sm text-[#94A3B8]">I confirm this notice should be sent to the tenant.</span>
+          </label>
+        </div>
+      </Modal>
+    </>
   );
 }

@@ -2,11 +2,14 @@
 
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
-import { Building2, XCircle, Clock, Map, LayoutGrid } from 'lucide-react';
+import { Building2, XCircle, Clock, Map, LayoutGrid, Plus, RefreshCw } from 'lucide-react';
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { Button } from '@/components/ui/button';
-import { fetchPortfolioWorkspace, fetchPortfolioRepairs, fetchPortfolioAuditLogs } from '@/lib/copilot-api';
+import { Modal } from '@/components/ui/modal';
+import { fetchPortfolioWorkspace, fetchPortfolioRepairs, fetchPortfolioAuditLogs, createProperty, createUnit } from '@/lib/copilot-api';
 import { TimelineRail } from '@/components/copilot/timeline-rail';
+import { useToast } from '@/components/ui/toast';
+import { useMutation } from '@tanstack/react-query';
 
 const PropertyMap = lazy(() =>
   import('@/components/copilot/property-map').then(m => ({ default: m.PropertyMap }))
@@ -14,6 +17,7 @@ const PropertyMap = lazy(() =>
 
 export default function PortfolioPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const [properties, setProperties] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('All');
@@ -21,6 +25,50 @@ export default function PortfolioPage() {
   const [auditLogs, setAuditLogs] = useState<any[]>([]);
   const [showRepairsOverlay, setShowRepairsOverlay] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid');
+
+  // Create Property modal
+  const [propOpen, setPropOpen] = useState(false);
+  const [propForm, setPropForm] = useState({ name: '', address: '', city: '', state: '', zipCode: '', propertyType: 'RESIDENTIAL' });
+
+  // Create Unit modal
+  const [unitOpen, setUnitOpen] = useState(false);
+  const [unitPropertyId, setUnitPropertyId] = useState('');
+  const [unitForm, setUnitForm] = useState({ name: '', unitNumber: '', bedrooms: '', bathrooms: '', squareFeet: '' });
+
+  const createPropertyMutation = useMutation({
+    mutationFn: () => createProperty({
+      name: propForm.name,
+      address: propForm.address,
+      city: propForm.city || undefined,
+      state: propForm.state || undefined,
+      zipCode: propForm.zipCode || undefined,
+      propertyType: propForm.propertyType || undefined,
+    }),
+    onSuccess: (prop: any) => {
+      toast('Property created');
+      setPropOpen(false);
+      setPropForm({ name: '', address: '', city: '', state: '', zipCode: '', propertyType: 'RESIDENTIAL' });
+      router.push(`/properties/${prop.id}`);
+    },
+    onError: () => toast('Failed to create property', 'error'),
+  });
+
+  const createUnitMutation = useMutation({
+    mutationFn: () => createUnit(unitPropertyId, {
+      name: unitForm.name,
+      unitNumber: unitForm.unitNumber || undefined,
+      bedrooms: unitForm.bedrooms ? parseInt(unitForm.bedrooms) : undefined,
+      bathrooms: unitForm.bathrooms ? parseFloat(unitForm.bathrooms) : undefined,
+      squareFeet: unitForm.squareFeet ? parseInt(unitForm.squareFeet) : undefined,
+    }),
+    onSuccess: () => {
+      toast('Unit created');
+      setUnitOpen(false);
+      setUnitForm({ name: '', unitNumber: '', bedrooms: '', bathrooms: '', squareFeet: '' });
+      setUnitPropertyId('');
+    },
+    onError: () => toast('Failed to create unit', 'error'),
+  });
 
   useEffect(() => {
     Promise.all([
@@ -30,7 +78,7 @@ export default function PortfolioPage() {
     ]).then(([props, reps, logs]) => {
       setProperties(props);
       setRepairs(reps);
-      setAuditLogs(logs);
+      setAuditLogs(Array.isArray(logs) ? logs : (logs as any).data ?? []);
       setLoading(false);
     }).catch(() => setLoading(false));
   }, []);
@@ -42,10 +90,17 @@ export default function PortfolioPage() {
   });
 
   return (
+    <>
     <WorkspaceShell
       title="Portfolio Control Index"
       subtitle="Command index of all assets"
       icon={Building2}
+      actions={
+        <div className="flex gap-2">
+          <Button size="sm" variant="outline" onClick={() => setUnitOpen(true)}><Plus size={13} /> Add Unit</Button>
+          <Button size="sm" onClick={() => setPropOpen(true)}><Plus size={13} /> Add Property</Button>
+        </div>
+      }
     >
       <div className="mb-6 flex items-center justify-between gap-4">
         <div className="flex gap-3">
@@ -139,5 +194,89 @@ export default function PortfolioPage() {
         </div>
       )}
     </WorkspaceShell>
+
+    {/* Create Property Modal */}
+    <Modal open={propOpen} onClose={() => setPropOpen(false)} title="Add Property"
+      footer={
+        <>
+          <Button variant="outline" size="sm" onClick={() => setPropOpen(false)}>Cancel</Button>
+          <Button size="sm" onClick={() => createPropertyMutation.mutate()} disabled={!propForm.name || !propForm.address || createPropertyMutation.isPending}>
+            {createPropertyMutation.isPending ? <RefreshCw size={12} className="animate-spin" /> : <Plus size={12} />} Create Property
+          </Button>
+        </>
+      }
+    >
+      <div className="space-y-4">
+        {[
+          { key: 'name', label: 'Property Name', placeholder: 'e.g. Sunset Apartments' },
+          { key: 'address', label: 'Street Address', placeholder: '123 Main St' },
+          { key: 'city', label: 'City', placeholder: 'Austin' },
+          { key: 'state', label: 'State', placeholder: 'TX' },
+          { key: 'zipCode', label: 'ZIP Code', placeholder: '78701' },
+        ].map(({ key, label, placeholder }) => (
+          <div key={key}>
+            <label className="mb-1.5 block text-sm font-medium text-[#94A3B8]">{label}</label>
+            <input value={(propForm as any)[key]} onChange={e => setPropForm(p => ({ ...p, [key]: e.target.value }))}
+              placeholder={placeholder}
+              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]" />
+          </div>
+        ))}
+        <div>
+          <label className="mb-1.5 block text-sm font-medium text-[#94A3B8]">Property Type</label>
+          <select value={propForm.propertyType} onChange={e => setPropForm(p => ({ ...p, propertyType: e.target.value }))}
+            className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] outline-none focus:border-[#3B82F6]">
+            {['RESIDENTIAL', 'COMMERCIAL', 'MIXED_USE', 'INDUSTRIAL'].map(t => (
+              <option key={t} value={t}>{t.replace('_', ' ')}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+    </Modal>
+
+    {/* Create Unit Modal */}
+    <Modal open={unitOpen} onClose={() => setUnitOpen(false)} title="Add Unit"
+      footer={
+        <>
+          <Button variant="outline" size="sm" onClick={() => setUnitOpen(false)}>Cancel</Button>
+          <Button size="sm" onClick={() => createUnitMutation.mutate()} disabled={!unitPropertyId || !unitForm.name || createUnitMutation.isPending}>
+            {createUnitMutation.isPending ? <RefreshCw size={12} className="animate-spin" /> : <Plus size={12} />} Create Unit
+          </Button>
+        </>
+      }
+    >
+      <div className="space-y-4">
+        <div>
+          <label className="mb-1.5 block text-sm font-medium text-[#94A3B8]">Property ID</label>
+          <input value={unitPropertyId} onChange={e => setUnitPropertyId(e.target.value)} placeholder="UUID of the property"
+            className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]" />
+        </div>
+        {[
+          { key: 'name', label: 'Unit Name', placeholder: 'e.g. Unit 2B' },
+          { key: 'unitNumber', label: 'Unit Number', placeholder: '2B' },
+        ].map(({ key, label, placeholder }) => (
+          <div key={key}>
+            <label className="mb-1.5 block text-sm font-medium text-[#94A3B8]">{label}</label>
+            <input value={(unitForm as any)[key]} onChange={e => setUnitForm(p => ({ ...p, [key]: e.target.value }))}
+              placeholder={placeholder}
+              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]" />
+          </div>
+        ))}
+        <div className="grid grid-cols-3 gap-3">
+          {[
+            { key: 'bedrooms', label: 'Beds', placeholder: '2' },
+            { key: 'bathrooms', label: 'Baths', placeholder: '1' },
+            { key: 'squareFeet', label: 'Sq Ft', placeholder: '850' },
+          ].map(({ key, label, placeholder }) => (
+            <div key={key}>
+              <label className="mb-1.5 block text-sm font-medium text-[#94A3B8]">{label}</label>
+              <input type="number" min="0" value={(unitForm as any)[key]} onChange={e => setUnitForm(p => ({ ...p, [key]: e.target.value }))}
+                placeholder={placeholder}
+                className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </Modal>
+    </>
   );
 }
