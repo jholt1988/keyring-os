@@ -1,2 +1,4 @@
-export * from './components/feed-card';
-export * from './components/feed-list';
+
+export * from './components/feed/';
+export {Dialog, Badge, Button} from './components/ui/';
+

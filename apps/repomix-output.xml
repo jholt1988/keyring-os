@@ -1,0 +1,1621 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+admin/.gitignore
+admin/AGENTS.md
+admin/CLAUDE.md
+admin/components.json
+admin/eslint.config.mjs
+admin/next.config.ts
+admin/package.json
+admin/postcss.config.mjs
+admin/public/file.svg
+admin/public/globe.svg
+admin/public/next.svg
+admin/public/vercel.svg
+admin/public/window.svg
+admin/README.md
+admin/src/app/actions/feed-actions.ts
+admin/src/app/error.tsx
+admin/src/app/favicon.ico
+admin/src/app/globals.css
+admin/src/app/hooks/useCoPilotFeed.ts
+admin/src/app/hooks/useExecuteAction.ts
+admin/src/app/layout.tsx
+admin/src/app/loading.tsx
+admin/src/app/page.tsx
+admin/src/app/providers.tsx
+admin/src/components/feed/feed-card.tsx
+admin/src/components/feed/feed-list.tsx
+admin/src/components/feed/index.ts
+admin/src/components/ui/badge.tsx
+admin/src/components/ui/button.tsx
+admin/src/components/ui/dialogue.tsx
+admin/src/components/ui/index.ts
+admin/src/lib/feed-api.ts
+admin/src/lib/utils.ts
+admin/tsconfig.json
+tenant-portal/.gitignore
+tenant-portal/AGENTS.md
+tenant-portal/CLAUDE.md
+tenant-portal/eslint.config.mjs
+tenant-portal/next.config.ts
+tenant-portal/package.json
+tenant-portal/postcss.config.mjs
+tenant-portal/public/file.svg
+tenant-portal/public/globe.svg
+tenant-portal/public/next.svg
+tenant-portal/public/vercel.svg
+tenant-portal/public/window.svg
+tenant-portal/README.md
+tenant-portal/src/app/favicon.ico
+tenant-portal/src/app/globals.css
+tenant-portal/src/app/layout.tsx
+tenant-portal/src/app/page.tsx
+tenant-portal/tsconfig.json
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="admin/.gitignore">
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+</file>
+
+<file path="admin/AGENTS.md">
+<!-- BEGIN:nextjs-agent-rules -->
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
+<!-- END:nextjs-agent-rules -->
+</file>
+
+<file path="admin/CLAUDE.md">
+@AGENTS.md
+</file>
+
+<file path="admin/components.json">
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "base-nova",
+  "rsc": true,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "src/app/globals.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "iconLibrary": "lucide",
+  "rtl": false,
+  "aliases": {
+    "components": "@/components",
+    "utils": "@/lib/utils",
+    "ui": "@/components/ui",
+    "lib": "@/lib",
+    "hooks": "@/hooks"
+  },
+  "menuColor": "default",
+  "menuAccent": "subtle",
+  "registries": {}
+}
+</file>
+
+<file path="admin/eslint.config.mjs">
+import { defineConfig, globalIgnores } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
+
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  ...nextTs,
+  // Override default ignores of eslint-config-next.
+  globalIgnores([
+    // Default ignores of eslint-config-next:
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+  ]),
+]);
+
+export default eslintConfig;
+</file>
+
+<file path="admin/next.config.ts">
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  /* config options here */
+};
+
+export default nextConfig;
+</file>
+
+<file path="admin/package.json">
+{
+  "name": "@keyring/admin",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@base-ui/react": "^1.3.0",
+    "@keyring/types": "workspace:*",
+    "@keyring/ui": "workspace:*",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.7.0",
+    "next": "16.2.2",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "shadcn": "^4.1.2",
+    "tailwind-merge": "^3.5.0",
+    "tw-animate-css": "^1.4.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.2",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
+</file>
+
+<file path="admin/postcss.config.mjs">
+const config = {
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
+};
+
+export default config;
+</file>
+
+<file path="admin/public/file.svg">
+<svg fill="none" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M14.5 13.5V5.41a1 1 0 0 0-.3-.7L9.8.29A1 1 0 0 0 9.08 0H1.5v13.5A2.5 2.5 0 0 0 4 16h8a2.5 2.5 0 0 0 2.5-2.5m-1.5 0v-7H8v-5H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1M9.5 5V2.12L12.38 5zM5.13 5h-.62v1.25h2.12V5zm-.62 3h7.12v1.25H4.5zm.62 3h-.62v1.25h7.12V11z" clip-rule="evenodd" fill="#666" fill-rule="evenodd"/></svg>
+</file>
+
+<file path="admin/public/globe.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g clip-path="url(#a)"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.27 14.1a6.5 6.5 0 0 0 3.67-3.45q-1.24.21-2.7.34-.31 1.83-.97 3.1M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.48-1.52a7 7 0 0 1-.96 0H7.5a4 4 0 0 1-.84-1.32q-.38-.89-.63-2.08a40 40 0 0 0 3.92 0q-.25 1.2-.63 2.08a4 4 0 0 1-.84 1.31zm2.94-4.76q1.66-.15 2.95-.43a7 7 0 0 0 0-2.58q-1.3-.27-2.95-.43a18 18 0 0 1 0 3.44m-1.27-3.54a17 17 0 0 1 0 3.64 39 39 0 0 1-4.3 0 17 17 0 0 1 0-3.64 39 39 0 0 1 4.3 0m1.1-1.17q1.45.13 2.69.34a6.5 6.5 0 0 0-3.67-3.44q.65 1.26.98 3.1M8.48 1.5l.01.02q.41.37.84 1.31.38.89.63 2.08a40 40 0 0 0-3.92 0q.25-1.2.63-2.08a4 4 0 0 1 .85-1.32 7 7 0 0 1 .96 0m-2.75.4a6.5 6.5 0 0 0-3.67 3.44 29 29 0 0 1 2.7-.34q.31-1.83.97-3.1M4.58 6.28q-1.66.16-2.95.43a7 7 0 0 0 0 2.58q1.3.27 2.95.43a18 18 0 0 1 0-3.44m.17 4.71q-1.45-.12-2.69-.34a6.5 6.5 0 0 0 3.67 3.44q-.65-1.27-.98-3.1" fill="#666"/></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h16v16H0z"/></clipPath></defs></svg>
+</file>
+
+<file path="admin/public/next.svg">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 394 80"><path fill="#000" d="M262 0h68.5v12.7h-27.2v66.6h-13.6V12.7H262V0ZM149 0v12.7H94v20.4h44.3v12.6H94v21h55v12.6H80.5V0h68.7zm34.3 0h-17.8l63.8 79.4h17.9l-32-39.7 32-39.6h-17.9l-23 28.6-23-28.6zm18.3 56.7-9-11-27.1 33.7h17.8l18.3-22.7z"/><path fill="#000" d="M81 79.3 17 0H0v79.3h13.6V17l50.2 62.3H81Zm252.6-.4c-1 0-1.8-.4-2.5-1s-1.1-1.6-1.1-2.6.3-1.8 1-2.5 1.6-1 2.6-1 1.8.3 2.5 1a3.4 3.4 0 0 1 .6 4.3 3.7 3.7 0 0 1-3 1.8zm23.2-33.5h6v23.3c0 2.1-.4 4-1.3 5.5a9.1 9.1 0 0 1-3.8 3.5c-1.6.8-3.5 1.3-5.7 1.3-2 0-3.7-.4-5.3-1s-2.8-1.8-3.7-3.2c-.9-1.3-1.4-3-1.4-5h6c.1.8.3 1.6.7 2.2s1 1.2 1.6 1.5c.7.4 1.5.5 2.4.5 1 0 1.8-.2 2.4-.6a4 4 0 0 0 1.6-1.8c.3-.8.5-1.8.5-3V45.5zm30.9 9.1a4.4 4.4 0 0 0-2-3.3 7.5 7.5 0 0 0-4.3-1.1c-1.3 0-2.4.2-3.3.5-.9.4-1.6 1-2 1.6a3.5 3.5 0 0 0-.3 4c.3.5.7.9 1.3 1.2l1.8 1 2 .5 3.2.8c1.3.3 2.5.7 3.7 1.2a13 13 0 0 1 3.2 1.8 8.1 8.1 0 0 1 3 6.5c0 2-.5 3.7-1.5 5.1a10 10 0 0 1-4.4 3.5c-1.8.8-4.1 1.2-6.8 1.2-2.6 0-4.9-.4-6.8-1.2-2-.8-3.4-2-4.5-3.5a10 10 0 0 1-1.7-5.6h6a5 5 0 0 0 3.5 4.6c1 .4 2.2.6 3.4.6 1.3 0 2.5-.2 3.5-.6 1-.4 1.8-1 2.4-1.7a4 4 0 0 0 .8-2.4c0-.9-.2-1.6-.7-2.2a11 11 0 0 0-2.1-1.4l-3.2-1-3.8-1c-2.8-.7-5-1.7-6.6-3.2a7.2 7.2 0 0 1-2.4-5.7 8 8 0 0 1 1.7-5 10 10 0 0 1 4.3-3.5c2-.8 4-1.2 6.4-1.2 2.3 0 4.4.4 6.2 1.2 1.8.8 3.2 2 4.3 3.4 1 1.4 1.5 3 1.5 5h-5.8z"/></svg>
+</file>
+
+<file path="admin/public/vercel.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1155 1000"><path d="m577.3 0 577.4 1000H0z" fill="#fff"/></svg>
+</file>
+
+<file path="admin/public/window.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 2.5h13v10a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1zM0 1h16v11.5a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 0 12.5zm3.75 4.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5M7 4.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0m1.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5" fill="#666"/></svg>
+</file>
+
+<file path="admin/README.md">
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## Getting Started
+
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+</file>
+
+<file path="admin/src/app/actions/feed-actions.ts">
+// app/actions/feed-actions.ts
+"use server";
+
+export interface FeedResponse { success: boolean; message?: string }
+
+export async function executeFeedAction(intent: string, itemId: string): Promise<FeedResponse> {
+  const base = process.env.NEXT_PUBLIC_API_URL;
+  if (!base) throw new Error('BACKEND_URL is not set.');
+
+  // Assuming v2 to match our previous materialized view architecture
+  const res = await fetch(`${base}/api/v2/feed/${itemId}/action`, {
+    method: 'POST',
+    headers: { 
+        'Content-Type': 'application/json',
+        'X-Mock-User-Id': 'dev-admin-uuid-001',
+        'X-Mock-Role': 'admin',
+    
+    },
+    body: JSON.stringify({ intent }),
+  });
+
+  if (!res.ok) throw new Error(`Feed API responded ${res.status}`);
+  return res.json();
+}
+</file>
+
+<file path="admin/src/app/error.tsx">
+'use client';
+
+import { useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+
+type ErrorProps = {
+  error: Error & { digest?: string };
+  reset: () => void;
+};
+
+export default function Error({ error, reset }: ErrorProps) {
+  useEffect(() => {
+    console.error('[feed] Unhandled render error:', error);
+  }, [error]);
+
+  return (
+    <main className="mx-auto max-w-2xl px-4 py-8">
+      <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-6">
+        <h2 className="text-sm font-semibold text-destructive">
+          Feed unavailable
+        </h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {error.message ?? 'An unexpected error occurred loading the feed.'}
+        </p>
+        <Button
+          variant="outline"
+          size="sm"
+          className="mt-4"
+          onClick={reset}
+        >
+          Try again
+        </Button>
+      </div>
+    </main>
+  );
+}
+</file>
+
+<file path="admin/src/app/globals.css">
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+</file>
+
+<file path="admin/src/app/hooks/useCoPilotFeed.ts">
+// app/hooks/useCoPilotFeed.ts
+import { useQuery,   useQueryClient } from '@tanstack/react-query';
+import {mockFeed } from '@keyring/types';
+import type { FeedItem } from '@keyring/types';
+
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
+
+export function useCoPilotFeed() {
+  const queryClient = useQueryClient();
+  return useQuery<FeedItem[]>({
+    queryKey: ['copilot-feed'],
+    queryFn: async () => {
+      // Assuming Next.js rewrites or a direct absolute URL to your NestJS backend
+      const res = await fetch(`${BACKEND_URL}/api/v2/feed`, {
+        headers: {
+          'X-Mock-User-Id': 'dev-admin-uuid-001',
+          'X-Mock-Role': 'admin',
+        },
+      });
+      if (!res.ok) {
+
+        console.error('Failed to fetch feed');
+        return mockFeed;
+      }
+      return res.json();
+    },
+    refetchInterval: 30000, // Poll every 30 seconds to keep feed fresh
+  });
+}
+</file>
+
+<file path="admin/src/app/hooks/useExecuteAction.ts">
+// app/hooks/useExecuteAction.ts
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { executeFeedAction } from '../actions/feed-actions';
+import type { FeedItem } from '@keyring/types'; // Adjust import as needed
+
+export function useExecuteFeedAction() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ intent, itemId }: { intent: string; itemId: string }) => 
+      executeFeedAction(intent, itemId),
+    
+    // 1. Intercept before the network request
+    onMutate: async ({ itemId }) => {
+      // Cancel any outgoing refetches so they don't overwrite our optimistic update
+      await queryClient.cancelQueries({ queryKey: ['copilot-feed'] });
+
+      // Snapshot the previous value
+      const previousFeed = queryClient.getQueryData<FeedItem[]>(['copilot-feed']);
+
+      // Optimistically update to the new value (remove the clicked item)
+      if (previousFeed) {
+        queryClient.setQueryData<FeedItem[]>(
+          ['copilot-feed'], 
+          old => old?.filter(item => item.id !== itemId) ?? []
+        );
+      }
+
+      // Return a context object with the snapshotted value
+      return { previousFeed };
+    },
+    
+    // 2. If the mutation fails, use the context returned from onMutate to roll back
+    onError: (err, newTodo, context) => {
+      if (context?.previousFeed) {
+        queryClient.setQueryData(['copilot-feed'], context.previousFeed);
+      }
+      // Optional: Add toast error notification here
+      console.error('Action failed, rolling back UI state.', err);
+    },
+    
+    // 3. Always refetch after error or success to guarantee sync
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['copilot-feed'] });
+    },
+  });
+}
+</file>
+
+<file path="admin/src/app/layout.tsx">
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import Providers from "./providers";
+import "./globals.css";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  title: 'Co-Pilot Feed — keyring-os',
+  description: 'Decision-first property management feed',
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    >
+      <body className="min-h-full flex flex-col">
+        <Providers>{children}</Providers>
+      </body>
+    </html>
+  );
+}
+</file>
+
+<file path="admin/src/app/loading.tsx">
+export default function Loading() {
+  return (
+    <main className="mx-auto max-w-2xl px-4 py-8">
+      <header className="mb-8">
+        <div className="h-4 w-24 animate-pulse rounded bg-muted" />
+        <div className="mt-2 h-7 w-40 animate-pulse rounded bg-muted" />
+        <div className="mt-2 h-4 w-48 animate-pulse rounded bg-muted" />
+      </header>
+
+      <div className="space-y-3">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div
+            key={i}
+            className="rounded-xl border bg-card p-4 shadow-sm"
+          >
+            <div className="mb-3 flex items-center justify-between">
+              <div className="h-5 w-16 animate-pulse rounded-full bg-muted" />
+              <div className="h-4 w-16 animate-pulse rounded bg-muted" />
+            </div>
+            <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
+            <div className="mt-2 h-3 w-full animate-pulse rounded bg-muted" />
+            <div className="mt-4 flex gap-2">
+              <div className="h-7 w-24 animate-pulse rounded-lg bg-muted" />
+              <div className="h-7 w-24 animate-pulse rounded-lg bg-muted" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </main>
+  );
+}
+</file>
+
+<file path="admin/src/app/page.tsx">
+import type { UserRole } from '@keyring/types';
+import { fetchFeed, FeedApiError } from '@/lib/feed-api';
+import { FeedList } from '@/components/feed/feed-list';
+import { mockFeed, getFeedForRole } from '@keyring/types';
+
+// Phase 4: derive from auth session
+const role: UserRole = 'property_manager';
+
+export default async function HomePage() {
+  // let items = getFeedForRole(mockFeed, role);
+   let source: 'live' | 'mock' = 'mock';
+
+  // try {
+  //   const feed = await fetchFeed(role);
+  //   items = feed.items;
+  //   source = 'live';
+  // } catch (err) {
+  //   // Backend unavailable — fall back to mock data so the UI stays usable.
+  //   // FeedApiError means the backend is reachable but returned an error status.
+  //   // Any other error means the backend is unreachable (not started, wrong URL, etc.)
+  //   if (err instanceof FeedApiError) {
+  //     console.error(`[feed] Backend error ${err.status}: ${err.message}`);
+  //   } else {
+  //     console.warn('[feed] Backend unreachable, using mock data:', (err as Error).message);
+  //   }
+  // }
+  let itemsLen = 10;
+
+  return (
+    <main className="mx-auto max-w-2xl px-4 py-8">
+      <header className="mb-8">
+        <p className="text-sm text-muted-foreground">Good morning</p>
+        <h1 className="mt-1 text-2xl font-bold tracking-tight">
+          Co-Pilot Feed
+        </h1>
+        <p className="mt-1 text-sm text-muted-foreground capitalize">
+          {role.replace('_', ' ')} &middot; {itemsLen} item
+          {itemsLen !== 1 ? 's' : ''} require attention
+          {source === 'mock' && (
+            <span className="ml-2 rounded bg-amber-100 px-1.5 py-0.5 text-xs font-medium text-amber-700">
+              mock data
+            </span>
+          )}
+        </p>
+      </header>
+
+      <FeedList  role={role} />
+    </main>
+  );
+}
+</file>
+
+<file path="admin/src/app/providers.tsx">
+// app/providers.tsx
+'use client';
+
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useState } from 'react';
+
+export default function Providers({ children }: { children: React.ReactNode }) {
+  // Initialize state using a callback to ensure it's only created once per user session
+  const [queryClient] = useState(() => new QueryClient({
+    defaultOptions: {
+      queries: {
+        // Global defaults
+        staleTime: 60 * 1000, // Data is fresh for 1 minute before refetching in background
+        refetchOnWindowFocus: true, // Auto-update feed when user switches tabs back
+        retry: 2, // Only retry failing requests twice
+      },
+    },
+  }));
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      {children}
+    </QueryClientProvider>
+  );
+}
+</file>
+
+<file path="admin/src/components/feed/feed-card.tsx">
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { FeedItem, FeedItemType, FeedAction,FeedActionType, MutationAction } from '@keyring/types';
+import { Badge, Button, Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@keyring/ui/components/';
+import { useExecuteFeedAction } from '@/app/hooks/useExecuteAction';
+
+type FeedCardProps = {
+  item: FeedItem;
+  score?: number;
+};
+
+const kindLabel: Record<FeedItemType, string> = {
+  critical_signal: 'Critical',
+  decision: 'Decision',
+  scheduled_event: 'Scheduled',
+};
+
+// Maps feed item kind to shadcn Badge variant
+const kindVariant: Record<
+  FeedItemType,
+  'destructive' | 'default' | 'secondary'
+> = {
+  critical_signal: 'destructive',
+  decision: 'default',
+  scheduled_event: 'secondary',
+};
+
+// Maps FeedAction.variant to shadcn Button variant
+const actionVariant = (
+  v?: string,
+): 'default' | 'outline' | 'destructive' | 'secondary' => {
+  if (v === 'destructive') return 'destructive';
+  if (v === 'secondary') return 'outline';
+  return 'default';
+};
+
+export function FeedCard({ item, score }: FeedCardProps) {
+  const router = useRouter();
+  const {mutate, isPending} = useExecuteFeedAction();
+  
+  //Local state to manage the confirmation model
+  const [pendingAction, setPendingAction] = useState<FeedAction | null>(null);
+
+  //The Interceptor for destructive actions 
+  const handleActionClick = (action: FeedAction) => {
+    if(action.type  === 'navigation' ){
+      // 1. Handle Navigation Immediately 
+      if(action.openInNewTab){
+        window.open(action.href, '_blank')
+      } else {
+        router.push(action.href)
+      }
+      return; // Stop here, don't show modal for navigation
+    }
+  //if the action is destructive, halt and show modal
+  if(action.type === 'mutation') {
+    if(action.requiresConfirm || action.variant === 'destructive'){
+      setPendingAction(action);
+    }else{
+      //otherwise, execute the optimistic mutation immediately
+      mutate({ intent: action.intent, itemId: item.id });
+    }
+  }
+};
+
+  const confirmAction = () =>{
+    if(pendingAction){
+      mutate({ intent: pendingAction.intent, itemId: item.id });
+      setPendingAction(null);
+    }
+  }
+
+  return (
+    <>
+    <article className="rounded-xl border bg-card p-4 shadow-sm transition-shadow hover:shadow-md">
+      {/* Header row: kind badge + score */}
+      <div className="mb-3 flex items-center justify-between gap-2">
+        <Badge variant={kindVariant[item.kind]}>
+          {kindLabel[item.kind]}
+        </Badge>
+        {score !== undefined && (
+          <span className="text-xs text-muted-foreground tabular-nums">
+            Priority {score?.toFixed(0)}
+          </span>
+        )}
+      </div>
+
+      {/* Title + summary */}
+      <h3 className="text-sm font-semibold leading-snug">{item.title}</h3>
+      <p className="mt-1 text-sm text-muted-foreground">{item.summary}</p>
+
+      {/* Actions */}
+      {item.actions.length > 0 && (
+        <div className="mt-4 flex flex-wrap gap-2">
+          {item.actions.map((action: FeedAction<FeedActionType>, idx: number) => (
+            <Button
+              key={idx}
+              variant={actionVariant(action.type.variant)}
+              size="sm"
+              disabled={isPending}
+              onClick={() => handleActionClick(action)}
+            >
+              {action.type.label}
+            </Button>
+          ))}
+        </div>
+      )}
+    </article>
+  
+
+    /* Confirmation Modal */
+    {pendingAction && (
+    <Dialog open={!!pendingAction} onOpenChange={(open:boolean) => !open && setPendingAction(null)}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Confirm Destructive Action</DialogTitle>
+          <DialogDescription>
+            Are you sure you want to "{pendingAction?.type.label}"? This action cannot be undone.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DialogClose>
+          <Button variant="destructive" onClick={confirmAction} disabled={isPending}>
+            {isPending ? 'Processing...' : 'Confirm Action'}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+)}
+</>
+  );
+}
+</file>
+
+<file path="admin/src/components/feed/feed-list.tsx">
+'use client'
+import type { FeedItem, UserRole } from '@keyring/types';
+import { FeedCard } from './feed-card';
+import { useCoPilotFeed } from '@/app/hooks/useCoPilotFeed';
+
+type FeedListProps = {
+
+  role: UserRole;
+};
+
+export function FeedList({ role: _role }: FeedListProps) {
+  const { data: feedItems, isLoading, error } = useCoPilotFeed();
+
+  if (isLoading) return <div className="skeleton w-full h-32 rounded-xl"></div>;
+  if (error) return <div className="text-error">Failed to load intelligence feed.</div>;
+  if (!feedItems?.length) return <div className="text-muted">No pending actions. You're caught up.</div>;
+
+  if (feedItems.length === 0) {
+    return (
+      <p className="py-12 text-center text-sm text-muted-foreground">
+        No items require your attention right now.
+      </p>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      {feedItems.map((item) => (
+        // priority is pre-computed by the backend — pass it directly
+        <FeedCard key={item.id} item={item} score={item.priority} />
+      ))}
+    </div>
+  );
+}
+</file>
+
+<file path="admin/src/components/feed/index.ts">
+export * from './feed-card';
+export * from './feed-list';
+</file>
+
+<file path="admin/src/components/ui/badge.tsx">
+import { mergeProps } from "@base-ui/react/merge-props"
+import { useRender } from "@base-ui/react/use-render"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/lib/utils"
+
+const badgeVariants = cva(
+  "group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-all focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3!",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground [a]:hover:bg-primary/80",
+        secondary:
+          "bg-secondary text-secondary-foreground [a]:hover:bg-secondary/80",
+        destructive:
+          "bg-destructive/10 text-destructive focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:focus-visible:ring-destructive/40 [a]:hover:bg-destructive/20",
+        outline:
+          "border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground",
+        ghost:
+          "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
+        link: "text-primary underline-offset-4 hover:underline",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
+)
+
+function Badge({
+  className,
+  variant = "default",
+  render,
+  ...props
+}: useRender.ComponentProps<"span"> & VariantProps<typeof badgeVariants>) {
+  return useRender({
+    defaultTagName: "span",
+    props: mergeProps<"span">(
+      {
+        className: cn(badgeVariants({ variant }), className),
+      },
+      props
+    ),
+    render,
+    state: {
+      slot: "badge",
+      variant,
+    },
+  })
+}
+
+export { Badge, badgeVariants }
+</file>
+
+<file path="admin/src/components/ui/button.tsx">
+import { Button as ButtonPrimitive } from "@base-ui/react/button"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/lib/utils"
+
+const buttonVariants = cva(
+  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground [a]:hover:bg-primary/80",
+        outline:
+          "border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80 aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
+        ghost:
+          "hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50",
+        destructive:
+          "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
+        link: "text-primary underline-offset-4 hover:underline",
+      },
+      size: {
+        default:
+          "h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
+        xs: "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
+        sm: "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
+        lg: "h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
+        icon: "size-8",
+        "icon-xs":
+          "size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3",
+        "icon-sm":
+          "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
+        "icon-lg": "size-9",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+)
+
+function Button({
+  className,
+  variant = "default",
+  size = "default",
+  ...props
+}: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
+  return (
+    <ButtonPrimitive
+      data-slot="button"
+      className={cn(buttonVariants({ variant, size, className }))}
+      {...props}
+    />
+  )
+}
+
+export { Button, buttonVariants }
+</file>
+
+<file path="admin/src/components/ui/dialogue.tsx">
+import * as React from "react"
+import * as DialogPrimitive from "@radix-ui/react-dialog"
+import { mergeProps } from "@base-ui/react/merge-props"
+import { useRender } from "@base-ui/react/use-render"
+import { cva, type VariantProps } from "class-variance-authority"
+import { cn } from "@/lib/utils"
+
+const dialogContentVariants = cva(
+  "fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 border bg-white p-6 shadow-lg duration-200",
+  {
+    variants: {
+      size: {
+        default: "max-w-lg",
+        sm: "max-w-sm",
+        lg: "max-w-2xl",
+      },
+    },
+    defaultVariants: {
+      size: "default",
+    },
+  }
+)
+
+const Dialog = DialogPrimitive.Root
+const DialogTrigger = DialogPrimitive.Trigger
+const DialogPortal = DialogPrimitive.Portal
+
+const DialogContent = React.forwardRef<
+  HTMLDivElement, 
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & 
+  VariantProps<typeof dialogContentVariants>
+>(({ className, size, ...props }, forwardedRef) => {
+  const render = useRender({props, ref:forwardedRef})
+  
+  return (
+    <DialogPortal>
+      <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/50" />
+      <DialogPrimitive.Content
+        {...render.props as React.HTMLAttributes<HTMLDivElement>}
+        className={cn(dialogContentVariants({ size }), className)}
+      />
+    </DialogPortal>
+  )
+})
+DialogContent.displayName = "DialogContent"
+
+const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+  <div className={cn("flex flex-col space-y-1.5 text-center sm:text-left", className)} {...props} />
+)
+
+const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+  <div className={cn("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className)} {...props} />
+)
+
+const DialogTitle = React.forwardRef<
+  HTMLHeadingElement, 
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
+>(({ className, ...props }, forwardedRef) => {
+  const render = useRender( {props, ref:forwardedRef})
+  return (
+    <DialogPrimitive.Title
+      {...render.props as React.HTMLAttributes<HTMLHeadingElement>}
+      className={cn("text-lg font-semibold leading-none tracking-tight", className)}
+    />
+  )
+})
+
+const DialogDescription = React.forwardRef<
+  HTMLParagraphElement, 
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
+>(({ className, ...props }, forwardedRef) => {
+  const render = useRender( {props, ref:forwardedRef})
+  return (
+    <DialogPrimitive.Description
+      {...render.props as React.HTMLAttributes<HTMLParagraphElement>}
+      className={cn("text-sm text-gray-500", className)}
+    />
+  )
+})
+
+const DialogClose = DialogPrimitive.Close
+
+export {
+  Dialog,
+  DialogTrigger,
+  DialogPortal,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
+  DialogClose,
+}
+</file>
+
+<file path="admin/src/components/ui/index.ts">
+export * from './dialogue';
+export * from './badge';
+export * from './button';
+</file>
+
+<file path="admin/src/lib/feed-api.ts">
+import type { FeedResponse, UserRole } from '@keyring/types';
+
+/**
+ * Fetches the Co-Pilot feed from the pms-master backend.
+ *
+ * Called server-side only (Next.js Server Component / Route Handler).
+ * Never import this in a Client Component.
+ *
+ * Throws on non-2xx responses so the caller can handle errors explicitly.
+ */
+export async function fetchFeed(role: UserRole): Promise<FeedResponse> {
+  const base = process.env.NEXT_PUBLIC_API_URL;
+  if (!base) {
+    throw new Error(
+      'BACKEND_URL is not set. Add it to .env.local (see .env.local.example).',
+    );
+  }
+
+  const url = `${base}/api/feed?role=${encodeURIComponent(role)}`;
+
+  const res = await fetch(url, {
+    // Revalidate every 60 seconds — balances freshness with DB load.
+    // Phase 2 (signal cache table) will allow longer TTLs.
+    next: { revalidate: 60 },
+    headers: {
+      Accept: 'application/json',
+      // Phase 4: forward the user's JWT here once auth is wired.
+      // Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    throw new FeedApiError(
+      `Feed API responded ${res.status} ${res.statusText}`,
+      res.status,
+    );
+  }
+
+  return res.json() as Promise<FeedResponse>;
+}
+
+
+
+export class FeedApiError extends Error {
+  constructor(
+    message: string,
+    public readonly status: number,
+  ) {
+    super(message);
+    this.name = 'FeedApiError';
+  }
+}
+</file>
+
+<file path="admin/src/lib/utils.ts">
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+</file>
+
+<file path="admin/tsconfig.json">
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts",
+    "../../packages/ui/src/components/feed/feed-card.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
+</file>
+
+<file path="tenant-portal/.gitignore">
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+</file>
+
+<file path="tenant-portal/AGENTS.md">
+<!-- BEGIN:nextjs-agent-rules -->
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
+<!-- END:nextjs-agent-rules -->
+</file>
+
+<file path="tenant-portal/CLAUDE.md">
+@AGENTS.md
+</file>
+
+<file path="tenant-portal/eslint.config.mjs">
+import { defineConfig, globalIgnores } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
+
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  ...nextTs,
+  // Override default ignores of eslint-config-next.
+  globalIgnores([
+    // Default ignores of eslint-config-next:
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+  ]),
+]);
+
+export default eslintConfig;
+</file>
+
+<file path="tenant-portal/next.config.ts">
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  /* config options here */
+};
+
+export default nextConfig;
+</file>
+
+<file path="tenant-portal/package.json">
+{
+  "name": "@keyring/tenant-portal",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "next": "16.2.2",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.2",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
+</file>
+
+<file path="tenant-portal/postcss.config.mjs">
+const config = {
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
+};
+
+export default config;
+</file>
+
+<file path="tenant-portal/public/file.svg">
+<svg fill="none" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M14.5 13.5V5.41a1 1 0 0 0-.3-.7L9.8.29A1 1 0 0 0 9.08 0H1.5v13.5A2.5 2.5 0 0 0 4 16h8a2.5 2.5 0 0 0 2.5-2.5m-1.5 0v-7H8v-5H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1M9.5 5V2.12L12.38 5zM5.13 5h-.62v1.25h2.12V5zm-.62 3h7.12v1.25H4.5zm.62 3h-.62v1.25h7.12V11z" clip-rule="evenodd" fill="#666" fill-rule="evenodd"/></svg>
+</file>
+
+<file path="tenant-portal/public/globe.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g clip-path="url(#a)"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.27 14.1a6.5 6.5 0 0 0 3.67-3.45q-1.24.21-2.7.34-.31 1.83-.97 3.1M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.48-1.52a7 7 0 0 1-.96 0H7.5a4 4 0 0 1-.84-1.32q-.38-.89-.63-2.08a40 40 0 0 0 3.92 0q-.25 1.2-.63 2.08a4 4 0 0 1-.84 1.31zm2.94-4.76q1.66-.15 2.95-.43a7 7 0 0 0 0-2.58q-1.3-.27-2.95-.43a18 18 0 0 1 0 3.44m-1.27-3.54a17 17 0 0 1 0 3.64 39 39 0 0 1-4.3 0 17 17 0 0 1 0-3.64 39 39 0 0 1 4.3 0m1.1-1.17q1.45.13 2.69.34a6.5 6.5 0 0 0-3.67-3.44q.65 1.26.98 3.1M8.48 1.5l.01.02q.41.37.84 1.31.38.89.63 2.08a40 40 0 0 0-3.92 0q.25-1.2.63-2.08a4 4 0 0 1 .85-1.32 7 7 0 0 1 .96 0m-2.75.4a6.5 6.5 0 0 0-3.67 3.44 29 29 0 0 1 2.7-.34q.31-1.83.97-3.1M4.58 6.28q-1.66.16-2.95.43a7 7 0 0 0 0 2.58q1.3.27 2.95.43a18 18 0 0 1 0-3.44m.17 4.71q-1.45-.12-2.69-.34a6.5 6.5 0 0 0 3.67 3.44q-.65-1.27-.98-3.1" fill="#666"/></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h16v16H0z"/></clipPath></defs></svg>
+</file>
+
+<file path="tenant-portal/public/next.svg">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 394 80"><path fill="#000" d="M262 0h68.5v12.7h-27.2v66.6h-13.6V12.7H262V0ZM149 0v12.7H94v20.4h44.3v12.6H94v21h55v12.6H80.5V0h68.7zm34.3 0h-17.8l63.8 79.4h17.9l-32-39.7 32-39.6h-17.9l-23 28.6-23-28.6zm18.3 56.7-9-11-27.1 33.7h17.8l18.3-22.7z"/><path fill="#000" d="M81 79.3 17 0H0v79.3h13.6V17l50.2 62.3H81Zm252.6-.4c-1 0-1.8-.4-2.5-1s-1.1-1.6-1.1-2.6.3-1.8 1-2.5 1.6-1 2.6-1 1.8.3 2.5 1a3.4 3.4 0 0 1 .6 4.3 3.7 3.7 0 0 1-3 1.8zm23.2-33.5h6v23.3c0 2.1-.4 4-1.3 5.5a9.1 9.1 0 0 1-3.8 3.5c-1.6.8-3.5 1.3-5.7 1.3-2 0-3.7-.4-5.3-1s-2.8-1.8-3.7-3.2c-.9-1.3-1.4-3-1.4-5h6c.1.8.3 1.6.7 2.2s1 1.2 1.6 1.5c.7.4 1.5.5 2.4.5 1 0 1.8-.2 2.4-.6a4 4 0 0 0 1.6-1.8c.3-.8.5-1.8.5-3V45.5zm30.9 9.1a4.4 4.4 0 0 0-2-3.3 7.5 7.5 0 0 0-4.3-1.1c-1.3 0-2.4.2-3.3.5-.9.4-1.6 1-2 1.6a3.5 3.5 0 0 0-.3 4c.3.5.7.9 1.3 1.2l1.8 1 2 .5 3.2.8c1.3.3 2.5.7 3.7 1.2a13 13 0 0 1 3.2 1.8 8.1 8.1 0 0 1 3 6.5c0 2-.5 3.7-1.5 5.1a10 10 0 0 1-4.4 3.5c-1.8.8-4.1 1.2-6.8 1.2-2.6 0-4.9-.4-6.8-1.2-2-.8-3.4-2-4.5-3.5a10 10 0 0 1-1.7-5.6h6a5 5 0 0 0 3.5 4.6c1 .4 2.2.6 3.4.6 1.3 0 2.5-.2 3.5-.6 1-.4 1.8-1 2.4-1.7a4 4 0 0 0 .8-2.4c0-.9-.2-1.6-.7-2.2a11 11 0 0 0-2.1-1.4l-3.2-1-3.8-1c-2.8-.7-5-1.7-6.6-3.2a7.2 7.2 0 0 1-2.4-5.7 8 8 0 0 1 1.7-5 10 10 0 0 1 4.3-3.5c2-.8 4-1.2 6.4-1.2 2.3 0 4.4.4 6.2 1.2 1.8.8 3.2 2 4.3 3.4 1 1.4 1.5 3 1.5 5h-5.8z"/></svg>
+</file>
+
+<file path="tenant-portal/public/vercel.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1155 1000"><path d="m577.3 0 577.4 1000H0z" fill="#fff"/></svg>
+</file>
+
+<file path="tenant-portal/public/window.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 2.5h13v10a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1zM0 1h16v11.5a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 0 12.5zm3.75 4.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5M7 4.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0m1.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5" fill="#666"/></svg>
+</file>
+
+<file path="tenant-portal/README.md">
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## Getting Started
+
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+</file>
+
+<file path="tenant-portal/src/app/globals.css">
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+</file>
+
+<file path="tenant-portal/src/app/layout.tsx">
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  title: "Create Next App",
+  description: "Generated by create next app",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    >
+      <body className="min-h-full flex flex-col">{children}</body>
+    </html>
+  );
+}
+</file>
+
+<file path="tenant-portal/src/app/page.tsx">
+import Image from "next/image";
+
+export default function Home() {
+  return (
+    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
+      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+        <Image
+          className="dark:invert"
+          src="/next.svg"
+          alt="Next.js logo"
+          width={100}
+          height={20}
+          priority
+        />
+        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
+          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
+            To get started, edit the page.tsx file.
+          </h1>
+          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
+            Looking for a starting point or more instructions? Head over to{" "}
+            <a
+              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+              className="font-medium text-zinc-950 dark:text-zinc-50"
+            >
+              Templates
+            </a>{" "}
+            or the{" "}
+            <a
+              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+              className="font-medium text-zinc-950 dark:text-zinc-50"
+            >
+              Learning
+            </a>{" "}
+            center.
+          </p>
+        </div>
+        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
+          <a
+            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
+            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Image
+              className="dark:invert"
+              src="/vercel.svg"
+              alt="Vercel logomark"
+              width={16}
+              height={16}
+            />
+            Deploy Now
+          </a>
+          <a
+            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
+            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Documentation
+          </a>
+        </div>
+      </main>
+    </div>
+  );
+}
+</file>
+
+<file path="tenant-portal/tsconfig.json">
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": ["node_modules"]
+}
+</file>
+
+</files>
