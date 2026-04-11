@@ -5,8 +5,7 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src",
-    "src/components/feed/feed-card.tsx"
+    "src"
   ],
   "exclude": [
     "node_modules"
