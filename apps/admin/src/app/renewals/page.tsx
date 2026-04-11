@@ -1,13 +1,57 @@
 'use client';
 
-import { RefreshCw, CheckCircle, AlertTriangle, TrendingUp, Home } from 'lucide-react';
+import { useState } from 'react';
+import { RefreshCw, CheckCircle, AlertTriangle, TrendingUp, Home, Send } from 'lucide-react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { Modal } from '@/components/ui/modal';
 import { WorkspaceShell, RiskMeter, ExplainableAction, SectionCard, MetricCard } from '@/components/copilot';
 import { useRenewalsWorkspace } from '@/app/hooks/useWorkspace';
+import { createRenewalOffer } from '@/lib/copilot-api';
+import { useToast } from '@/components/ui/toast';
 import type { Severity } from '@keyring/types';
 
 export default function RenewalsPage() {
-  const { data, isLoading } = useRenewalsWorkspace();
+  const { data, isLoading, refetch } = useRenewalsWorkspace();
+  const qc = useQueryClient();
+  const { toast } = useToast();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const filterTenantId = searchParams.get('tenantId');
+  const filterPropertyId = searchParams.get('propertyId');
+
+  const [offerTarget, setOfferTarget] = useState<any>(null);
+  const [offerForm, setOfferForm] = useState({ proposedRent: '', proposedStart: '', proposedEnd: '', expiresAt: '', message: '' });
+
+  const invalidate = () => { qc.invalidateQueries({ queryKey: ['workspace', 'renewals'] }); refetch(); };
+
+  const sendOfferMutation = useMutation({
+    mutationFn: () => createRenewalOffer(offerTarget.leaseId, {
+      proposedRent: parseFloat(offerForm.proposedRent),
+      proposedStart: offerForm.proposedStart,
+      proposedEnd: offerForm.proposedEnd,
+      expiresAt: offerForm.expiresAt || undefined,
+      message: offerForm.message || undefined,
+    }),
+    onSuccess: () => { toast('Renewal offer sent'); setOfferTarget(null); invalidate(); },
+    onError: () => toast('Failed to send offer', 'error'),
+  });
+
+  const openOfferModal = (lease: any, rec: any) => {
+    const endDate = lease.endDate ? new Date(lease.endDate) : new Date();
+    const start = new Date(endDate); start.setDate(start.getDate() + 1);
+    const end = new Date(start); end.setFullYear(end.getFullYear() + 1);
+    const expires = new Date(); expires.setDate(expires.getDate() + 30);
+    setOfferForm({
+      proposedRent: String(rec?.recommendedRent ?? lease.rentAmount ?? ''),
+      proposedStart: start.toISOString().split('T')[0],
+      proposedEnd: end.toISOString().split('T')[0],
+      expiresAt: expires.toISOString().split('T')[0],
+      message: '',
+    });
+    setOfferTarget(lease);
+  };
 
   if (isLoading) {
     return (
@@ -37,6 +81,7 @@ export default function RenewalsPage() {
   const daysUntilExpiry = (endDate: string) => Math.max(0, Math.ceil((new Date(endDate).getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
 
   return (
+    <>
     <WorkspaceShell title="Renewals" subtitle="Revenue Continuity Engine" icon={RefreshCw}>
       <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4">
         <MetricCard value={expiringLeases.length} label="Expiring ≤90d" variant="warning" />
@@ -76,8 +121,16 @@ export default function RenewalsPage() {
                         {offerStatus && <span className={`rounded-full px-2 py-0.5 font-mono text-[10px] ${offerStatus.status === 'ACCEPTED' ? 'bg-[#10B981]/10 text-[#10B981]' : 'bg-[#F59E0B]/10 text-[#F59E0B]'}`}>{offerStatus.status}</span>}
                       </div>
                       <div className="flex items-center gap-2">
-                        {!offerStatus && <Button size="sm">Send Offer</Button>}
-                        <Button size="sm" variant="outline"><Home size={12} /> Prep Listing</Button>
+                        {!offerStatus && (
+                          <Button size="sm" onClick={() => openOfferModal(lease, rec)}>
+                            <Send size={12} /> Send Offer
+                          </Button>
+                        )}
+                        <Button size="sm" variant="outline"
+                          onClick={() => router.push(`/properties/${lease.unit?.propertyId}/units/${lease.unitId}`)}
+                        >
+                          <Home size={12} /> Prep Listing
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -124,5 +177,40 @@ export default function RenewalsPage() {
         </SectionCard>
       </div>
     </WorkspaceShell>
+
+      {/* Send Offer modal */}
+      <Modal open={!!offerTarget} onClose={() => setOfferTarget(null)} title="Send Renewal Offer" size="md"
+        footer={<>
+          <Button variant="outline" size="sm" onClick={() => setOfferTarget(null)}>Cancel</Button>
+          <Button size="sm"
+            onClick={() => sendOfferMutation.mutate()}
+            disabled={!offerForm.proposedRent || !offerForm.proposedStart || !offerForm.proposedEnd || sendOfferMutation.isPending}
+          >
+            {sendOfferMutation.isPending ? <RefreshCw size={12} className="animate-spin" /> : <Send size={12} />} Send Offer
+          </Button>
+        </>}
+      >
+        <div className="space-y-3">
+          {[
+            { label: 'Proposed rent ($/mo) *', key: 'proposedRent', type: 'number' },
+            { label: 'Start date *', key: 'proposedStart', type: 'date' },
+            { label: 'End date *', key: 'proposedEnd', type: 'date' },
+            { label: 'Offer expires', key: 'expiresAt', type: 'date' },
+          ].map(({ label, key, type }) => (
+            <div key={key}>
+              <label className="mb-1 block text-xs font-medium text-[#94A3B8]">{label}</label>
+              <input type={type} value={(offerForm as any)[key]}
+                onChange={(e) => setOfferForm((p) => ({ ...p, [key]: e.target.value }))}
+                className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] outline-none focus:border-[#3B82F6] [color-scheme:dark]" />
+            </div>
+          ))}
+          <div>
+            <label className="mb-1 block text-xs font-medium text-[#94A3B8]">Message (optional)</label>
+            <textarea value={offerForm.message} onChange={(e) => setOfferForm((p) => ({ ...p, message: e.target.value }))} rows={2}
+              className="w-full resize-none rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]" />
+          </div>
+        </div>
+      </Modal>
+    </>
   );
 }
