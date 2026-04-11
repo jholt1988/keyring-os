@@ -303,21 +303,29 @@ export async function fetchPropertyRepairs(propertyId: string) {
   }
 }
 
-export async function fetchAuditLogs(entityId: string) {
-  // Mock audit logs for the timeline since the backend AuditLogController is not exposed yet
-  return [
-    { id: '1', date: new Date(Date.now() - 86400000 * 2).toISOString(), action: 'State Transition', details: 'Status changed to VACANT', actor: 'System' },
-    { id: '2', date: new Date(Date.now() - 86400000 * 1).toISOString(), action: 'Maintenance Requested', details: 'HVAC repair requested', actor: 'Tenant' },
-    { id: '3', date: new Date().toISOString(), action: 'Inspection Scheduled', details: 'Move-out inspection', actor: 'Property Manager' },
-  ];
+export async function fetchAuditLogs(params?: {
+  entityId?: string;
+  module?: string;
+  actorId?: string;
+  startDate?: string;
+  endDate?: string;
+  limit?: number;
+  skip?: number;
+}) {
+  try {
+    const qs = new URLSearchParams(params as Record<string, string>);
+    return await api<{ data: any[]; total: number }>(`/audit-logs?${qs.toString()}`);
+  } catch {
+    return { data: [], total: 0 };
+  }
 }
 
 export async function fetchPortfolioAuditLogs() {
-  return [
-    { id: 'p1', date: new Date(Date.now() - 86400000 * 2).toISOString(), action: 'Property Onboarded', details: 'Added 123 Main St', actor: 'Admin' },
-    { id: 'p2', date: new Date(Date.now() - 86400000 * 1).toISOString(), action: 'Rent Adjustment', details: 'Increased base rent across 5 units', actor: 'Manager' },
-    { id: 'p3', date: new Date().toISOString(), action: 'Maintenance Batch', details: 'Approved $4500 for roof repairs', actor: 'Admin' },
-  ];
+  try {
+    return await api<{ data: any[]; total: number }>('/audit-logs?limit=20');
+  } catch {
+    return { data: [], total: 0 };
+  }
 }
 
 export async function fetchPortfolioRepairs() {
@@ -389,4 +397,384 @@ export async function addViolation(tenantId: string, data: Record<string, unknow
     body: JSON.stringify(data),
   });
 }
+
+
+// ── Screening mutations ───────────────────────────────────────────────────────
+
+export async function reviewApplication(
+  id: number,
+  data: {
+    action: 'APPROVE' | 'CONDITIONAL_APPROVE' | 'DENY' | 'REQUEST_INFO' | 'SCHEDULE_INTERVIEW';
+    note?: string;
+    reason?: string;
+    reasonCode?: string;
+    conditionalDeposit?: number;
+    requiresCosigner?: boolean;
+  },
+) {
+  return api(`/rental-applications/${id}/review-action`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function createApplication(data: Record<string, unknown>) {
+  return api('/rental-applications', { method: 'POST', body: JSON.stringify(data) });
+}
+
+// ── Estimate mutations ────────────────────────────────────────────────────────
+
+export async function approveEstimate(id: string) {
+  return api(`/estimates/${id}/approve`, { method: 'PATCH' });
+}
+
+export async function rejectEstimate(id: string, reason?: string) {
+  return api(`/estimates/${id}/reject`, { method: 'PATCH', body: JSON.stringify({ reason }) });
+}
+
+// ── Bookkeeping mutations ─────────────────────────────────────────────────────
+
+export async function categorizeTransaction(id: string, category: string) {
+  return api(`/bookkeeping/transactions/${id}/categorize`, {
+    method: 'PATCH',
+    body: JSON.stringify({ category }),
+  });
+}
+
+export async function approveOwnerStatement(id: string) {
+  return api(`/bookkeeping/owner-statements/${id}/approve`, { method: 'PATCH' });
+}
+
+export async function sendOwnerStatement(id: string) {
+  return api(`/bookkeeping/owner-statements/${id}/send`, { method: 'PATCH' });
+}
+
+export async function fetchChartOfAccounts() {
+  try {
+    return await api<Array<{ id: string; name: string; code: string }>>('/bookkeeping/chart-of-accounts');
+  } catch {
+    return [];
+  }
+}
+
+// ── Renewal mutations ─────────────────────────────────────────────────────────
+
+export async function createRenewalOffer(
+  leaseId: string,
+  data: {
+    proposedRent: number;
+    proposedStart: string;
+    proposedEnd: string;
+    message?: string;
+    expiresAt?: string;
+    escalationPercent?: number;
+  },
+) {
+  return api(`/leases/${leaseId}/renewal-offers`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+// ── Payment mutations ─────────────────────────────────────────────────────────
+
+export async function issueDelinquencyNotice(data: {
+  leaseId: string;
+  deliveryMethod: string;
+  approvalConfirmed: boolean;
+  message?: string;
+}) {
+  return api('/payments/delinquency/issue-notice', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function logManualPayment(data: {
+  leaseId: string;
+  propertyId: string;
+  unitId?: string;
+  tenantId: string;
+  amountCents: number;
+  method: string;
+  referenceNumber?: string;
+  receivedAt?: string;
+  appliedTo?: string;
+  memo?: string;
+}) {
+  return api('/payments/manual', { method: 'POST', body: JSON.stringify(data) });
+}
+
+// ── Lease mutations ───────────────────────────────────────────────────────────
+
+export async function createLease(data: {
+  startDate: string;
+  endDate: string;
+  rentAmount: number;
+  tenantId: string;
+  unitId: string;
+  depositAmount?: number;
+  noticePeriodDays?: number;
+  autoRenew?: boolean;
+  moveInAt?: string;
+}) {
+  return api('/leases', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export async function recordLeaseNotice(
+  leaseId: string,
+  data: { type: string; deliveryMethod: string; message?: string },
+) {
+  return api(`/leases/${leaseId}/notices`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+// ── Messaging ─────────────────────────────────────────────────────────────────
+
+export async function fetchConversations() {
+  try {
+    return await api<any[]>('/messaging/conversations');
+  } catch {
+    return [];
+  }
+}
+
+export async function fetchMessages(conversationId: number) {
+  try {
+    return await api<any[]>(`/messaging/conversations/${conversationId}/messages`);
+  } catch {
+    return [];
+  }
+}
+
+export async function createConversation(data: {
+  subject?: string;
+  content: string;
+  participantIds?: string[];
+}) {
+  return api('/messaging/conversations', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export async function sendMessage(conversationId: number, content: string) {
+  return api(`/messaging/conversations/${conversationId}/messages`, {
+    method: 'POST',
+    body: JSON.stringify({ content }),
+  });
+}
+
+// ── Notifications ─────────────────────────────────────────────────────────────
+
+export async function fetchNotifications(params?: { unread?: boolean; limit?: number }) {
+  try {
+    const qs = new URLSearchParams();
+    if (params?.unread) qs.set('unread', 'true');
+    if (params?.limit) qs.set('limit', String(params.limit));
+    return await api<any[]>(`/notifications?${qs.toString()}`);
+  } catch {
+    return [];
+  }
+}
+
+export async function markNotificationRead(id: number) {
+  return api(`/notifications/${id}/read`, { method: 'PUT' });
+}
+
+export async function markAllNotificationsRead() {
+  return api('/notifications/read-all', { method: 'POST' });
+}
+
+export async function deleteNotification(id: number) {
+  return api(`/notifications/${id}`, { method: 'DELETE' });
+}
+
+// ── Maintenance mutations ─────────────────────────────────────────────────────
+
+export async function createMaintenanceRequest(data: {
+  title: string;
+  category: string;
+  priority: string;
+  description: string;
+  unitId?: string;
+  propertyId?: string;
+  tenantId?: string;
+}) {
+  return api('/maintenance', { method: 'POST', body: JSON.stringify(data) });
+}
+
+// ── Property mutations ────────────────────────────────────────────────────────
+
+export async function createProperty(data: {
+  name: string;
+  address: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
+  country?: string;
+  propertyType?: string;
+}) {
+  return api('/properties', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export async function updateProperty(id: string, data: Record<string, unknown>) {
+  return api(`/properties/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
+}
+
+export async function createUnit(
+  propertyId: string,
+  data: {
+    name: string;
+    unitNumber?: string;
+    bedrooms?: number;
+    bathrooms?: number;
+    squareFeet?: number;
+    status?: string;
+  },
+) {
+  return api(`/properties/${propertyId}/units`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function updateUnit(propertyId: string, unitId: string, data: Record<string, unknown>) {
+  return api(`/properties/${propertyId}/units/${unitId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+}
+
+// ── Inspections ───────────────────────────────────────────────────────────────
+
+export async function fetchInspections(params?: { propertyId?: string; status?: string }) {
+  try {
+    const qs = new URLSearchParams(params as Record<string, string>);
+    return await api<any[]>(`/inspections?${qs.toString()}`);
+  } catch {
+    return [];
+  }
+}
+
+export async function fetchInspection(id: number) {
+  try {
+    return await api<any>(`/inspections/${id}`);
+  } catch {
+    return null;
+  }
+}
+
+export async function createInspection(data: Record<string, unknown>) {
+  return api('/inspections', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export async function completeInspection(id: number) {
+  return api(`/inspections/${id}/complete`, { method: 'POST' });
+}
+
+export async function startInspection(id: number) {
+  return api('/inspections/start', { method: 'POST', body: JSON.stringify({ inspectionId: id }) });
+}
+
+// ── Documents ─────────────────────────────────────────────────────────────────
+
+export async function fetchDocuments(params?: { propertyId?: string; leaseId?: string; category?: string }) {
+  try {
+    const qs = new URLSearchParams(params as Record<string, string>);
+    return await api<any[]>(`/documents?${qs.toString()}`);
+  } catch {
+    return [];
+  }
+}
+
+export async function uploadDocument(formData: FormData) {
+  const BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
+  const res = await fetch(`${BASE}/documents/upload`, {
+    method: 'POST',
+    headers: { 'X-Mock-Role': 'PROPERTY_MANAGER' },
+    body: formData,
+  });
+  if (!res.ok) throw new Error('Upload failed');
+  return res.json();
+}
+
+export function getDocumentDownloadUrl(id: number) {
+  const BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
+  return `${BASE}/documents/${id}/download`;
+}
+
+// ── E-Signatures ──────────────────────────────────────────────────────────────
+
+export async function fetchEsignEnvelopes() {
+  try {
+    return await api<any[]>('/esignature/risk-queue');
+  } catch {
+    return [];
+  }
+}
+
+export async function voidEnvelope(id: string) {
+  return api(`/esignature/envelopes/${id}/void`, { method: 'PATCH' });
+}
+
+export async function resendEnvelope(id: string) {
+  return api(`/esignature/envelopes/${id}/resend`, { method: 'POST' });
+}
+
+export function getSignedDocUrl(id: string) {
+  const BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
+  return `${BASE}/esignature/envelopes/${id}/documents/signed`;
+}
+
+// ── Reports ───────────────────────────────────────────────────────────────────
+
+export async function fetchRentRoll(params?: { propertyId?: string }) {
+  try {
+    const qs = new URLSearchParams(params as Record<string, string>);
+    return await api<any>(`/reporting/rent-roll?${qs.toString()}`);
+  } catch { return null; }
+}
+
+export async function fetchProfitLoss(params?: { propertyId?: string; startDate?: string; endDate?: string }) {
+  try {
+    const qs = new URLSearchParams(params as Record<string, string>);
+    return await api<any>(`/reporting/profit-loss?${qs.toString()}`);
+  } catch { return null; }
+}
+
+export async function fetchVacancyRate(params?: { propertyId?: string }) {
+  try {
+    const qs = new URLSearchParams(params as Record<string, string>);
+    return await api<any>(`/reporting/vacancy-rate?${qs.toString()}`);
+  } catch { return null; }
+}
+
+export async function fetchDelinquencyAnalytics() {
+  try {
+    return await api<any>('/reporting/delinquency-analytics');
+  } catch { return null; }
+}
+
+export async function fetchMaintenanceAnalytics(params?: { propertyId?: string; startDate?: string; endDate?: string }) {
+  try {
+    const qs = new URLSearchParams(params as Record<string, string>);
+    return await api<any>(`/reporting/maintenance-analytics?${qs.toString()}`);
+  } catch { return null; }
+}
+
+export async function fetchPaymentHistory(params?: { propertyId?: string; startDate?: string; endDate?: string }) {
+  try {
+    const qs = new URLSearchParams(params as Record<string, string>);
+    return await api<any>(`/reporting/payment-history?${qs.toString()}`);
+  } catch { return null; }
+}
+
+export async function fetchCapexAnalytics(params?: { propertyId?: string; upgradeCost?: number; rentBump?: number }) {
+  try {
+    const qs = new URLSearchParams(params as Record<string, string>);
+    return await api<any>(`/reporting/analytics/capex?${qs.toString()}`);
+  } catch { return null; }
+}
+
+// fetchAuditLogs is defined above near fetchPortfolioAuditLogs
 

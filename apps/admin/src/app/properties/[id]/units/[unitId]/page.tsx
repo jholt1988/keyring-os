@@ -1,18 +1,24 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
-import { Home, XCircle, Clock } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
+import { Home, XCircle, Clock, RefreshCw } from 'lucide-react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { Button } from '@/components/ui/button';
-import { fetchUnitWorkspace, transitionUnitState, fetchUnitLedger, fetchUnitRepairs, fetchAuditLogs } from '@/lib/copilot-api';
+import { Modal } from '@/components/ui/modal';
+import { fetchUnitWorkspace, transitionUnitState, fetchUnitLedger, fetchUnitRepairs, fetchAuditLogs, updateUnit, createMaintenanceRequest } from '@/lib/copilot-api';
+import { useToast } from '@/components/ui/toast';
 import { TimelineRail } from '@/components/copilot/timeline-rail';
 
 export default function UnitPage() {
   const params = useParams();
   const id = params.id as string;
   const unitId = params.unitId as string;
-  
+  const router = useRouter();
+  const qc = useQueryClient();
+  const { toast } = useToast();
+
   const [unit, setUnit] = useState<any>(null);
   const [rollup, setRollup] = useState<any>(null);
   const [ledger, setLedger] = useState<any>(null);
@@ -21,17 +27,48 @@ export default function UnitPage() {
   const [loading, setLoading] = useState(true);
   const [showRepairsOverlay, setShowRepairsOverlay] = useState(false);
 
+  // Adjust Rent modal
+  const [rentOpen, setRentOpen] = useState(false);
+  const [newRent, setNewRent] = useState('');
+
+  // Add Note modal
+  const [noteOpen, setNoteOpen] = useState(false);
+  const [noteText, setNoteText] = useState('');
+
+  const rentMutation = useMutation({
+    mutationFn: () => updateUnit(id, unitId, { rentAmount: parseFloat(newRent) }),
+    onSuccess: () => {
+      toast('Rent updated');
+      setRentOpen(false);
+      setUnit((u: any) => u ? { ...u, rentAmount: parseFloat(newRent) } : u);
+    },
+    onError: () => toast('Failed to update rent', 'error'),
+  });
+
+  const noteMutation = useMutation({
+    mutationFn: () => createMaintenanceRequest({
+      title: 'Note',
+      description: noteText,
+      category: 'OTHER',
+      priority: 'LOW',
+      unitId,
+      propertyId: id,
+    }),
+    onSuccess: () => { toast('Note added'); setNoteOpen(false); setNoteText(''); },
+    onError: () => toast('Failed to add note', 'error'),
+  });
+
   const loadData = () => {
     if (id && unitId) {
       Promise.all([
         fetchUnitWorkspace(id, unitId),
         fetchUnitRepairs(unitId),
-        fetchAuditLogs(unitId)
+        fetchAuditLogs({ entityId: unitId })
       ]).then(async ([res, reps, logs]) => {
         setUnit(res.unit);
         setRollup(res.rollup);
         setRepairs(reps);
-        setAuditLogs(logs);
+        setAuditLogs(Array.isArray(logs) ? logs : (logs as any).data ?? []);
         if ((res.rollup as any)?.leaseId) {
           const ledgerData = await fetchUnitLedger((res.rollup as any).leaseId);
           setLedger(ledgerData);
@@ -64,6 +101,7 @@ export default function UnitPage() {
   if (loading || !unit || !rollup) return <div className="p-8 text-[#94A3B8]">Loading Unit...</div>;
 
   return (
+    <>
     <WorkspaceShell
       title={`Unit ${unit.name}`}
       subtitle={`${unit.status.toUpperCase()} · Next: Action required`}
@@ -73,9 +111,9 @@ export default function UnitPage() {
       <div className="mb-8 flex gap-3 rounded-[18px] border border-[#1E3350] bg-[#0F1B31] p-4">
         {unit.status === 'TURNING' && <Button size="sm" variant="default" onClick={() => handleAction('Finish Turn')}>Finish Turn</Button>}
         {unit.status === 'VACANT' && <Button size="sm" variant="default" onClick={() => handleAction('Publish Listing')}>Publish Listing</Button>}
-        <Button size="sm" variant="outline">Adjust Rent</Button>
-        <Button size="sm" variant="outline">Schedule Showing</Button>
-        <Button size="sm" variant="outline">Add Note</Button>
+        <Button size="sm" variant="outline" onClick={() => { setNewRent(String(unit?.rentAmount ?? '')); setRentOpen(true); }}>Adjust Rent</Button>
+        <Button size="sm" variant="outline" onClick={() => router.push(`/leasing?unitId=${unitId}`)}>Schedule Showing</Button>
+        <Button size="sm" variant="outline" onClick={() => setNoteOpen(true)}>Add Note</Button>
       </div>
 
       <div className="mb-8 grid gap-8 md:grid-cols-2">
@@ -197,5 +235,39 @@ export default function UnitPage() {
         </div>
       )}
     </WorkspaceShell>
+
+    {/* Adjust Rent modal */}
+    <Modal open={rentOpen} onClose={() => setRentOpen(false)} title="Adjust Rent"
+      footer={<>
+        <Button variant="outline" size="sm" onClick={() => setRentOpen(false)}>Cancel</Button>
+        <Button size="sm" onClick={() => rentMutation.mutate()} disabled={!newRent || isNaN(parseFloat(newRent)) || rentMutation.isPending}>
+          {rentMutation.isPending ? <RefreshCw size={12} className="animate-spin" /> : null} Save
+        </Button>
+      </>}
+    >
+      <div>
+        <label className="mb-1.5 block text-sm font-medium text-[#94A3B8]">New monthly rent ($)</label>
+        <input type="number" value={newRent} onChange={(e) => setNewRent(e.target.value)} min={0} step={0.01}
+          className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] outline-none focus:border-[#3B82F6]" />
+        {unit?.rentAmount && <p className="mt-1 text-xs text-[#94A3B8]">Current: ${unit.rentAmount.toLocaleString()}/mo</p>}
+      </div>
+    </Modal>
+
+    {/* Add Note modal */}
+    <Modal open={noteOpen} onClose={() => setNoteOpen(false)} title="Add Note"
+      footer={<>
+        <Button variant="outline" size="sm" onClick={() => setNoteOpen(false)}>Cancel</Button>
+        <Button size="sm" onClick={() => noteMutation.mutate()} disabled={!noteText.trim() || noteMutation.isPending}>
+          {noteMutation.isPending ? <RefreshCw size={12} className="animate-spin" /> : null} Add Note
+        </Button>
+      </>}
+    >
+      <div>
+        <label className="mb-1.5 block text-sm font-medium text-[#94A3B8]">Note</label>
+        <textarea value={noteText} onChange={(e) => setNoteText(e.target.value)} rows={3}
+          className="w-full resize-none rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] outline-none focus:border-[#3B82F6]" />
+      </div>
+    </Modal>
+    </>
   );
 }

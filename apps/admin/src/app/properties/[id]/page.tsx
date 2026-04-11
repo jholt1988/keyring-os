@@ -24,12 +24,12 @@ export default function PropertyPage() {
       Promise.all([
         fetchPropertyWorkspace(id),
         fetchPropertyRepairs(id),
-        fetchAuditLogs(id)
+        fetchAuditLogs({ entityId: id })
       ]).then(([res, reps, logs]) => {
         setProperty(res.property);
         setRollup(res.rollup);
         setRepairs(reps);
-        setAuditLogs(logs);
+        setAuditLogs(Array.isArray(logs) ? logs : (logs as any).data ?? []);
       });
     }
   }, [id]);
@@ -44,10 +44,10 @@ export default function PropertyPage() {
     >
       {/* Action Shelf */}
       <div className="mb-8 flex gap-3 rounded-[18px] border border-[#1E3350] bg-[#0F1B31] p-4">
-        <Button variant="outline">View Vacancy</Button>
-        <Button variant="outline">Start Renewal</Button>
+        <Button variant="outline" onClick={() => router.push(`/leasing?propertyId=${id}`)}>View Vacancy</Button>
+        <Button variant="outline" onClick={() => router.push(`/renewals?propertyId=${id}`)}>Start Renewal</Button>
         <Button variant="outline" onClick={() => setShowRepairsOverlay(true)}>Open Maintenance</Button>
-        <Button variant="outline">Review Financials</Button>
+        <Button variant="outline" onClick={() => router.push(`/financials?propertyId=${id}`)}>Review Financials</Button>
       </div>
 
       <div className="mb-8">

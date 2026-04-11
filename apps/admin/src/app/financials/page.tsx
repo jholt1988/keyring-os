@@ -1,20 +1,17 @@
 'use client';
 
+import { useState } from 'react';
 import {
-  BookOpen,
-  AlertTriangle,
-  CheckCircle,
-  Clock,
-  FileText,
-  Lock,
-  Unlock,
-  Send,
-  ArrowRightLeft,
-  XCircle,
+  BookOpen, AlertTriangle, CheckCircle, Clock, FileText,
+  Lock, Unlock, Send, ArrowRightLeft, XCircle, RefreshCw,
 } from 'lucide-react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
+import { Modal } from '@/components/ui/modal';
 import { WorkspaceShell, RiskMeter, SectionCard, MetricCard } from '@/components/copilot';
 import { useFinancialsWorkspace } from '@/app/hooks/useWorkspace';
+import { categorizeTransaction, approveOwnerStatement, sendOwnerStatement } from '@/lib/copilot-api';
+import { useToast } from '@/components/ui/toast';
 import type { Severity } from '@keyring/types';
 
 const closeStepLabel: Record<string, string> = {
@@ -33,7 +30,46 @@ const closeStepSeverity = (step: string): Severity => {
 };
 
 export default function FinancialsPage() {
-  const { data, isLoading } = useFinancialsWorkspace();
+  const { data, isLoading, refetch } = useFinancialsWorkspace();
+  const qc = useQueryClient();
+  const { toast } = useToast();
+
+  // Re-categorize modal
+  const [recatTarget, setRecatTarget] = useState<any>(null);
+  const [newCategory, setNewCategory] = useState('');
+
+  // Statement send state
+  const [sendingId, setSendingId] = useState<string | null>(null);
+
+  const invalidate = () => { qc.invalidateQueries({ queryKey: ['workspace', 'financials'] }); refetch(); };
+
+  const acceptMutation = useMutation({
+    mutationFn: (tx: any) => categorizeTransaction(tx.id, tx.category ?? tx.aiCategory),
+    onSuccess: () => { toast('Category accepted'); invalidate(); },
+    onError: () => toast('Failed to accept category', 'error'),
+  });
+
+  const recatMutation = useMutation({
+    mutationFn: () => categorizeTransaction(recatTarget.id, newCategory),
+    onSuccess: () => { toast('Transaction re-categorized'); setRecatTarget(null); setNewCategory(''); invalidate(); },
+    onError: () => toast('Failed to re-categorize', 'error'),
+  });
+
+  const approveMutation = useMutation({
+    mutationFn: (id: string) => approveOwnerStatement(id),
+    onSuccess: () => { toast('Statement approved'); invalidate(); },
+    onError: () => toast('Failed to approve statement', 'error'),
+  });
+
+  const approveAndSendMutation = useMutation({
+    mutationFn: async (id: string) => {
+      setSendingId(id);
+      await approveOwnerStatement(id);
+      await sendOwnerStatement(id);
+    },
+    onSuccess: () => { toast('Statement approved and sent'); setSendingId(null); invalidate(); },
+    onError: () => { toast('Approved but delivery failed — retry send', 'error'); setSendingId(null); invalidate(); },
+  });
 
   if (isLoading) {
     return (
@@ -53,6 +89,7 @@ export default function FinancialsPage() {
   const ownerStatements = (data as any)?.ownerStatements ?? [];
 
   return (
+    <>
     <WorkspaceShell title="Financials" subtitle="Bookkeeping & Reconciliation" icon={BookOpen}>
       <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-5">
         <MetricCard value={metrics.pendingCategorization ?? 0} label="Pending Review" variant="warning" />
@@ -84,9 +121,16 @@ export default function FinancialsPage() {
                   </p>
                   <div className="flex items-center gap-2">
                     {tx.category && (
-                      <Button size="sm" variant="outline"><CheckCircle size={12} /> Accept</Button>
+                      <Button size="sm" variant="outline"
+                        onClick={() => acceptMutation.mutate(tx)}
+                        disabled={acceptMutation.isPending}
+                      >
+                        {acceptMutation.isPending ? <RefreshCw size={12} className="animate-spin" /> : <CheckCircle size={12} />} Accept
+                      </Button>
                     )}
-                    <Button size="sm" variant="outline"><FileText size={12} /> Re-categorize</Button>
+                    <Button size="sm" variant="outline" onClick={() => { setRecatTarget(tx); setNewCategory(tx.category ?? ''); }}>
+                      <FileText size={12} /> Re-categorize
+                    </Button>
                   </div>
                 </div>
               ))}
@@ -229,8 +273,19 @@ export default function FinancialsPage() {
                     </div>
                     {stmt.status === 'DRAFT' && (
                       <div className="mt-2 flex items-center gap-2">
-                        <Button size="sm" variant="outline"><CheckCircle size={12} /> Approve</Button>
-                        <Button size="sm" variant="outline"><Send size={12} /> Approve &amp; Send</Button>
+                        <Button size="sm" variant="outline"
+                          onClick={() => approveMutation.mutate(stmt.id)}
+                          disabled={approveMutation.isPending}
+                        >
+                          {approveMutation.isPending ? <RefreshCw size={12} className="animate-spin" /> : <CheckCircle size={12} />} Approve
+                        </Button>
+                        <Button size="sm" variant="outline"
+                          onClick={() => approveAndSendMutation.mutate(stmt.id)}
+                          disabled={approveAndSendMutation.isPending || sendingId === stmt.id}
+                        >
+                          {sendingId === stmt.id ? <RefreshCw size={12} className="animate-spin" /> : <Send size={12} />}
+                          {sendingId === stmt.id ? 'Sending…' : 'Approve & Send'}
+                        </Button>
                       </div>
                     )}
                   </div>
@@ -263,5 +318,28 @@ export default function FinancialsPage() {
         </SectionCard>
       </div>
     </WorkspaceShell>
+
+      {/* Re-categorize modal */}
+      <Modal open={!!recatTarget} onClose={() => { setRecatTarget(null); setNewCategory(''); }} title="Re-categorize Transaction"
+        footer={<>
+          <Button variant="outline" size="sm" onClick={() => { setRecatTarget(null); setNewCategory(''); }}>Cancel</Button>
+          <Button size="sm" onClick={() => recatMutation.mutate()} disabled={!newCategory.trim() || recatMutation.isPending}>
+            {recatMutation.isPending ? <RefreshCw size={12} className="animate-spin" /> : null} Save
+          </Button>
+        </>}
+      >
+        <div className="space-y-3">
+          <p className="text-sm text-[#94A3B8]">
+            Transaction: <span className="text-[#F8FAFC]">{recatTarget?.description ?? recatTarget?.id}</span>
+          </p>
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-[#94A3B8]">Category <span className="text-[#F43F5E]">*</span></label>
+            <input type="text" value={newCategory} onChange={(e) => setNewCategory(e.target.value)}
+              placeholder="e.g. Maintenance, Utilities, Insurance…"
+              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]" />
+          </div>
+        </div>
+      </Modal>
+    </>
   );
 }
