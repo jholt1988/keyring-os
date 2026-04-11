@@ -2,7 +2,7 @@
 import React, { useMemo } from 'react';
 import type { FeedItem, UserRole } from '@keyring/types';
 import { FeedCard } from './feed-card';
-import { ActuarialFeedCard } from './actuarial-feed-card';
+import { ActuarialFeedCard } from './ActuarialFeedCard';
 import { useCoPilotFeed } from '@/app/hooks/useCoPilotFeed';
 import { Loader2, Inbox, Filter } from 'lucide-react';
 
