@@ -1,8 +1,10 @@
 'use client';
 
-import type { FeedItem, FeedItemType } from '@keyring/types';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { FeedItem, FeedItemType, FeedAction,FeedActionType, MutationAction } from '@keyring/types';
+import { Badge, Button, Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@keyring/ui/components/';
+import { useExecuteFeedAction } from '@/app/hooks/useExecuteAction';
 
 type FeedCardProps = {
   item: FeedItem;
@@ -35,7 +37,43 @@ const actionVariant = (
 };
 
 export function FeedCard({ item, score }: FeedCardProps) {
+  const router = useRouter();
+  const {mutate, isPending} = useExecuteFeedAction();
+  
+  //Local state to manage the confirmation model
+  const [pendingAction, setPendingAction] = useState<FeedAction | null>(null);
+
+  //The Interceptor for destructive actions 
+  const handleActionClick = (action: FeedAction) => {
+    if(action.type  === 'navigation' ){
+      // 1. Handle Navigation Immediately 
+      if(action.openInNewTab){
+        window.open(action.href, '_blank')
+      } else {
+        router.push(action.href)
+      }
+      return; // Stop here, don't show modal for navigation
+    }
+  //if the action is destructive, halt and show modal
+  if(action.type === 'mutation') {
+    if(action.requiresConfirm || action.variant === 'destructive'){
+      setPendingAction(action);
+    }else{
+      //otherwise, execute the optimistic mutation immediately
+      mutate({ intent: action.intent, itemId: item.id });
+    }
+  }
+};
+
+  const confirmAction = () =>{
+    if(pendingAction){
+      mutate({ intent: pendingAction.intent, itemId: item.id });
+      setPendingAction(null);
+    }
+  }
+
   return (
+    <>
     <article className="rounded-xl border bg-card p-4 shadow-sm transition-shadow hover:shadow-md">
       {/* Header row: kind badge + score */}
       <div className="mb-3 flex items-center justify-between gap-2">
@@ -44,7 +82,7 @@ export function FeedCard({ item, score }: FeedCardProps) {
         </Badge>
         {score !== undefined && (
           <span className="text-xs text-muted-foreground tabular-nums">
-            Priority {score}
+            Priority {score?.toFixed(0)}
           </span>
         )}
       </div>
@@ -56,11 +94,13 @@ export function FeedCard({ item, score }: FeedCardProps) {
       {/* Actions */}
       {item.actions.length > 0 && (
         <div className="mt-4 flex flex-wrap gap-2">
-          {item.actions.map((action) => (
+          {item.actions.map((action: FeedAction, idx: number) => (
             <Button
-              key={action.id}
+              key={idx}
               variant={actionVariant(action.variant)}
               size="sm"
+              disabled={isPending}
+              onClick={() => handleActionClick(action)}
             >
               {action.label}
             </Button>
@@ -68,5 +108,29 @@ export function FeedCard({ item, score }: FeedCardProps) {
         </div>
       )}
     </article>
+  
+
+    /* Confirmation Modal */
+    {pendingAction && (
+    <Dialog open={!!pendingAction} onOpenChange={(open:boolean) => !open && setPendingAction(null)}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Confirm Destructive Action</DialogTitle>
+          <DialogDescription>
+            Are you sure you want to "{pendingAction?.label}"? This action cannot be undone.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DialogClose>
+          <Button variant="destructive" onClick={confirmAction} disabled={isPending}>
+            {isPending ? 'Processing...' : 'Confirm Action'}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+)}
+</>
   );
 }

@@ -9,7 +9,7 @@ import type { FeedResponse, UserRole } from '@keyring/types';
  * Throws on non-2xx responses so the caller can handle errors explicitly.
  */
 export async function fetchFeed(role: UserRole): Promise<FeedResponse> {
-  const base = process.env.BACKEND_URL;
+  const base = process.env.NEXT_PUBLIC_API_URL;
   if (!base) {
     throw new Error(
       'BACKEND_URL is not set. Add it to .env.local (see .env.local.example).',
@@ -38,6 +38,8 @@ export async function fetchFeed(role: UserRole): Promise<FeedResponse> {
 
   return res.json() as Promise<FeedResponse>;
 }
+
+
 
 export class FeedApiError extends Error {
   constructor(
