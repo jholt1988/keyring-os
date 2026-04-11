@@ -2,10 +2,11 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, Wallet, Users, Home, Wrench, RefreshCw, AlertTriangle, BookOpen } from 'lucide-react';
+import { Search, Wallet, Users, Home, Wrench, RefreshCw, AlertTriangle, BookOpen, Building2 } from 'lucide-react';
 import type { IntentChip } from '@keyring/types';
 
 const chips: IntentChip[] = [
+  { label: 'Manage Portfolio', icon: 'building', domain: 'portfolio', route: '/portfolio' },
   { label: 'Collect Rent', icon: 'wallet', domain: 'payments', route: '/payments' },
   { label: 'Review Applicants', icon: 'users', domain: 'screening', route: '/screening' },
   { label: 'Fill Vacancies', icon: 'home', domain: 'leasing', route: '/leasing' },
@@ -15,6 +16,7 @@ const chips: IntentChip[] = [
 ];
 
 const iconMap: Record<string, typeof Wallet> = {
+  building: Building2,
   wallet: Wallet,
   users: Users,
   home: Home,
@@ -33,7 +35,8 @@ export function IntentBar() {
     const q = query.toLowerCase().trim();
     if (!q) return;
 
-    if (q.includes('rent') || q.includes('payment') || q.includes('collect')) router.push('/payments');
+    if (q.includes('portfolio') || q.includes('propert') || q.includes('manage')) router.push('/portfolio');
+    else if (q.includes('rent') || q.includes('payment') || q.includes('collect')) router.push('/payments');
     else if (q.includes('applicant') || q.includes('screen') || q.includes('review')) router.push('/screening');
     else if (q.includes('vacanc') || q.includes('lease') || q.includes('fill')) router.push('/leasing');
     else if (q.includes('repair') || q.includes('mainten') || q.includes('fix')) router.push('/repairs');

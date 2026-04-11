@@ -113,7 +113,7 @@ export default function BriefingPage() {
                   <DecisionCard
                     key={d.id}
                     decision={d}
-                    onExecute={(endpoint, method, body) => executeMutation.mutateAsync({ endpoint, method, body })}
+                    onExecute={async (endpoint, method, body) => { await executeMutation.mutateAsync({ endpoint, method, body }); }}
                     onDismiss={dismissDecision}
                   />
                 ))}

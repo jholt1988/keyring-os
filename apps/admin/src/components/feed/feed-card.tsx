@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { FeedItem, FeedItemType, FeedAction,FeedActionType, MutationAction } from '@keyring/types';
-import { Badge, Button, Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@keyring/ui/components/';
+import { FeedItem, FeedItemType, FeedAction, MutationAction } from '@keyring/types';
+import { Badge, Button, Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui';
 import { useExecuteFeedAction } from '@/app/hooks/useExecuteAction';
 
 type FeedCardProps = {

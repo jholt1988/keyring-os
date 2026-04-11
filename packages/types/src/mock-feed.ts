@@ -20,8 +20,8 @@ export const mockFeed: FeedItem[] = [
       owner: 5,
     },
     actions: [
-      { id: 'a1', type: 'mutation', label: 'Schedule Repair', intent: 'schedule_repair' },
-      { id: 'a2', type: 'navigation', label: 'Review', intent: 'review_repair_risk', variant: 'secondary' },
+      { id: 'a1', type: 'mutation', label: 'Schedule Repair', intent: 'schedule_repair', variant: 'default' },
+      { id: 'a2', type: 'navigation', label: 'Review', intent: 'review_repair_risk', variant: 'secondary', href: '#' },
     ],
   },
   {
@@ -40,8 +40,8 @@ export const mockFeed: FeedItem[] = [
       owner: 10,
     },
     actions: [
-      { id: 'a3', type: 'mutation', label: 'Send Notice', intent: 'send_notice' },
-      { id: 'a4', type: 'navigation', label: 'Message Tenant', intent: 'message_tenant', variant: 'secondary' },
+      { id: 'a3', type: 'mutation', label: 'Send Notice', intent: 'send_notice', variant: 'default' },
+      { id: 'a4', type: 'navigation', label: 'Message Tenant', intent: 'message_tenant', variant: 'secondary', href: '#' },
     ],
   },
   {
@@ -59,8 +59,8 @@ export const mockFeed: FeedItem[] = [
       property_manager: 10,
     },
     actions: [
-      { id: 'a5', type: 'mutation', label: 'Approve w/ Conditions', intent: 'conditional_approve' },
-      { id: 'a6', type: 'navigation', label: 'Deny', intent: 'deny', variant: 'destructive' },
+      { id: 'a5', type: 'mutation', label: 'Approve w/ Conditions', intent: 'conditional_approve', variant: 'default' },
+      { id: 'a6', type: 'navigation', label: 'Deny', intent: 'deny', variant: 'destructive', href: '#' },
     ],
   },
   {
@@ -80,8 +80,8 @@ export const mockFeed: FeedItem[] = [
       property_manager: 10,
     },
     actions: [
-      { id: 'a7', type: 'mutation', label: 'Start Renewal', intent: 'start_renewal' },
-      { id: 'a8', type: 'navigation', label: 'Prepare Listing', intent: 'prepare_listing', variant: 'secondary' },
+      { id: 'a7', type: 'mutation', label: 'Start Renewal', intent: 'start_renewal', variant: 'default' },
+      { id: 'a8', type: 'navigation', label: 'Prepare Listing', intent: 'prepare_listing', variant: 'secondary', href: '#' },
     ],
   },
   {
@@ -99,7 +99,7 @@ export const mockFeed: FeedItem[] = [
       property_manager: 10,
     },
     actions: [
-      { id: 'a9', type: 'navigation', label: 'Open Details', intent: 'open_event' },
+      { id: 'a9', type: 'navigation', label: 'Open Details', intent: 'open_event', variant: 'default', href: '#' },
     ],
   },
 ];
