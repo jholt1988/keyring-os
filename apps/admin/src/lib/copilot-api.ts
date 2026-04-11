@@ -197,3 +197,59 @@ export async function fetchFinancialsWorkspace() {
     chartOfAccounts: chartOfAccounts.status === 'fulfilled' ? chartOfAccounts.value : [],
   };
 }
+
+export async function fetchPortfolioWorkspace() {
+  try {
+    const propsRes = await api<any>('/properties');
+    const data = propsRes.data || propsRes || [];
+    
+    const enriched = await Promise.all(data.map(async (p: any) => {
+      const rollupRes = await api<any>(`/properties/${p.id}/rollup`).catch(() => ({}));
+      return {
+        id: p.id,
+        name: p.name,
+        address: p.address,
+        ...rollupRes
+      };
+    }));
+    return enriched;
+  } catch (e) {
+    console.error(e);
+    return [];
+  }
+}
+
+export async function fetchPropertyWorkspace(id: string) {
+  const [property, rollup] = await Promise.allSettled([
+    api(`/properties/${id}`),
+    api(`/properties/${id}/rollup`),
+  ]);
+  return {
+    property: property.status === 'fulfilled' ? property.value : null,
+    rollup: rollup.status === 'fulfilled' ? rollup.value : null,
+  };
+}
+
+export async function fetchUnitWorkspace(propertyId: string, unitId: string) {
+  const [property, rollup] = await Promise.allSettled([
+    api(`/properties/${propertyId}`),
+    api(`/properties/units/${unitId}/rollup`),
+  ]);
+  
+  let unit = null;
+  if (property.status === 'fulfilled' && (property.value as any)?.units) {
+    unit = ((property.value as any).units).find((u: any) => u.id === unitId);
+  }
+  
+  return {
+    unit,
+    rollup: rollup.status === 'fulfilled' ? rollup.value : null,
+  };
+}
+
+export async function transitionUnitState(unitId: string, status: string) {
+  return api(`/properties/units/${unitId}/transition`, {
+    method: 'POST',
+    body: JSON.stringify({ status })
+  });
+}

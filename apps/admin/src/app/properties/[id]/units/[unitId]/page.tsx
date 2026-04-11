@@ -5,24 +5,48 @@ import { useParams } from 'next/navigation';
 import { Home } from 'lucide-react';
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { Button } from '@/components/ui/button';
-
+import { fetchUnitWorkspace, transitionUnitState } from '@/lib/copilot-api';
 
 export default function UnitPage() {
   const params = useParams();
-  const { id, unitId } = params;
+  const id = params.id as string;
+  const unitId = params.unitId as string;
   
   const [unit, setUnit] = useState<any>(null);
   const [rollup, setRollup] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  const loadData = () => {
+    if (id && unitId) {
+      fetchUnitWorkspace(id, unitId).then((res) => {
+        setUnit(res.unit);
+        setRollup(res.rollup);
+        setLoading(false);
+      });
+    }
+  };
 
   useEffect(() => {
-    // Mock loading
-    setTimeout(() => {
-      setUnit({ name: '101', status: 'VACANT', bedrooms: 2, bathrooms: 1 });
-      setRollup({ revenueYtd: 12000, expenses: 2000, net: 10000, activeIssues: 0 });
-    }, 1000);
+    loadData();
   }, [id, unitId]);
 
-  if (!unit || !rollup) return <div className="text-muted-foreground p-8">Loading Unit...</div>;
+  const handleAction = async (action: string) => {
+    let newState = '';
+    switch (action) {
+      case 'Finish Turn': newState = 'VACANT'; break;
+      case 'Publish Listing': newState = 'LISTED'; break;
+    }
+    if (newState) {
+      try {
+        await transitionUnitState(unitId, newState);
+        loadData(); // Reload data to show updated state
+      } catch (e) {
+        console.error('Failed to transition state', e);
+      }
+    }
+  };
+
+  if (loading || !unit || !rollup) return <div className="text-muted-foreground p-8">Loading Unit...</div>;
 
   return (
     <WorkspaceShell
@@ -31,9 +55,9 @@ export default function UnitPage() {
       icon={Home}
     >
       <div className="flex gap-4 mb-8 bg-muted/50 p-4 rounded-xl border border-border">
-        <Button size="sm" variant="default">Finish Turn</Button>
+        {unit.status === 'TURNING' && <Button size="sm" variant="default" onClick={() => handleAction('Finish Turn')}>Finish Turn</Button>}
+        {unit.status === 'VACANT' && <Button size="sm" variant="default" onClick={() => handleAction('Publish Listing')}>Publish Listing</Button>}
         <Button size="sm" variant="outline">Adjust Rent</Button>
-        <Button size="sm" variant="outline">Publish Listing</Button>
         <Button size="sm" variant="outline">Schedule Showing</Button>
         <Button size="sm" variant="outline">Add Note</Button>
       </div>
@@ -55,20 +79,20 @@ export default function UnitPage() {
         <div className="rounded-xl border bg-card text-card-foreground shadow p-4">
           <h4 className="text-sm text-muted-foreground mb-4">STATUS PANEL</h4>
           <p className="text-sm"><span className="text-muted-foreground">Occupancy:</span> {unit.status}</p>
-          <p className="text-sm"><span className="text-muted-foreground">Beds/Baths:</span> {unit.bedrooms} / {unit.bathrooms}</p>
+          <p className="text-sm"><span className="text-muted-foreground">Beds/Baths:</span> {unit.bedrooms || 0} / {unit.bathrooms || 0}</p>
         </div>
 
         <div className="rounded-xl border bg-card text-card-foreground shadow p-4">
           <h4 className="text-sm text-muted-foreground mb-4">FINANCIALS (YTD)</h4>
-          <p className="text-sm"><span className="text-muted-foreground">Revenue:</span> ${rollup.revenueYtd}</p>
-          <p className="text-sm"><span className="text-muted-foreground">Expenses:</span> ${rollup.expenses}</p>
+          <p className="text-sm"><span className="text-muted-foreground">Revenue:</span> ${rollup.revenueYtd || 0}</p>
+          <p className="text-sm"><span className="text-muted-foreground">Expenses:</span> ${rollup.expenses || 0}</p>
           <div className="my-2 h-px bg-border w-full" />
-          <p className="text-sm font-bold text-primary">Net: ${rollup.net}</p>
+          <p className="text-sm font-bold text-primary">Net: ${rollup.net || 0}</p>
         </div>
 
         <div className="rounded-xl border bg-card text-card-foreground shadow p-4">
           <h4 className="text-sm text-muted-foreground mb-4">MAINTENANCE</h4>
-          <p className="text-sm"><span className="text-muted-foreground">Active Issues:</span> {rollup.activeIssues}</p>
+          <p className="text-sm"><span className="text-muted-foreground">Active Issues:</span> {rollup.activeIssues || 0}</p>
           <Button size="sm" variant="ghost" className="mt-2 text-xs text-destructive">View Open Work Orders</Button>
         </div>
       </div>
