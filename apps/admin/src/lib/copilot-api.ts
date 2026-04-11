@@ -230,6 +230,14 @@ export async function fetchPropertyWorkspace(id: string) {
   };
 }
 
+export async function fetchUnitLedger(leaseId: string) {
+  try {
+    return await api(`/payments/ledger/accounts/${leaseId}`);
+  } catch {
+    return null;
+  }
+}
+
 export async function fetchUnitWorkspace(propertyId: string, unitId: string) {
   const [property, rollup] = await Promise.allSettled([
     api(`/properties/${propertyId}`),
