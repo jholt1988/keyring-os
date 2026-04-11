@@ -4,9 +4,9 @@ import { cn } from '@/lib/utils';
 type Verdict = 'approve' | 'conditional' | 'deny';
 
 const config: Record<Verdict, { icon: typeof CheckCircle; label: string; cls: string }> = {
-  approve: { icon: CheckCircle, label: 'APPROVE', cls: 'bg-green-500/10 text-green-600 border-green-500/20 dark:text-green-400' },
-  conditional: { icon: AlertTriangle, label: 'CONDITIONAL', cls: 'bg-amber-500/10 text-amber-600 border-amber-500/20 dark:text-amber-400' },
-  deny: { icon: XCircle, label: 'DENY', cls: 'bg-red-500/10 text-red-600 border-red-500/20 dark:text-red-400' },
+  approve: { icon: CheckCircle, label: 'APPROVE', cls: 'bg-[#10B981]/10 text-[#10B981] border-[#10B981]/20' },
+  conditional: { icon: AlertTriangle, label: 'CONDITIONAL', cls: 'bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20' },
+  deny: { icon: XCircle, label: 'DENY', cls: 'bg-[#F43F5E]/10 text-[#F43F5E] border-[#F43F5E]/20' },
 };
 
 export function PolicyBadge({ verdict, className }: { verdict: Verdict; className?: string }) {

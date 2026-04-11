@@ -6,7 +6,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const dialogContentVariants = cva(
-  "fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 border bg-white p-6 shadow-lg duration-200",
+  "fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-[24px] border border-[#1E3350] bg-[#13233C] p-6 shadow-[0_8px_30px_rgba(2,6,23,0.40)] duration-200",
   {
     variants: {
       size: {
@@ -34,7 +34,7 @@ const DialogContent = React.forwardRef<
   
   return (
     <DialogPortal>
-      <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/50" />
+      <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-[#07111F]/80 backdrop-blur-sm" />
       <DialogPrimitive.Content
         {...render.props as React.HTMLAttributes<HTMLDivElement>}
         className={cn(dialogContentVariants({ size }), className)}
@@ -60,7 +60,7 @@ const DialogTitle = React.forwardRef<
   return (
     <DialogPrimitive.Title
       {...render.props as React.HTMLAttributes<HTMLHeadingElement>}
-      className={cn("text-lg font-semibold leading-none tracking-tight", className)}
+      className={cn("font-[family-name:var(--font-space)] text-lg font-semibold leading-none tracking-tight text-[#F8FAFC]", className)}
     />
   )
 })
@@ -73,7 +73,7 @@ const DialogDescription = React.forwardRef<
   return (
     <DialogPrimitive.Description
       {...render.props as React.HTMLAttributes<HTMLParagraphElement>}
-      className={cn("text-sm text-gray-500", className)}
+      className={cn("text-sm text-[#94A3B8]", className)}
     />
   )
 })

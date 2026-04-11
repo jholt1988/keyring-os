@@ -7,9 +7,9 @@ import type { Decision, Urgency } from '@keyring/types';
 import { cn } from '@/lib/utils';
 
 const urgencyStyle: Record<Urgency, { text: string; cls: string }> = {
-  immediate: { text: 'NOW', cls: 'text-red-500 bg-red-500/10' },
-  today: { text: 'TODAY', cls: 'text-amber-500 bg-amber-500/10' },
-  this_week: { text: 'THIS WEEK', cls: 'text-muted-foreground bg-muted' },
+  immediate: { text: 'NOW', cls: 'text-[#F43F5E] bg-[#F43F5E]/10 border border-[#F43F5E]/20' },
+  today: { text: 'TODAY', cls: 'text-[#F59E0B] bg-[#F59E0B]/10 border border-[#F59E0B]/20' },
+  this_week: { text: 'THIS WEEK', cls: 'text-[#94A3B8] bg-[#0F1B31] border border-[#1E3350]' },
 };
 
 const variantMap = (v?: string): 'default' | 'destructive' | 'outline' => {
@@ -46,33 +46,33 @@ export function DecisionCard({ decision, onExecute, onDismiss }: DecisionCardPro
 
   if (result === 'success') {
     return (
-      <div className="rounded-lg border border-green-500/20 bg-green-500/5 p-4 text-sm text-green-600 dark:text-green-400">
+      <div className="rounded-[14px] border border-[#10B981]/20 bg-[#10B981]/5 p-4 text-sm text-[#10B981]">
         Action completed for: {decision.title}
       </div>
     );
   }
 
   return (
-    <div className="rounded-lg border bg-card p-4 transition-colors hover:border-primary/20">
+    <div className="rounded-[24px] border border-[#1E3350] bg-[#13233C] p-5 transition-all duration-[180ms] hover:border-[#2B4A73]">
       <div className="mb-2 flex items-center gap-2">
-        <span className={cn('rounded px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider', urg.cls)}>
+        <span className={cn('rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider', urg.cls)}>
           {urg.text}
         </span>
-        <span className="font-mono text-[10px] uppercase text-muted-foreground">{decision.domain}</span>
+        <span className="font-mono text-[10px] uppercase text-[#94A3B8]">{decision.domain}</span>
       </div>
 
-      <h4 className="text-sm font-semibold">{decision.title}</h4>
-      <p className="mb-3 text-xs leading-relaxed text-muted-foreground">{decision.context}</p>
+      <h4 className="text-sm font-semibold text-[#F8FAFC]">{decision.title}</h4>
+      <p className="mb-3 text-xs leading-relaxed text-[#94A3B8]">{decision.context}</p>
 
       {decision.aiRecommendation && (
-        <div className="mb-3 flex items-start gap-2 rounded border border-violet-500/10 bg-violet-500/5 p-2">
-          <Brain size={14} className="mt-0.5 shrink-0 text-violet-500" />
-          <p className="text-xs text-muted-foreground">{decision.aiRecommendation}</p>
+        <div className="mb-3 flex items-start gap-2 rounded-[14px] border border-[#22D3EE]/10 bg-[#22D3EE]/5 p-3">
+          <Brain size={14} className="mt-0.5 shrink-0 text-[#22D3EE]" />
+          <p className="text-xs text-[#CBD5E1]">{decision.aiRecommendation}</p>
         </div>
       )}
 
       {result === 'error' && (
-        <p className="mb-2 text-xs text-destructive">Action failed. Try again.</p>
+        <p className="mb-2 text-xs text-[#F43F5E]">Action failed. Try again.</p>
       )}
 
       <div className="flex flex-wrap items-center gap-2">

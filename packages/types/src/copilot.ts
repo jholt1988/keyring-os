@@ -1,5 +1,5 @@
 export type Severity = 'critical' | 'high' | 'medium' | 'low';
-export type Domain = 'portfolio' | 'payments' | 'leasing' | 'screening' | 'repairs' | 'renewals' | 'financials';
+export type Domain = 'portfolio' | 'payments' | 'leasing' | 'screening' | 'repairs' | 'renewals' | 'financials' | 'workflows';
 export type Urgency = 'immediate' | 'today' | 'this_week';
 
 export interface Signal {

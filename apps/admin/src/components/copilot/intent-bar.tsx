@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, Wallet, Users, Home, Wrench, RefreshCw, AlertTriangle, BookOpen, Building2 } from 'lucide-react';
+import { Search, Wallet, Users, Home, Wrench, RefreshCw, AlertTriangle, BookOpen, Building2, Settings } from 'lucide-react';
 import type { IntentChip } from '@keyring/types';
 
 const chips: IntentChip[] = [
@@ -13,6 +13,7 @@ const chips: IntentChip[] = [
   { label: 'Fix Risks', icon: 'wrench', domain: 'repairs', route: '/repairs' },
   { label: 'Prepare Renewals', icon: 'refresh', domain: 'renewals', route: '/renewals' },
   { label: 'Close Books', icon: 'book', domain: 'financials', route: '/financials' },
+  { label: 'Manage Workflows', icon: 'settings', domain: 'workflows', route: '/workflows' },
 ];
 
 const iconMap: Record<string, typeof Wallet> = {
@@ -24,6 +25,18 @@ const iconMap: Record<string, typeof Wallet> = {
   refresh: RefreshCw,
   alert: AlertTriangle,
   book: BookOpen,
+  settings: Settings,
+};
+
+const moduleColor: Record<string, string> = {
+  portfolio: '#3B82F6',
+  payments: '#10B981',
+  screening: '#F59E0B',
+  leasing: '#8B5CF6',
+  repairs: '#14B8A6',
+  renewals: '#60A5FA',
+  financials: '#22C55E',
+  workflows: '#22D3EE',
 };
 
 export function IntentBar() {
@@ -42,6 +55,7 @@ export function IntentBar() {
     else if (q.includes('repair') || q.includes('mainten') || q.includes('fix')) router.push('/repairs');
     else if (q.includes('renew') || q.includes('expir')) router.push('/renewals');
     else if (q.includes('book') || q.includes('reconcil') || q.includes('financ') || q.includes('close') || q.includes('statement') || q.includes('journal') || q.includes('ledger')) router.push('/financials');
+    else if (q.includes('workflow') || q.includes('ai') || q.includes('automat')) router.push('/workflows');
 
     setQuery('');
   };
@@ -49,26 +63,27 @@ export function IntentBar() {
   return (
     <div className="mb-8">
       <form onSubmit={handleSubmit} className="relative mb-4">
-        <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+        <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="What do you need to do? (e.g. collect rent, review applicants...)"
-          className="w-full rounded-xl border bg-muted/50 py-3 pl-12 pr-4 text-sm placeholder:text-muted-foreground focus:border-primary/50 focus:bg-background focus:outline-none"
+          className="w-full rounded-[18px] border border-[#1E3350] bg-[#0F1B31] py-3.5 pl-12 pr-4 text-sm text-[#F8FAFC] placeholder:text-[#94A3B8] transition-all duration-[180ms] focus:border-[#60A5FA] focus:bg-[#13233C] focus:outline-none focus:ring-1 focus:ring-[#60A5FA]/30"
         />
       </form>
 
       <div className="flex flex-wrap items-center gap-2">
         {chips.map((chip) => {
           const Icon = iconMap[chip.icon] || AlertTriangle;
+          const color = moduleColor[chip.domain] || '#3B82F6';
           return (
             <button
               key={chip.label}
               onClick={() => router.push(chip.route)}
-              className="inline-flex items-center gap-2 rounded-full border bg-muted/50 px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/20 hover:bg-muted hover:text-foreground"
+              className="group inline-flex items-center gap-2 rounded-full border border-[#1E3350] bg-[#0F1B31] px-3.5 py-2 text-xs font-medium text-[#94A3B8] transition-all duration-[180ms] hover:border-[#2B4A73] hover:bg-[#17304E] hover:text-[#F8FAFC]"
             >
-              <Icon size={14} />
+              <Icon size={14} style={{ color }} />
               {chip.label}
             </button>
           );

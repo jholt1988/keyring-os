@@ -17,7 +17,6 @@ const kindLabel: Record<FeedItemType, string> = {
   scheduled_event: 'Scheduled',
 };
 
-// Maps feed item kind to shadcn Badge variant
 const kindVariant: Record<
   FeedItemType,
   'destructive' | 'default' | 'secondary'
@@ -27,7 +26,6 @@ const kindVariant: Record<
   scheduled_event: 'secondary',
 };
 
-// Maps FeedAction.variant to shadcn Button variant
 const actionVariant = (
   v?: string,
 ): 'default' | 'outline' | 'destructive' | 'secondary' => {
@@ -39,27 +37,21 @@ const actionVariant = (
 export function FeedCard({ item, score }: FeedCardProps) {
   const router = useRouter();
   const {mutate, isPending} = useExecuteFeedAction();
-  
-  //Local state to manage the confirmation model
   const [pendingAction, setPendingAction] = useState<FeedAction | null>(null);
 
-  //The Interceptor for destructive actions 
   const handleActionClick = (action: FeedAction) => {
     if(action.type  === 'navigation' ){
-      // 1. Handle Navigation Immediately 
       if(action.openInNewTab){
         window.open(action.href, '_blank')
       } else {
         router.push(action.href)
       }
-      return; // Stop here, don't show modal for navigation
+      return;
     }
-  //if the action is destructive, halt and show modal
   if(action.type === 'mutation') {
     if(action.requiresConfirm || action.variant === 'destructive'){
       setPendingAction(action);
     }else{
-      //otherwise, execute the optimistic mutation immediately
       mutate({ intent: action.intent, itemId: item.id });
     }
   }
@@ -74,24 +66,21 @@ export function FeedCard({ item, score }: FeedCardProps) {
 
   return (
     <>
-    <article className="rounded-xl border bg-card p-4 shadow-sm transition-shadow hover:shadow-md">
-      {/* Header row: kind badge + score */}
+    <article className="rounded-[24px] border border-[#1E3350] bg-[#13233C] p-5 shadow-[0_8px_30px_rgba(2,6,23,0.20)] transition-all duration-[180ms] hover:border-[#2B4A73]">
       <div className="mb-3 flex items-center justify-between gap-2">
         <Badge variant={kindVariant[item.kind]}>
           {kindLabel[item.kind]}
         </Badge>
         {score !== undefined && (
-          <span className="text-xs text-muted-foreground tabular-nums">
+          <span className="font-mono text-xs text-[#94A3B8] tabular-nums">
             Priority {score?.toFixed(0)}
           </span>
         )}
       </div>
 
-      {/* Title + summary */}
-      <h3 className="text-sm font-semibold leading-snug">{item.title}</h3>
-      <p className="mt-1 text-sm text-muted-foreground">{item.summary}</p>
+      <h3 className="text-sm font-semibold leading-snug text-[#F8FAFC]">{item.title}</h3>
+      <p className="mt-1 text-sm text-[#94A3B8]">{item.summary}</p>
 
-      {/* Actions */}
       {item.actions.length > 0 && (
         <div className="mt-4 flex flex-wrap gap-2">
           {item.actions.map((action: FeedAction, idx: number) => (
@@ -108,16 +97,14 @@ export function FeedCard({ item, score }: FeedCardProps) {
         </div>
       )}
     </article>
-  
 
-    /* Confirmation Modal */
     {pendingAction && (
     <Dialog open={!!pendingAction} onOpenChange={(open:boolean) => !open && setPendingAction(null)}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Confirm Destructive Action</DialogTitle>
           <DialogDescription>
-            Are you sure you want to "{pendingAction?.label}"? This action cannot be undone.
+            Are you sure you want to &quot;{pendingAction?.label}&quot;? This action cannot be undone.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>

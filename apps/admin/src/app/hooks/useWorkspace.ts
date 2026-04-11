@@ -6,6 +6,9 @@ import {
   fetchRenewalsWorkspace,
   fetchScreeningWorkspace,
   fetchFinancialsWorkspace,
+  fetchTenants,
+  fetchTenantWorkspace,
+  fetchTenantActivity,
 } from '@/lib/copilot-api';
 
 export function usePaymentsWorkspace() {
@@ -30,4 +33,27 @@ export function useScreeningWorkspace() {
 
 export function useFinancialsWorkspace() {
   return useQuery({ queryKey: ['workspace', 'financials'], queryFn: fetchFinancialsWorkspace });
+}
+
+export function useTenantsIndex(params?: Record<string, string>) {
+  return useQuery({
+    queryKey: ['tenants', 'index', params],
+    queryFn: () => fetchTenants(params),
+  });
+}
+
+export function useTenantWorkspace(id: string) {
+  return useQuery({
+    queryKey: ['tenants', 'workspace', id],
+    queryFn: () => fetchTenantWorkspace(id),
+    enabled: !!id,
+  });
+}
+
+export function useTenantActivity(id: string) {
+  return useQuery({
+    queryKey: ['tenants', 'activity', id],
+    queryFn: () => fetchTenantActivity(id),
+    enabled: !!id,
+  });
 }
