@@ -348,6 +348,12 @@ export interface Conversation {
   messages?: Message[];
 }
 
+export interface PropertyManagerOption {
+  id: string;
+  username?: string;
+  role: string;
+}
+
 export interface Message {
   id: number;
   content: string;
@@ -379,11 +385,20 @@ export async function sendMessage(conversationId: number, content: string): Prom
   });
 }
 
+export async function fetchPropertyManagers(): Promise<PropertyManagerOption[]> {
+  try {
+    return await api<PropertyManagerOption[]>('/messaging/property-managers');
+  } catch {
+    return [];
+  }
+}
+
 export async function createConversation(data: {
-  subject: string;
+  subject?: string;
   content: string;
+  recipientId: string;
 }): Promise<Conversation> {
-  return api<Conversation>('/messaging/conversations', {
+  return api<Conversation>('/messaging/threads', {
     method: 'POST',
     body: JSON.stringify(data),
   });
@@ -408,7 +423,11 @@ export interface InspectionRoom {
 
 export async function fetchInspections(): Promise<Inspection[]> {
   try {
-    return await api<Inspection[]>('/inspections');
+    const data = await api<
+      Inspection[] | { data?: Inspection[]; items?: Inspection[]; inspections?: Inspection[] }
+    >('/inspections');
+    if (Array.isArray(data)) return data;
+    return data.data ?? data.items ?? data.inspections ?? [];
   } catch {
     return [];
   }

@@ -2,26 +2,31 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { Send, RefreshCw } from 'lucide-react';
 import { WorkspaceShell } from '@/components/shell/workspace-shell';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { createConversation } from '@/lib/tenant-api';
+import { createConversation, fetchPropertyManagers } from '@/lib/tenant-api';
 
 export default function NewMessagePage() {
   const router = useRouter();
+  const { data: propertyManagers = [], isLoading: loadingManagers } = useQuery({
+    queryKey: ['property-managers'],
+    queryFn: fetchPropertyManagers,
+  });
   const [subject, setSubject] = useState('');
   const [content, setContent] = useState('');
+  const [recipientId, setRecipientId] = useState('');
 
   const mutation = useMutation({
-    mutationFn: () => createConversation({ subject, content }),
+    mutationFn: () => createConversation({ subject, content, recipientId }),
     onSuccess: (conv) => {
       router.push(`/messages/${conv.id}`);
     },
   });
 
-  const canSubmit = subject.trim().length > 0 && content.trim().length > 0;
+  const canSubmit = recipientId.trim().length > 0 && content.trim().length > 0;
 
   return (
     <WorkspaceShell title="New Message" backHref="/messages" backLabel="Messages">
@@ -31,6 +36,24 @@ export default function NewMessagePage() {
         </CardHeader>
         <CardContent>
           <div className="flex flex-col gap-4">
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-[#94A3B8]">Recipient</label>
+              <select
+                value={recipientId}
+                onChange={(e) => setRecipientId(e.target.value)}
+                disabled={loadingManagers || mutation.isPending}
+                className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] outline-none transition-colors focus:border-[#3B82F6]"
+              >
+                <option value="">
+                  {loadingManagers ? 'Loading recipients…' : 'Select a property manager'}
+                </option>
+                {propertyManagers.map((manager) => (
+                  <option key={manager.id} value={manager.id}>
+                    {manager.username?.trim() || manager.id}
+                  </option>
+                ))}
+              </select>
+            </div>
             <div>
               <label className="mb-1.5 block text-sm font-medium text-[#94A3B8]">Subject</label>
               <input
@@ -51,6 +74,11 @@ export default function NewMessagePage() {
                 className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#94A3B8] outline-none transition-colors focus:border-[#3B82F6] resize-none"
               />
             </div>
+            {!loadingManagers && propertyManagers.length === 0 && (
+              <p className="text-xs text-[#F43F5E]">
+                No property managers are currently available to message.
+              </p>
+            )}
             {mutation.isError && (
               <p className="text-xs text-[#F43F5E]">Failed to send. Please try again.</p>
             )}
