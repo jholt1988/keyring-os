@@ -172,7 +172,7 @@ export async function fetchScreeningWorkspace() {
 
 export async function fetchPolicyEvaluation(applicationId: string): Promise<PolicyEvaluation | null> {
   try {
-    return await api<PolicyEvaluation>(`/screening/${applicationId}/policy-evaluation`);
+    return await api<PolicyEvaluation>(`/rental-applications/${applicationId}/policy-evaluation`);
   } catch {
     return null;
   }
@@ -777,4 +777,3 @@ export async function fetchCapexAnalytics(params?: { propertyId?: string; upgrad
 }
 
 // fetchAuditLogs is defined above near fetchPortfolioAuditLogs
-
