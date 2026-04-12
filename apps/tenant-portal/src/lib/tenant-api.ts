@@ -168,11 +168,51 @@ export interface LedgerEntry {
   balance: number;
 }
 
+export interface AutopayPaymentMethod {
+  id: number;
+  userId: string;
+  type: string;
+  provider: string;
+  providerCustomerId?: string | null;
+  providerPaymentMethodId?: string | null;
+  last4?: string | null;
+  brand?: string | null;
+  expMonth?: number | null;
+  expYear?: number | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface AutopayEnrollment {
-  id?: number;
+  id: number;
   leaseId: string;
-  isActive: boolean;
-  paymentMethodId?: number;
+  paymentMethodId: number;
+  active: boolean;
+  maxAmount?: number | null;
+  createdAt: string;
+  updatedAt: string;
+  paymentMethod?: AutopayPaymentMethod | null;
+}
+
+export interface TenantAutopayResponse {
+  leaseId: string;
+  enrollment: AutopayEnrollment | null;
+}
+
+export interface DisableAutopayResponse {
+  leaseId: string;
+  active: false;
+}
+
+export interface PaymentMethodOption {
+  id: number;
+  userId: string;
+  type?: string;
+  provider?: string;
+  last4?: string | null;
+  brand?: string | null;
+  expMonth?: number | null;
+  expYear?: number | null;
 }
 
 export async function fetchPayments(): Promise<Payment[]> {
@@ -202,23 +242,35 @@ export async function fetchLedger(leaseId: string): Promise<LedgerEntry[]> {
   }
 }
 
-export async function fetchAutopay(): Promise<AutopayEnrollment | null> {
+export async function fetchAutopay(): Promise<TenantAutopayResponse | null> {
   try {
-    return await api<AutopayEnrollment>('/billing/autopay');
+    return await api<TenantAutopayResponse>('/billing/autopay');
   } catch {
     return null;
   }
 }
 
-export async function enableAutopay(leaseId: string, paymentMethodId?: number): Promise<void> {
-  await api('/billing/autopay', {
+export async function enableAutopay(
+  leaseId: string,
+  paymentMethodId: number,
+  maxAmount?: number,
+): Promise<AutopayEnrollment> {
+  return api<AutopayEnrollment>('/billing/autopay', {
     method: 'POST',
-    body: JSON.stringify({ leaseId, paymentMethodId }),
+    body: JSON.stringify({ leaseId, paymentMethodId, maxAmount }),
   });
 }
 
-export async function disableAutopay(leaseId: string): Promise<void> {
-  await api(`/billing/autopay/${leaseId}/disable`, { method: 'PATCH' });
+export async function disableAutopay(leaseId: string): Promise<DisableAutopayResponse> {
+  return api<DisableAutopayResponse>(`/billing/autopay/${leaseId}/disable`, { method: 'PATCH' });
+}
+
+export async function fetchPaymentMethods(): Promise<PaymentMethodOption[]> {
+  try {
+    return await api<PaymentMethodOption[]>('/payments/payment-methods');
+  } catch {
+    return [];
+  }
 }
 
 export async function createStripeCheckoutSession(data: {

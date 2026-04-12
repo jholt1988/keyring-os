@@ -52,10 +52,9 @@ export function useTenantFeed() {
     retry: 1,
   });
 
-  // Fallback data sources — only fetched if primary fails or is empty
-  const needsFallback =
-    !primaryQuery.isLoading &&
-    (primaryQuery.isError || (primaryQuery.data?.items?.length ?? 0) === 0);
+  // Fallback data sources — only fetched if the primary request fails.
+  // Empty feeds should remain empty rather than masking backend issues or semantics.
+  const needsFallback = !primaryQuery.isLoading && primaryQuery.isError;
 
   const dashboardQuery = useQuery({
     queryKey: ['tenant-dashboard'],
