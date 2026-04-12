@@ -7,7 +7,6 @@ export async function executeFeedAction(intent: string, itemId: string): Promise
   const base = process.env.NEXT_PUBLIC_API_URL;
   if (!base) throw new Error('BACKEND_URL is not set.');
 
-  // Assuming v2 to match our previous materialized view architecture
   const res = await fetch(`${base}/api/v2/feed/${itemId}/action`, {
     method: 'POST',
     headers: { 
