@@ -1,28 +1,34 @@
 // app/hooks/useExecuteAction.ts
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { executeFeedAction } from '../actions/feed-actions';
-import type { FeedItem } from '@keyring/types'; // Adjust import as needed
+import { executeFeedDomainAction } from '../actions/feed-domain-actions';
+import type { FeedItem, MutationAction } from '@keyring/types';
 
 export function useExecuteFeedAction() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ intent, itemId }: { intent: string; itemId: string }) => 
-      executeFeedAction(intent, itemId),
+    mutationFn: ({ item, action }: { item: FeedItem; action: MutationAction }) =>
+      executeFeedDomainAction(action, item),
     
     // 1. Intercept before the network request
-    onMutate: async ({ itemId }) => {
+    onMutate: async ({ item }) => {
       // Cancel any outgoing refetches so they don't overwrite our optimistic update
       await queryClient.cancelQueries({ queryKey: ['copilot-feed'] });
 
       // Snapshot the previous value
-      const previousFeed = queryClient.getQueryData<FeedItem[]>(['copilot-feed']);
+      const previousFeed = queryClient.getQueryData(['copilot-feed']);
 
       // Optimistically update to the new value (remove the clicked item)
       if (previousFeed) {
-        queryClient.setQueryData<FeedItem[]>(
+        queryClient.setQueryData(
           ['copilot-feed'], 
-          old => old?.filter(item => item.id !== itemId) ?? []
+          (old: any) => {
+            if (!old || !Array.isArray(old.items)) return old;
+            return {
+              ...old,
+              items: old.items.filter((candidate: FeedItem) => candidate.id !== item.id),
+            };
+          },
         );
       }
 
