@@ -1,9 +1,8 @@
 export type UserRole =
-  | 'admin'
-  | 'owner'
-  | 'property_manager'
-  | 'leasing'
-  | 'maintenance';
+  | 'ADMIN'
+  | 'OWNER'
+  | 'PROPERTY_MANAGER'
+  | 'TENANT';
 
 export type FeedItemType =
   | 'critical_signal'
@@ -18,21 +17,21 @@ export type FeedDomain =
   | 'maintenance'
   | 'calendar';
 
-export type FeedActionVariant = 'default' |'primary'| 'secondary' | 'destructive';
+export type FeedActionVariant = 'default' | 'primary' | 'secondary' | 'destructive';
 
-interface BaseAction{
+interface BaseAction {
   id: string;
   label: string;
-  variant:FeedActionVariant;
+  variant: FeedActionVariant;
 }
 
-export interface MutationAction extends BaseAction{
+export interface MutationAction extends BaseAction {
   type: 'mutation';
   intent: string;
   requiresConfirm?: boolean;
 }
 
-export interface NavigationAction extends BaseAction{
+export interface NavigationAction extends BaseAction {
   type: 'navigation';
   intent: string;
   href: string;
