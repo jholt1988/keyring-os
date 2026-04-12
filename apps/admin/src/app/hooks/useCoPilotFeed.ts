@@ -15,7 +15,7 @@ export function useCoPilotFeed() {
       const res = await fetch(`${BACKEND_URL}/feed`, {
         headers: {
           'X-Mock-User-Id': 'dev-admin-uuid-001',
-          'X-Mock-Role': 'admin',
+          'X-Mock-Role': 'ADMIN',
         },
       });
       if (!res.ok) {

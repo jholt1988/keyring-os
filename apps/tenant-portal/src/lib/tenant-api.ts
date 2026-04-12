@@ -7,7 +7,7 @@ function headers(): HeadersInit {
   return {
     'Content-Type': 'application/json',
     'X-Mock-User-Id': MOCK_USER_ID,
-    'X-Mock-Role': 'tenant',
+    'X-Mock-Role': 'TENANT',
   };
 }
 
