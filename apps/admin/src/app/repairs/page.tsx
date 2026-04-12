@@ -8,6 +8,7 @@ import { Modal } from '@/components/ui/modal';
 import { WorkspaceShell, RiskMeter, ExplainableAction, SectionCard, MetricCard } from '@/components/copilot';
 import { useRepairsWorkspace } from '@/app/hooks/useWorkspace';
 import { approveEstimate, rejectEstimate } from '@/lib/copilot-api';
+import { ContractorBidsSection } from '@/components/parity/shared';
 import { useToast } from '@/components/ui/toast';
 import type { Severity } from '@keyring/types';
 
@@ -153,6 +154,13 @@ export default function RepairsPage() {
             <p className="text-sm text-[#94A3B8]">AI metrics unavailable. System monitors SLA compliance and predicts maintenance risks automatically.</p>
           )}
         </SectionCard>
+
+        <div className="lg:col-span-2">
+          <ContractorBidsSection
+            propertyId={requests[0]?.property?.id ?? requests[0]?.propertyId}
+            requestId={requests[0]?.id}
+          />
+        </div>
       </div>
     </WorkspaceShell>
 

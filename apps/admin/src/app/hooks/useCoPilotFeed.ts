@@ -12,7 +12,7 @@ export function useCoPilotFeed() {
     queryKey: ['copilot-feed'],
     queryFn: async () => {
       // Assuming Next.js rewrites or a direct absolute URL to your NestJS backend
-      const res = await fetch(`${BACKEND_URL}/api/v2/feed`, {
+      const res = await fetch(`${BACKEND_URL}/api/feed`, {
         headers: {
           'X-Mock-User-Id': 'dev-admin-uuid-001',
           'X-Mock-Role': 'admin',

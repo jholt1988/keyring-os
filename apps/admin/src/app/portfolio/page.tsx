@@ -81,7 +81,7 @@ export default function PortfolioPage() {
       setAuditLogs(Array.isArray(logs) ? logs : (logs as any).data ?? []);
       setLoading(false);
     }).catch(() => setLoading(false));
-  }, []);
+  }, [properties, repairs, auditLogs]);
 
   const filteredProperties = properties.filter(p => {
     if (filter === 'Vacancies') return p.vacantCount > 0;
