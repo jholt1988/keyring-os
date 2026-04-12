@@ -20,6 +20,7 @@ import {
   fetchPayments,
   fetchInvoices,
   fetchAutopay,
+  fetchPaymentMethods,
   fetchMyLease,
   createStripeCheckoutSession,
   enableAutopay,
@@ -55,6 +56,11 @@ export default function PaymentsPage() {
     queryFn: fetchAutopay,
     enabled: !!lease?.id,
   });
+  const { data: paymentMethods = [] } = useQuery({
+    queryKey: ['payment-methods'],
+    queryFn: fetchPaymentMethods,
+    enabled: !!lease?.id,
+  });
 
   const openInvoices = invoices.filter((i) =>
     ['UNPAID', 'OVERDUE'].includes(i.status.toUpperCase()),
@@ -63,6 +69,10 @@ export default function PaymentsPage() {
   const nextDue = openInvoices.sort(
     (a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime(),
   )[0];
+
+  const autopayEnrollment = autopay?.enrollment ?? null;
+  const autopayPaymentMethodId =
+    autopayEnrollment?.paymentMethodId ?? paymentMethods[0]?.id;
 
   const checkoutMutation = useMutation({
     mutationFn: () =>
@@ -77,11 +87,17 @@ export default function PaymentsPage() {
   });
 
   const autopayMutation = useMutation({
-    mutationFn: () =>
-      autopay?.isActive
-        ? disableAutopay(lease!.id)
-        : enableAutopay(lease!.id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['autopay'] }),
+    mutationFn: async () => {
+      if (autopayEnrollment?.active) {
+        await disableAutopay(lease!.id);
+        return;
+      }
+      await enableAutopay(lease!.id, autopayPaymentMethodId!);
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['autopay'] });
+      qc.invalidateQueries({ queryKey: ['payment-methods'] });
+    },
   });
 
   return (
@@ -144,20 +160,33 @@ export default function PaymentsPage() {
               <div>
                 <p className="font-semibold text-[#F8FAFC]">Autopay</p>
                 <p className="text-sm text-[#94A3B8]">
-                  {autopay?.isActive
+                  {autopayEnrollment?.active
                     ? 'Autopay is enabled. Rent is charged automatically on the due date.'
-                    : 'Enable autopay to never miss a payment.'}
+                    : paymentMethods.length > 0
+                      ? 'Enable autopay to never miss a payment.'
+                      : 'Add a payment method before enabling autopay.'}
                 </p>
+                {!autopayEnrollment?.active && paymentMethods.length > 0 && (
+                  <p className="mt-1 text-xs text-[#94A3B8]">
+                    Using {paymentMethods[0]?.brand ?? paymentMethods[0]?.type ?? 'saved method'}
+                    {paymentMethods[0]?.last4 ? ` ending in ${paymentMethods[0].last4}` : ''}.
+                  </p>
+                )}
+                {!autopayEnrollment?.active && paymentMethods.length === 0 && (
+                  <p className="mt-1 text-xs text-[#F59E0B]">
+                    No saved payment methods found yet.
+                  </p>
+                )}
               </div>
               <Button
-                variant={autopay?.isActive ? 'destructive' : 'default'}
+                variant={autopayEnrollment?.active ? 'destructive' : 'default'}
                 size="sm"
                 onClick={() => autopayMutation.mutate()}
-                disabled={autopayMutation.isPending}
+                disabled={autopayMutation.isPending || (!autopayEnrollment?.active && !autopayPaymentMethodId)}
               >
                 {autopayMutation.isPending ? (
                   <RefreshCw size={12} className="animate-spin" />
-                ) : autopay?.isActive ? (
+                ) : autopayEnrollment?.active ? (
                   'Disable'
                 ) : (
                   'Enable'
