@@ -6,13 +6,18 @@ import { BarChart3, TrendingUp, Home, AlertTriangle, Wrench, CreditCard, Zap } f
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { SectionCard } from '@/components/copilot/section-card';
 import {
+  fetchAccountingSyncStatus,
   fetchRentRoll,
   fetchProfitLoss,
   fetchVacancyRate,
   fetchDelinquencyAnalytics,
   fetchMaintenanceAnalytics,
+  fetchManualChargesSummary,
+  fetchManualPaymentsSummary,
+  fetchOpexAnomalies,
   fetchPaymentHistory,
   fetchCapexAnalytics,
+  fetchReportHeatmap,
 } from '@/lib/copilot-api';
 
 const TABS = [
@@ -23,6 +28,11 @@ const TABS = [
   { id: 'maintenance', label: 'Maintenance',    icon: Wrench },
   { id: 'payments',    label: 'Payments',       icon: CreditCard },
   { id: 'capex',       label: 'CapEx',          icon: Zap },
+  { id: 'heatmap',     label: 'Heatmap',        icon: BarChart3 },
+  { id: 'opex',        label: 'OpEx Anomalies', icon: AlertTriangle },
+  { id: 'accounting',  label: 'Accounting Sync', icon: TrendingUp },
+  { id: 'manual-pay',  label: 'Manual Payments', icon: CreditCard },
+  { id: 'manual-charge', label: 'Manual Charges', icon: CreditCard },
 ] as const;
 
 type TabId = typeof TABS[number]['id'];
@@ -83,6 +93,11 @@ function ReportContent({ tab }: { tab: TabId }) {
     'maintenance':  () => fetchMaintenanceAnalytics(),
     'payments':     () => fetchPaymentHistory(),
     'capex':        () => fetchCapexAnalytics(),
+    'heatmap':      () => fetchReportHeatmap(),
+    'opex':         () => fetchOpexAnomalies(),
+    'accounting':   () => fetchAccountingSyncStatus(),
+    'manual-pay':   () => fetchManualPaymentsSummary(),
+    'manual-charge': () => fetchManualChargesSummary(),
   };
 
   const { data, isLoading } = useQuery({

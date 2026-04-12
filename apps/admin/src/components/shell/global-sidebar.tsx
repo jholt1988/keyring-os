@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import {
   LayoutDashboard, Building2, Wallet, Users, UserCheck, Home,
   Wrench, RefreshCw, BookOpen, Settings, ClipboardList, FolderOpen,
-  Bell, MessageSquare, PenLine, BarChart2, ScrollText,
+  Bell, MessageSquare, PenLine, BarChart2, ScrollText, Bot, Building, Zap, Shield, Cpu, BriefcaseBusiness, Calendar, TrendingUp,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { fetchNotifications } from '@/lib/copilot-api';
@@ -26,7 +26,20 @@ const lanes = [
   { label: 'Messages',    icon: MessageSquare,    href: '/messages' },
   { label: 'E-Sign',      icon: PenLine,          href: '/esignatures' },
   { label: 'Reports',     icon: BarChart2,        href: '/reports' },
+  { label: 'Vendors',     icon: Building,         href: '/vendors' },
+  { label: 'Tours',       icon: Calendar,         href: '/tours' },
+  { label: 'Rent Opt',    icon: TrendingUp,        href: '/rent-optimization' },
+  { label: 'CapEx',       icon: Zap,              href: '/capex' },
+  { label: 'Billing',     icon: Wallet,           href: '/billing' },
+  { label: 'Utilities',   icon: Cpu,              href: '/utility-billing' },
+  { label: 'Insurance',   icon: Shield,           href: '/tenant-insurance' },
+  { label: 'Moves',       icon: BriefcaseBusiness, href: '/move-orchestration' },
+  { label: 'Owners',      icon: Building2,        href: '/owner-portal' },
+  { label: 'AI Chat',     icon: Bot,              href: '/chatbot' },
   { label: 'Audit Log',   icon: ScrollText,       href: '/audit-log' },
+  { label: 'QB',          icon: Settings,         href: '/settings/quickbooks' },
+  { label: 'Devices',     icon: Cpu,              href: '/settings/smart-devices' },
+  { label: 'Security',    icon: Shield,           href: '/settings/security' },
   { label: 'Workflows',   icon: Settings,         href: '/workflows' },
 ];
 

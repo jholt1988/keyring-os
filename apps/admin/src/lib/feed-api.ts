@@ -16,7 +16,7 @@ export async function fetchFeed(role: UserRole): Promise<FeedResponse> {
     );
   }
 
-  const url = `${base}/api/feed?role=${encodeURIComponent(role)}`;
+  const url = `${base}/feed?role=${encodeURIComponent(role)}`;
 
   const res = await fetch(url, {
     // Revalidate every 60 seconds — balances freshness with DB load.

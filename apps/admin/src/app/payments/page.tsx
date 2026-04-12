@@ -8,6 +8,7 @@ import { Modal } from '@/components/ui/modal';
 import { WorkspaceShell, RiskMeter, SectionCard, MetricCard } from '@/components/copilot';
 import { usePaymentsWorkspace } from '@/app/hooks/useWorkspace';
 import { issueDelinquencyNotice } from '@/lib/copilot-api';
+import { PaymentOperationsSection } from '@/components/parity/shared';
 import { useToast } from '@/components/ui/toast';
 import type { Severity } from '@keyring/types';
 
@@ -53,6 +54,8 @@ export default function PaymentsPage() {
   const delinquency = data?.delinquency as any;
   const summary = data?.opsSummary as any;
   const buckets = delinquency?.buckets ?? (Array.isArray(delinquency) ? delinquency : []);
+  const delinquentItems = buckets.flatMap((bucket: any) => bucket.items ?? []);
+  const invoices = (data?.invoices as any)?.data ?? data?.invoices ?? [];
 
   const totalAtRisk = buckets.reduce(
     (sum: number, b: any) => sum + (b.items ?? []).reduce((s: number, i: any) => s + (i.outstandingAmount ?? i.amount ?? 0), 0),
@@ -165,6 +168,10 @@ export default function PaymentsPage() {
             <p className="text-sm text-[#94A3B8]">Summary data unavailable</p>
           )}
         </SectionCard>
+
+        <div className="lg:col-span-2">
+          <PaymentOperationsSection delinquentItems={delinquentItems} invoices={Array.isArray(invoices) ? invoices : []} />
+        </div>
       </div>
     </WorkspaceShell>
 

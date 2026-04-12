@@ -5,6 +5,7 @@ const headers = (): HeadersInit => ({
   'Content-Type': 'application/json',
   'X-Mock-User-Id': 'dev-admin-uuid-001',
   'X-Mock-Role': 'admin',
+  'X-request-id': '1234567890',
 });
 
 async function api<T>(path: string, opts?: RequestInit): Promise<T> {
@@ -13,9 +14,28 @@ async function api<T>(path: string, opts?: RequestInit): Promise<T> {
   return res.json();
 }
 
+function buildQuery(params?: Record<string, string | number | boolean | undefined | null>) {
+  if (!params) return '';
+  const qs = new URLSearchParams();
+  for (const [key, value] of Object.entries(params)) {
+    if (value === undefined || value === null || value === '') continue;
+    qs.set(key, String(value));
+  }
+  const query = qs.toString();
+  return query ? `?${query}` : '';
+}
+
+async function safeGet<T>(path: string, fallback: T): Promise<T> {
+  try {
+    return await api<T>(path);
+  } catch {
+    return fallback;
+  }
+}
+
 export async function fetchBriefing(): Promise<BriefingData> {
   try {
-    return await api<BriefingData>('/briefing/daily');
+    return await api<BriefingData>('api/briefing/daily');
   } catch {
     return buildFallbackBriefing();
   }
@@ -24,7 +44,7 @@ export async function fetchBriefing(): Promise<BriefingData> {
 async function buildFallbackBriefing(): Promise<BriefingData> {
   const [delinquency, feedData, schedule] = await Promise.allSettled([
     api('/payments/delinquency/queue'),
-    api('/api/v2/feed'),
+    api('/feed'),
     api('/schedule/events'),
   ]);
 
@@ -172,7 +192,7 @@ export async function fetchScreeningWorkspace() {
 
 export async function fetchPolicyEvaluation(applicationId: string): Promise<PolicyEvaluation | null> {
   try {
-    return await api<PolicyEvaluation>(`/screening/${applicationId}/policy-evaluation`);
+    return await api<PolicyEvaluation>(`/rental-applications/${applicationId}/policy-evaluation`);
   } catch {
     return null;
   }
@@ -313,8 +333,7 @@ export async function fetchAuditLogs(params?: {
   skip?: number;
 }) {
   try {
-    const qs = new URLSearchParams(params as Record<string, string>);
-    return await api<{ data: any[]; total: number }>(`/audit-logs?${qs.toString()}`);
+    return await api<{ data: any[]; total: number }>(`/audit-logs${buildQuery(params as Record<string, string>)}`);
   } catch {
     return { data: [], total: 0 };
   }
@@ -341,8 +360,7 @@ export async function fetchPortfolioRepairs() {
 
 export async function fetchTenants(params?: Record<string, string>) {
   try {
-    const qs = params ? '?' + new URLSearchParams(params).toString() : '';
-    const res = await api<any>(`/tenants${qs}`);
+    const res = await api<any>(`/tenants${buildQuery(params)}`);
     return res;
   } catch {
     return { data: [], total: 0, skip: 0, take: 25 };
@@ -649,8 +667,7 @@ export async function updateUnit(propertyId: string, unitId: string, data: Recor
 
 export async function fetchInspections(params?: { propertyId?: string; status?: string }) {
   try {
-    const qs = new URLSearchParams(params as Record<string, string>);
-    return await api<any[]>(`/inspections?${qs.toString()}`);
+    return await api<any[]>(`/inspections${buildQuery(params as Record<string, string>)}`);
   } catch {
     return [];
   }
@@ -680,8 +697,7 @@ export async function startInspection(id: number) {
 
 export async function fetchDocuments(params?: { propertyId?: string; leaseId?: string; category?: string }) {
   try {
-    const qs = new URLSearchParams(params as Record<string, string>);
-    return await api<any[]>(`/documents?${qs.toString()}`);
+    return await api<any[]>(`/documents${buildQuery(params as Record<string, string>)}`);
   } catch {
     return [];
   }
@@ -730,22 +746,19 @@ export function getSignedDocUrl(id: string) {
 
 export async function fetchRentRoll(params?: { propertyId?: string }) {
   try {
-    const qs = new URLSearchParams(params as Record<string, string>);
-    return await api<any>(`/reporting/rent-roll?${qs.toString()}`);
+    return await api<any>(`/reporting/rent-roll${buildQuery(params as Record<string, string>)}`);
   } catch { return null; }
 }
 
 export async function fetchProfitLoss(params?: { propertyId?: string; startDate?: string; endDate?: string }) {
   try {
-    const qs = new URLSearchParams(params as Record<string, string>);
-    return await api<any>(`/reporting/profit-loss?${qs.toString()}`);
+    return await api<any>(`/reporting/profit-loss${buildQuery(params as Record<string, string>)}`);
   } catch { return null; }
 }
 
 export async function fetchVacancyRate(params?: { propertyId?: string }) {
   try {
-    const qs = new URLSearchParams(params as Record<string, string>);
-    return await api<any>(`/reporting/vacancy-rate?${qs.toString()}`);
+    return await api<any>(`/reporting/vacancy-rate${buildQuery(params as Record<string, string>)}`);
   } catch { return null; }
 }
 
@@ -757,23 +770,465 @@ export async function fetchDelinquencyAnalytics() {
 
 export async function fetchMaintenanceAnalytics(params?: { propertyId?: string; startDate?: string; endDate?: string }) {
   try {
-    const qs = new URLSearchParams(params as Record<string, string>);
-    return await api<any>(`/reporting/maintenance-analytics?${qs.toString()}`);
+    return await api<any>(`/reporting/maintenance-analytics${buildQuery(params as Record<string, string>)}`);
   } catch { return null; }
 }
 
 export async function fetchPaymentHistory(params?: { propertyId?: string; startDate?: string; endDate?: string }) {
   try {
-    const qs = new URLSearchParams(params as Record<string, string>);
-    return await api<any>(`/reporting/payment-history?${qs.toString()}`);
+    return await api<any>(`/reporting/payment-history${buildQuery(params as Record<string, string>)}`);
   } catch { return null; }
 }
 
 export async function fetchCapexAnalytics(params?: { propertyId?: string; upgradeCost?: number; rentBump?: number }) {
   try {
-    const qs = new URLSearchParams(params as Record<string, string>);
-    return await api<any>(`/reporting/analytics/capex?${qs.toString()}`);
+    return await api<any>(`/reporting/analytics/capex${buildQuery(params as Record<string, string | number>)}`);
   } catch { return null; }
+}
+
+// ── Bookkeeping parity ────────────────────────────────────────────────────────
+
+export async function allocateTransaction(id: string, data: Record<string, unknown>) {
+  return api(`/bookkeeping/transactions/${id}/allocate`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function confirmReconciliationItem(id: string) {
+  return api(`/bookkeeping/reconciliation/items/${id}/confirm`, { method: 'PATCH' });
+}
+
+export async function flagTransactionException(id: string, data?: Record<string, unknown>) {
+  return api(`/bookkeeping/transactions/${id}/exception`, {
+    method: 'PATCH',
+    body: JSON.stringify(data ?? {}),
+  });
+}
+
+export async function lockMonthlyClose(propertyId: string) {
+  return api(`/bookkeeping/monthly-close/${propertyId}/lock`, { method: 'POST' });
+}
+
+export async function reopenMonthlyClose(propertyId: string) {
+  return api(`/bookkeeping/monthly-close/${propertyId}/reopen`, { method: 'POST' });
+}
+
+export async function fetchMonthlyClose() {
+  return safeGet<any[]>('/bookkeeping/monthly-close', []);
+}
+
+export async function fetchOwnerStatements() {
+  return safeGet<any[]>('/bookkeeping/owner-statements', []);
+}
+
+export async function fetchPendingTransactions() {
+  return safeGet<any[]>('/bookkeeping/transactions/pending', []);
+}
+
+export async function fetchTransactionExceptions() {
+  return safeGet<any[]>('/bookkeeping/transactions/exceptions', []);
+}
+
+// ── Payments parity ───────────────────────────────────────────────────────────
+
+export async function resolveLegalHold(data: Record<string, unknown>) {
+  return api('/payments/delinquency/resolve-legal-hold', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export async function referAttorney(data: Record<string, unknown>) {
+  return api('/payments/delinquency/refer-attorney', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export async function recordCourtDate(data: Record<string, unknown>) {
+  return api('/payments/delinquency/record-court-date', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export async function fetchLegalTracker(leaseId: string) {
+  return safeGet<any>(`/payments/delinquency/legal-tracker/${leaseId}`, null);
+}
+
+export async function fetchAttorneyPacket(leaseId: string) {
+  return safeGet<any>(`/payments/delinquency/attorney-packet/${leaseId}`, null);
+}
+
+export async function createPaymentPlan(data: Record<string, unknown>) {
+  return api('/payments/payment-plans', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export async function fetchPaymentPlans() {
+  return safeGet<any[]>('/payments/payment-plans', []);
+}
+
+export async function fetchPaymentPlan(id: string) {
+  return safeGet<any>(`/payments/payment-plans/${id}`, null);
+}
+
+export async function createManualCharge(data: Record<string, unknown>) {
+  return api('/payments/charges/manual', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export async function voidManualCharge(id: string) {
+  return api(`/payments/charges/manual/${id}/void`, { method: 'POST' });
+}
+
+export async function createStripeCheckoutSession(data: Record<string, unknown>) {
+  return api<any>('/payments/stripe/checkout-session', { method: 'POST', body: JSON.stringify(data) });
+}
+
+// ── Tours / Leasing / Syndication ────────────────────────────────────────────
+
+export async function scheduleTour(data: Record<string, unknown>) {
+  return api('/api/tours/schedule', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export async function fetchTours(params?: Record<string, string | number | boolean>) {
+  return safeGet<any[]>(`/api/tours${buildQuery(params)}`, []);
+}
+
+export async function fetchTour(id: string) {
+  return safeGet<any>(`/api/tours/${id}`, null);
+}
+
+export async function fetchToursByLead(leadId: string) {
+  return safeGet<any[]>(`/api/tours/lead/${leadId}`, []);
+}
+
+export async function updateTourStatus(id: string, status: string) {
+  return api(`/api/tours/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status }) });
+}
+
+export async function assignTour(id: string, agentId: string) {
+  return api(`/api/tours/${id}/assign`, { method: 'PATCH', body: JSON.stringify({ agentId }) });
+}
+
+export async function rescheduleTour(id: string, data: Record<string, unknown>) {
+  return api(`/api/tours/${id}/reschedule`, { method: 'PATCH', body: JSON.stringify(data) });
+}
+
+export async function submitLeadApplication(data: Record<string, unknown>) {
+  return api('/applications/submit', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export async function fetchLeadApplications(params?: Record<string, string | number | boolean>) {
+  return safeGet<any[]>(`/applications${buildQuery(params)}`, []);
+}
+
+export async function updateLeadApplicationStatus(id: string, status: string) {
+  return api(`/applications/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status }) });
+}
+
+export async function triggerApplicationScreening(id: string, data?: Record<string, unknown>) {
+  return api(`/applications/${id}/screening`, { method: 'PATCH', body: JSON.stringify(data ?? {}) });
+}
+
+export async function triggerSyndication(propertyId: string) {
+  return api(`/listings/syndication/${propertyId}/trigger`, { method: 'POST' });
+}
+
+export async function pauseSyndication(propertyId: string) {
+  return api(`/listings/syndication/${propertyId}/pause`, { method: 'POST' });
+}
+
+export async function fetchSyndicationStatus(propertyId: string) {
+  return safeGet<any>(`/listings/syndication/${propertyId}/status`, null);
+}
+
+// ── Contractor bidding ───────────────────────────────────────────────────────
+
+export async function fetchContractorBids(params?: Record<string, string | number | boolean>) {
+  return safeGet<any[]>(`/contractor-bidding/bids${buildQuery(params)}`, []);
+}
+
+export async function fetchContractorBid(id: string) {
+  return safeGet<any>(`/contractor-bidding/bids/${id}`, null);
+}
+
+export async function createBid(data: Record<string, unknown>) {
+  return api('/contractor-bidding/bids', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export async function awardBid(id: string) {
+  return api(`/contractor-bidding/bids/${id}/award`, { method: 'PATCH' });
+}
+
+export async function rejectBid(id: string) {
+  return api(`/contractor-bidding/bids/${id}/reject`, { method: 'PATCH' });
+}
+
+export async function aiScoreBid(id: string) {
+  return api(`/contractor-bidding/bids/${id}/ai-score`, { method: 'POST' });
+}
+
+export async function fetchContractorRecommendations(propertyId: string) {
+  return safeGet<any[]>(`/contractor-bidding/properties/${propertyId}/recommendations`, []);
+}
+
+// ── Vendors ──────────────────────────────────────────────────────────────────
+
+export async function fetchVendors() {
+  return safeGet<any[]>('/vendors', []);
+}
+
+export async function createVendor(data: Record<string, unknown>) {
+  return api('/vendors', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export function getVendors1099ExportUrl() {
+  return `${BASE}/vendors/1099-export`;
+}
+
+// ── Rent optimization ────────────────────────────────────────────────────────
+
+export async function fetchRentRecommendations(params?: Record<string, string | number | boolean>) {
+  return safeGet<any[]>(`/rent-recommendations${buildQuery(params)}`, []);
+}
+
+export async function fetchPendingRecommendations() {
+  return safeGet<any[]>('/rent-recommendations/pending', []);
+}
+
+export async function acceptRecommendation(id: string) {
+  return api(`/rent-recommendations/${id}/accept`, { method: 'POST' });
+}
+
+export async function rejectRecommendation(id: string) {
+  return api(`/rent-recommendations/${id}/reject`, { method: 'POST' });
+}
+
+export async function applyRecommendation(id: string) {
+  return api(`/rent-recommendations/${id}/apply`, { method: 'POST' });
+}
+
+export async function generateRecommendations() {
+  return api('/rent-recommendations/generate', { method: 'POST' });
+}
+
+export async function bulkGenerateRecommendations() {
+  return api('/rent-recommendations/bulk-generate/all', { method: 'POST' });
+}
+
+// ── CapEx forecasting ────────────────────────────────────────────────────────
+
+export async function fetchCapexForecasts() {
+  return safeGet<any[]>('/capex-forecasting/forecasts', []);
+}
+
+export async function createCapexForecast(data: Record<string, unknown>) {
+  return api('/capex-forecasting/forecasts', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export async function approveCapexForecast(id: string) {
+  return api(`/capex-forecasting/forecasts/${id}/approve`, { method: 'PATCH' });
+}
+
+export async function completeCapexForecast(id: string) {
+  return api(`/capex-forecasting/forecasts/${id}/complete`, { method: 'PATCH' });
+}
+
+export async function generateCapexForecast(propertyId: string) {
+  return api(`/capex-forecasting/properties/${propertyId}/generate`, { method: 'POST' });
+}
+
+export async function fetchCapexSummary() {
+  return safeGet<any>('/capex-forecasting/summary', null);
+}
+
+// ── Lease abstraction ────────────────────────────────────────────────────────
+
+export async function extractLease(formData: FormData) {
+  const res = await fetch(`${BASE}/lease-abstraction/extract`, {
+    method: 'POST',
+    headers: { 'X-Mock-User-Id': 'dev-admin-uuid-001', 'X-Mock-Role': 'admin' },
+    body: formData,
+  });
+  if (!res.ok) throw new Error('Lease extraction failed');
+  return res.json();
+}
+
+export async function bulkExtractLeases(formData: FormData) {
+  const res = await fetch(`${BASE}/lease-abstraction/bulk-extract`, {
+    method: 'POST',
+    headers: { 'X-Mock-User-Id': 'dev-admin-uuid-001', 'X-Mock-Role': 'admin' },
+    body: formData,
+  });
+  if (!res.ok) throw new Error('Bulk lease extraction failed');
+  return res.json();
+}
+
+export async function fetchLeaseAbstractions() {
+  return safeGet<any[]>('/lease-abstraction/abstractions', []);
+}
+
+export async function reviewLeaseAbstraction(id: string, data: Record<string, unknown>) {
+  return api(`/lease-abstraction/abstractions/${id}/review`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function fetchLeaseAbstractionAnalytics() {
+  return safeGet<any>('/lease-abstraction/analytics', null);
+}
+
+// ── QuickBooks ────────────────────────────────────────────────────────────────
+
+export async function fetchQuickBooksStatus() {
+  return safeGet<any>('/quickbooks/status', null);
+}
+
+export async function getQuickBooksAuthUrl() {
+  return safeGet<any>('/quickbooks/auth-url', null);
+}
+
+export async function testQuickBooksConnection() {
+  return safeGet<any>('/quickbooks/test-connection', null);
+}
+
+export async function syncQuickBooks() {
+  return api('/quickbooks/sync', { method: 'POST' });
+}
+
+export async function disconnectQuickBooks() {
+  return api('/quickbooks/disconnect', { method: 'POST' });
+}
+
+// ── Smart devices ────────────────────────────────────────────────────────────
+
+export async function fetchSmartDevices(params?: Record<string, string | number | boolean>) {
+  return safeGet<any[]>(`/smart-devices${buildQuery(params)}`, []);
+}
+
+export async function registerSmartDevice(data: Record<string, unknown>) {
+  return api('/smart-devices', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export async function fetchAccessCodes(deviceId: string) {
+  return safeGet<any[]>(`/smart-devices/${deviceId}/access-codes`, []);
+}
+
+export async function createAccessCode(deviceId: string, data: Record<string, unknown>) {
+  return api(`/smart-devices/${deviceId}/access-codes`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+// ── Security events ──────────────────────────────────────────────────────────
+
+export async function fetchSecurityEvents(params?: Record<string, string | number | boolean>) {
+  return safeGet<any[]>(`/security-events${buildQuery(params)}`, []);
+}
+
+// ── Billing ──────────────────────────────────────────────────────────────────
+
+export async function fetchBillingSchedules() {
+  return safeGet<any[]>('/billing/schedules', []);
+}
+
+export async function createBillingSchedule(data: Record<string, unknown>) {
+  return api('/billing/schedules', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export async function fetchAutopay() {
+  return safeGet<any[]>('/billing/autopay', []);
+}
+
+export async function enableAutopay(data: Record<string, unknown>) {
+  return api('/billing/autopay', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export async function disableAutopay(leaseId: string) {
+  return api(`/billing/autopay/${leaseId}/disable`, { method: 'PATCH' });
+}
+
+export async function fetchEscrow(leaseId: string) {
+  return safeGet<any>(`/billing/escrow/${leaseId}`, null);
+}
+
+export async function fetchFeeScheduleVersions() {
+  return safeGet<any[]>('/billing/fee-schedules/versions', []);
+}
+
+// ── Utility billing ──────────────────────────────────────────────────────────
+
+export async function recordMasterBill(data: Record<string, unknown>) {
+  return api('/utility-billing/master-bill', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export async function allocateMasterBill(billId: string) {
+  return api(`/utility-billing/master-bill/${billId}/allocate`, { method: 'POST' });
+}
+
+// ── Tenant insurance ─────────────────────────────────────────────────────────
+
+export async function fetchTenantInsurance(leaseId: string) {
+  return safeGet<any[]>(`/tenant-insurance/lease/${leaseId}`, []);
+}
+
+export async function recordTenantInsurance(leaseId: string, data: Record<string, unknown>) {
+  return api(`/tenant-insurance/lease/${leaseId}`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+// ── Move orchestration ───────────────────────────────────────────────────────
+
+export async function startMoveIn(data: Record<string, unknown>) {
+  return api('/move-orchestration/move-in', { method: 'POST', body: JSON.stringify(data) });
+}
+
+export async function startMoveOut(data: Record<string, unknown>) {
+  return api('/move-orchestration/move-out', { method: 'POST', body: JSON.stringify(data) });
+}
+
+// ── Owner portal ─────────────────────────────────────────────────────────────
+
+export async function fetchOwnerDraws(statementId: string) {
+  return safeGet<any[]>(`/owner-portal/draws/statement/${statementId}`, []);
+}
+
+export async function createOwnerDraw(statementId: string, data: Record<string, unknown>) {
+  return api(`/owner-portal/draws/statement/${statementId}`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+// ── Chatbot ──────────────────────────────────────────────────────────────────
+
+export async function sendChatMessage(message: string, sessionId?: string) {
+  return api<any>('/chatbot/message', {
+    method: 'POST',
+    body: JSON.stringify({ message, sessionId }),
+  });
+}
+
+export async function fetchChatSession(sessionId: string) {
+  return safeGet<any>(`/chatbot/session/${sessionId}`, null);
+}
+
+// ── Additional reports ───────────────────────────────────────────────────────
+
+export async function fetchReportHeatmap() {
+  return safeGet<any>('/reporting/analytics/heatmap', null);
+}
+
+export async function fetchOpexAnomalies() {
+  return safeGet<any>('/reporting/analytics/opex-anomalies', null);
+}
+
+export async function fetchAccountingSyncStatus() {
+  return safeGet<any>('/reporting/accounting-sync-status', null);
+}
+
+export async function fetchManualPaymentsSummary() {
+  return safeGet<any>('/reporting/manual-payments-summary', null);
+}
+
+export async function fetchManualChargesSummary() {
+  return safeGet<any>('/reporting/manual-charges-summary', null);
 }
 
 // fetchAuditLogs is defined above near fetchPortfolioAuditLogs

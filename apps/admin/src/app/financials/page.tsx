@@ -10,7 +10,16 @@ import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 import { WorkspaceShell, RiskMeter, SectionCard, MetricCard } from '@/components/copilot';
 import { useFinancialsWorkspace } from '@/app/hooks/useWorkspace';
-import { categorizeTransaction, approveOwnerStatement, sendOwnerStatement } from '@/lib/copilot-api';
+import {
+  allocateTransaction,
+  categorizeTransaction,
+  approveOwnerStatement,
+  confirmReconciliationItem,
+  flagTransactionException,
+  lockMonthlyClose,
+  reopenMonthlyClose,
+  sendOwnerStatement,
+} from '@/lib/copilot-api';
 import { useToast } from '@/components/ui/toast';
 import type { Severity } from '@keyring/types';
 
@@ -40,6 +49,8 @@ export default function FinancialsPage() {
 
   // Statement send state
   const [sendingId, setSendingId] = useState<string | null>(null);
+  const [allocateTarget, setAllocateTarget] = useState<any>(null);
+  const [allocation, setAllocation] = useState({ propertyId: '', unitId: '', leaseId: '', vendorId: '', ownerId: '' });
 
   const invalidate = () => { qc.invalidateQueries({ queryKey: ['workspace', 'financials'] }); refetch(); };
 
@@ -69,6 +80,37 @@ export default function FinancialsPage() {
     },
     onSuccess: () => { toast('Statement approved and sent'); setSendingId(null); invalidate(); },
     onError: () => { toast('Approved but delivery failed — retry send', 'error'); setSendingId(null); invalidate(); },
+  });
+
+  const allocateMutation = useMutation({
+    mutationFn: () => allocateTransaction(allocateTarget.id, allocation),
+    onSuccess: () => {
+      toast('Transaction allocated');
+      setAllocateTarget(null);
+      setAllocation({ propertyId: '', unitId: '', leaseId: '', vendorId: '', ownerId: '' });
+      invalidate();
+    },
+    onError: () => toast('Failed to allocate transaction', 'error'),
+  });
+
+  const reconcileMutation = useMutation({
+    mutationFn: (id: string) => confirmReconciliationItem(id),
+    onSuccess: () => { toast('Reconciliation confirmed'); invalidate(); },
+    onError: () => toast('Failed to confirm reconciliation', 'error'),
+  });
+
+  const exceptionMutation = useMutation({
+    mutationFn: (id: string) => flagTransactionException(id, { reviewed: true }),
+    onSuccess: () => { toast('Exception flagged for review'); invalidate(); },
+    onError: () => toast('Failed to flag exception', 'error'),
+  });
+
+  const monthlyCloseMutation = useMutation({
+    mutationFn: ({ propertyId, action }: { propertyId: string; action: 'lock' | 'reopen' }) => (
+      action === 'lock' ? lockMonthlyClose(propertyId) : reopenMonthlyClose(propertyId)
+    ),
+    onSuccess: (_, vars) => { toast(vars.action === 'lock' ? 'Period closed' : 'Period reopened'); invalidate(); },
+    onError: () => toast('Failed to update monthly close', 'error'),
   });
 
   if (isLoading) {
@@ -131,6 +173,9 @@ export default function FinancialsPage() {
                     <Button size="sm" variant="outline" onClick={() => { setRecatTarget(tx); setNewCategory(tx.category ?? ''); }}>
                       <FileText size={12} /> Re-categorize
                     </Button>
+                    <Button size="sm" variant="outline" onClick={() => setAllocateTarget(tx)}>
+                      <ArrowRightLeft size={12} /> Allocate
+                    </Button>
                   </div>
                 </div>
               ))}
@@ -158,6 +203,11 @@ export default function FinancialsPage() {
                     </div>
                     <p className="font-mono text-[10px] text-[#94A3B8]">{tx.exceptionReason ?? 'Requires manual review'}</p>
                     <RiskMeter level={severity} className="mt-2" />
+                    <div className="mt-2">
+                      <Button size="sm" variant="outline" onClick={() => exceptionMutation.mutate(tx.id)}>
+                        <AlertTriangle size={12} /> Review
+                      </Button>
+                    </div>
                   </div>
                 );
               })}
@@ -191,6 +241,9 @@ export default function FinancialsPage() {
                   <span className={`font-mono text-[10px] uppercase ${item.status === 'EXCEPTION' ? 'text-[#F43F5E]' : 'text-[#F59E0B]'}`}>
                     {item.status}
                   </span>
+                  <Button size="sm" variant="outline" onClick={() => reconcileMutation.mutate(item.id)}>
+                    <CheckCircle size={12} /> Reconcile
+                  </Button>
                 </div>
               ))}
             </div>
@@ -225,6 +278,17 @@ export default function FinancialsPage() {
                     <span>{mc.unreconciledCount} unreconciled</span>
                     <span>{mc.exceptionCount} exceptions</span>
                     <span>{mc.pendingJournalEntries} draft JEs</span>
+                  </div>
+                  <div className="mt-3">
+                    {mc.step === 'locked' || mc.step === 'reported' ? (
+                      <Button size="sm" variant="outline" onClick={() => monthlyCloseMutation.mutate({ propertyId: mc.propertyId, action: 'reopen' })}>
+                        <Unlock size={12} /> Reopen
+                      </Button>
+                    ) : (
+                      <Button size="sm" variant="outline" onClick={() => monthlyCloseMutation.mutate({ propertyId: mc.propertyId, action: 'lock' })}>
+                        <Lock size={12} /> Close
+                      </Button>
+                    )}
                   </div>
                 </div>
               ))}
@@ -338,6 +402,39 @@ export default function FinancialsPage() {
               placeholder="e.g. Maintenance, Utilities, Insurance…"
               className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]" />
           </div>
+        </div>
+      </Modal>
+
+      <Modal
+        open={!!allocateTarget}
+        onClose={() => setAllocateTarget(null)}
+        title="Allocate Transaction"
+        footer={
+          <>
+            <Button variant="outline" size="sm" onClick={() => setAllocateTarget(null)}>Cancel</Button>
+            <Button size="sm" onClick={() => allocateMutation.mutate()} disabled={allocateMutation.isPending}>
+              {allocateMutation.isPending ? <RefreshCw size={12} className="animate-spin" /> : <ArrowRightLeft size={12} />} Allocate
+            </Button>
+          </>
+        }
+      >
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+          {[
+            ['Property ID', 'propertyId'],
+            ['Unit ID', 'unitId'],
+            ['Lease ID', 'leaseId'],
+            ['Vendor ID', 'vendorId'],
+            ['Owner ID', 'ownerId'],
+          ].map(([label, key]) => (
+            <label key={key} className="block text-sm text-[#94A3B8]">
+              <span className="mb-1 block">{label}</span>
+              <input
+                value={(allocation as any)[key]}
+                onChange={(e) => setAllocation((current) => ({ ...current, [key]: e.target.value }))}
+                className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC]"
+              />
+            </label>
+          ))}
         </div>
       </Modal>
     </>
