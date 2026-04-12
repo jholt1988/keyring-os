@@ -26,16 +26,26 @@ export async function fetchTenantFeed(): Promise<TenantFeedResponse> {
 // ── Dashboard ────────────────────────────────────────────────────────────────
 
 export interface TenantDashboard {
-  lease?: {
+  leases?: Array<{
     id: string;
     status: string;
     endDate: string;
-    rentAmount: number;
-    unit?: { address?: string; unitNumber?: string; property?: { name?: string } };
+    currentBalance?: number;
+    unit?: {
+      address?: string;
+      unitNumber?: string;
+      property?: { id?: string; name?: string; address?: string; city?: string; state?: string };
+    };
+  }>;
+  summary?: {
+    activeLeaseId?: string | null;
+    currentBalance?: number;
+    openMaintenanceCount?: number;
+    upcomingEventCount?: number;
   };
   maintenanceRequests?: { id: string; title: string; status: string }[];
   recentInspections?: unknown[];
-  notifications?: unknown[];
+  recentNotifications?: unknown[];
   upcomingEvents?: unknown[];
 }
 
