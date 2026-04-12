@@ -74,7 +74,13 @@ const sortedItems = useMemo(() => {
           <ActuarialFeedCard 
             key={item.id} 
             item={item} 
-            onAction={(intent) => performAction.mutate({ itemId: item.id, intent })} 
+            onAction={(intent) => {
+              const action = item.actions.find((candidate) => candidate.type === 'mutation' && candidate.intent === intent);
+              if (!action || action.type !== 'mutation') {
+                throw new Error(`Mutation action not found for intent: ${intent}`);
+              }
+              performAction.mutate({ item, action });
+            }} 
           />
         ))}
       </div>

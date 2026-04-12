@@ -54,14 +54,14 @@ export function FeedCard({ item, score }: FeedCardProps) {
     if(action.requiresConfirm || action.variant === 'destructive'){
       setPendingAction(action);
     }else{
-      mutate({ intent: action.intent, itemId: item.id });
+      mutate({ item, action });
     }
   }
 };
 
   const confirmAction = () =>{
     if(pendingAction){
-      mutate({ intent: pendingAction.intent, itemId: item.id });
+      mutate({ item, action: pendingAction });
       setPendingAction(null);
     }
   }
