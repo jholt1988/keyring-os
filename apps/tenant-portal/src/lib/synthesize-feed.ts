@@ -1,6 +1,6 @@
 /**
  * Client-side feed synthesis fallback.
- * Called when GET /tenant/feed fails or returns empty.
+ * Called when GET /tenant/feed fails.
  * Builds TenantFeedItem[] from multiple existing endpoints.
  */
 import type { TenantFeedItem } from '@keyring/types';
@@ -43,7 +43,8 @@ export function synthesizeFeed(data: {
   const { dashboard, invoices = [], maintenance = [], lease, envelopes = [], renewalOffers = [] } = data;
 
   // ── Lease expiry ────────────────────────────────────────────────────────
-  const activeLease = lease ?? dashboard?.lease;
+  const dashboardLease = dashboard?.leases?.find((candidate) => candidate.status === 'ACTIVE') ?? dashboard?.leases?.[0];
+  const activeLease = lease ?? dashboardLease;
   if (activeLease?.endDate) {
     const daysToExpiry = Math.ceil(
       (new Date(activeLease.endDate).getTime() - now) / 86_400_000,
