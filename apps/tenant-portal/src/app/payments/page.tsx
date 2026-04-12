@@ -71,8 +71,8 @@ export default function PaymentsPage() {
         amount: totalDue,
         invoiceId: nextDue?.id,
       }),
-    onSuccess: ({ url }) => {
-      window.location.href = url;
+    onSuccess: ({ checkoutUrl }) => {
+      window.location.href = checkoutUrl;
     },
   });
 

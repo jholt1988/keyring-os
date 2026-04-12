@@ -7,7 +7,7 @@ function headers(): HeadersInit {
   return {
     'Content-Type': 'application/json',
     'X-Mock-User-Id': MOCK_USER_ID,
-    'X-Mock-Role': 'tenant',
+    'X-Mock-Role': 'TENANT',
   };
 }
 
@@ -225,8 +225,8 @@ export async function createStripeCheckoutSession(data: {
   leaseId: string;
   amount: number;
   invoiceId?: number;
-}): Promise<{ url: string }> {
-  return api<{ url: string }>('/payments/stripe/checkout-session', {
+}): Promise<{ checkoutUrl: string; sessionId: string; invoiceId: number }> {
+  return api<{ checkoutUrl: string; sessionId: string; invoiceId: number }>('/payments/stripe/checkout-session', {
     method: 'POST',
     body: JSON.stringify(data),
   });
