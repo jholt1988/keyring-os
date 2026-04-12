@@ -13,15 +13,15 @@ export const mockFeed: FeedItem[] = [
     timestamp: NOW,
     financialImpact: 1200,
     urgencyHours: 24,
-    allowedRoles: ['owner', 'property_manager', 'maintenance'],
+    allowedRoles: ['OWNER', 'PROPERTY_MANAGER', 'ADMIN'],
     roleWeights: {
-      maintenance: 25,
-      property_manager: 15,
-      owner: 5,
+      PROPERTY_MANAGER: 25,
+      ADMIN: 15,
+      OWNER: 5,
     },
     actions: [
-      { id: 'a1', type: 'mutation', label: 'Schedule Repair', intent: 'schedule_repair', variant: 'default' },
-      { id: 'a2', type: 'navigation', label: 'Review', intent: 'review_repair_risk', variant: 'secondary', href: '#' },
+      { id: 'a1', type: 'navigation', label: 'Schedule Repair', intent: 'review_repair_risk', variant: 'default', href: '/repairs' },
+      { id: 'a2', type: 'navigation', label: 'Review', intent: 'review_repair_risk', variant: 'secondary', href: '/repairs' },
     ],
   },
   {
@@ -34,14 +34,15 @@ export const mockFeed: FeedItem[] = [
     timestamp: NOW,
     financialImpact: 1250,
     urgencyHours: 8,
-    allowedRoles: ['owner', 'property_manager'],
+    allowedRoles: ['OWNER', 'PROPERTY_MANAGER', 'ADMIN'],
     roleWeights: {
-      property_manager: 20,
-      owner: 10,
+      PROPERTY_MANAGER: 20,
+      ADMIN: 12,
+      OWNER: 10,
     },
     actions: [
-      { id: 'a3', type: 'mutation', label: 'Send Notice', intent: 'send_notice', variant: 'default' },
-      { id: 'a4', type: 'navigation', label: 'Message Tenant', intent: 'message_tenant', variant: 'secondary', href: '#' },
+      { id: 'a3', type: 'mutation', label: 'Send Late Notice', intent: 'send_late_notice', variant: 'default' },
+      { id: 'a4', type: 'navigation', label: 'Review Ledger', intent: 'message_tenant', variant: 'secondary', href: '/payments' },
     ],
   },
   {
@@ -53,14 +54,15 @@ export const mockFeed: FeedItem[] = [
     priority: 88,
     timestamp: NOW,
     urgencyHours: 12,
-    allowedRoles: ['property_manager', 'leasing'],
+    allowedRoles: ['PROPERTY_MANAGER', 'ADMIN', 'OWNER'],
     roleWeights: {
-      leasing: 20,
-      property_manager: 10,
+      PROPERTY_MANAGER: 20,
+      ADMIN: 10,
+      OWNER: 6,
     },
     actions: [
-      { id: 'a5', type: 'mutation', label: 'Approve w/ Conditions', intent: 'conditional_approve', variant: 'default' },
-      { id: 'a6', type: 'navigation', label: 'Deny', intent: 'deny', variant: 'destructive', href: '#' },
+      { id: 'a5', type: 'navigation', label: 'Review Application', intent: 'conditional_approve', variant: 'default', href: '/leasing' },
+      { id: 'a6', type: 'navigation', label: 'Open Queue', intent: 'deny', variant: 'destructive', href: '/leasing' },
     ],
   },
   {
@@ -73,15 +75,15 @@ export const mockFeed: FeedItem[] = [
     timestamp: NOW,
     financialImpact: 1250,
     urgencyHours: 72,
-    allowedRoles: ['owner', 'property_manager', 'leasing'],
+    allowedRoles: ['OWNER', 'PROPERTY_MANAGER', 'ADMIN'],
     roleWeights: {
-      leasing: 15,
-      owner: 12,
-      property_manager: 10,
+      PROPERTY_MANAGER: 15,
+      OWNER: 12,
+      ADMIN: 10,
     },
     actions: [
-      { id: 'a7', type: 'mutation', label: 'Start Renewal', intent: 'start_renewal', variant: 'default' },
-      { id: 'a8', type: 'navigation', label: 'Prepare Listing', intent: 'prepare_listing', variant: 'secondary', href: '#' },
+      { id: 'a7', type: 'navigation', label: 'Start Renewal', intent: 'start_renewal', variant: 'default', href: '/leasing' },
+      { id: 'a8', type: 'navigation', label: 'Prepare Listing', intent: 'prepare_listing', variant: 'secondary', href: '/leasing' },
     ],
   },
   {
@@ -93,13 +95,13 @@ export const mockFeed: FeedItem[] = [
     priority: 70,
     timestamp: NOW,
     urgencyHours: 3,
-    allowedRoles: ['property_manager', 'maintenance'],
+    allowedRoles: ['PROPERTY_MANAGER', 'ADMIN'],
     roleWeights: {
-      maintenance: 15,
-      property_manager: 10,
+      PROPERTY_MANAGER: 15,
+      ADMIN: 10,
     },
     actions: [
-      { id: 'a9', type: 'navigation', label: 'Open Details', intent: 'open_event', variant: 'default', href: '#' },
+      { id: 'a9', type: 'navigation', label: 'Open Details', intent: 'open_event', variant: 'default', href: '/repairs' },
     ],
   },
 ];
