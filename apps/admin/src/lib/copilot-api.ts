@@ -4,7 +4,7 @@ const BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
 const headers = (): HeadersInit => ({
   'Content-Type': 'application/json',
   'X-Mock-User-Id': 'dev-admin-uuid-001',
-  'X-Mock-Role': 'admin',
+  'X-Mock-Role': 'ADMIN',
 });
 
 async function api<T>(path: string, opts?: RequestInit): Promise<T> {
