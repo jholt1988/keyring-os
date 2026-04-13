@@ -34,7 +34,7 @@ async function safeGet<T>(path: string, fallback: T): Promise<T> {
 
 export async function fetchBriefing(): Promise<BriefingData> {
   try {
-    return await api<BriefingData>('api/briefing/daily');
+    return await api<BriefingData>('/api/briefing/daily');
   } catch {
     return buildFallbackBriefing();
   }
@@ -767,6 +767,30 @@ export async function fetchDelinquencyAnalytics() {
   } catch { return null; }
 }
 
+export async function fetchManualPaymentsSummary(params?: { propertyId?: string; startDate?: string; endDate?: string }) {
+  try {
+    return await api<any>(`/reporting/manual-payments-summary${buildQuery(params as Record<string, string>)}`);
+  } catch { return null; }
+}
+
+export async function fetchManualChargesSummary(params?: { propertyId?: string; startDate?: string; endDate?: string }) {
+  try {
+    return await api<any>(`/reporting/manual-charges-summary${buildQuery(params as Record<string, string>)}`);
+  } catch { return null; }
+}
+
+export async function fetchOpexAnomalies() {
+  try {
+    return await api<any>('/reporting/analytics/opex-anomalies');
+  } catch { return null; }
+}
+
+export async function fetchReportHeatmap() {
+  try {
+    return await api<any>('/reporting/analytics/heatmap');
+  } catch { return null; }
+}
+
 export async function fetchMaintenanceAnalytics(params?: { propertyId?: string; startDate?: string; endDate?: string }) {
   try {
     return await api<any>(`/reporting/maintenance-analytics${buildQuery(params as Record<string, string>)}`);
@@ -783,6 +807,567 @@ export async function fetchCapexAnalytics(params?: { propertyId?: string; upgrad
   try {
     return await api<any>(`/reporting/analytics/capex${buildQuery(params as Record<string, string | number>)}`);
   } catch { return null; }
+}
+
+export async function fetchTours(params?: { leadId?: string; propertyId?: string; status?: string; dateFrom?: string; dateTo?: string; limit?: number; offset?: number }) {
+  if (params?.leadId) {
+    const res = await api<any>(`/api/tours/lead/${params.leadId}`);
+    return res?.tours ?? res;
+  }
+
+  const res = await api<any>(`/api/tours${buildQuery(params as Record<string, string | number | boolean | undefined | null>)}`);
+  return res?.tours ?? res;
+}
+
+export async function scheduleTour(data: { leadId: string; propertyId: string; unitId?: string; date?: string; time?: string; preferredDate?: string; preferredTime?: string; notes?: string; agentId?: string }) {
+  return api('/api/tours/schedule', {
+    method: 'POST',
+    body: JSON.stringify({
+      leadId: data.leadId,
+      propertyId: data.propertyId,
+      unitId: data.unitId,
+      preferredDate: data.preferredDate ?? data.date,
+      preferredTime: data.preferredTime ?? data.time,
+      notes: data.notes,
+    }),
+  });
+}
+
+export async function updateTourStatus(id: string, status: string, feedback?: string) {
+  return api(`/api/tours/${id}/status`, {
+    method: 'PATCH',
+    body: JSON.stringify({ status, feedback }),
+  });
+}
+
+export async function assignTour(id: string, userId: string) {
+  return api(`/api/tours/${id}/assign`, {
+    method: 'PATCH',
+    body: JSON.stringify({ userId }),
+  });
+}
+
+export async function rescheduleTour(id: string, data: { scheduledAt?: string; scheduledDate?: string; scheduledTime?: string }) {
+  const scheduledAt = data.scheduledAt ? new Date(data.scheduledAt) : null;
+  const scheduledDate = data.scheduledDate ?? (scheduledAt ? scheduledAt.toISOString().slice(0, 10) : undefined);
+  const scheduledTime = data.scheduledTime ?? (scheduledAt ? scheduledAt.toISOString().slice(11, 16) : undefined);
+
+  return api(`/api/tours/${id}/reschedule`, {
+    method: 'PATCH',
+    body: JSON.stringify({ scheduledDate, scheduledTime }),
+  });
+}
+
+export async function fetchPaymentPlans(params?: { invoiceId?: number } | unknown) {
+  const query = params && typeof params === 'object' && 'invoiceId' in (params as Record<string, unknown>)
+    ? { invoiceId: (params as { invoiceId?: number }).invoiceId }
+    : undefined;
+
+  return api(`/payments/payment-plans${buildQuery(query as Record<string, string | number | boolean | undefined | null> | undefined)}`);
+}
+
+export async function fetchLegalTracker(leaseId: string) {
+  return api(`/payments/delinquency/legal-tracker/${leaseId}`);
+}
+
+export async function fetchAttorneyPacket(leaseId: string) {
+  return api(`/payments/delinquency/attorney-packet/${leaseId}`);
+}
+
+export async function referAttorney(data: { leaseId: string; attorneyEmail?: string; attorneyName?: string; summary?: string; approvalConfirmed?: boolean }) {
+  return api('/payments/delinquency/refer-attorney', {
+    method: 'POST',
+    body: JSON.stringify({
+      leaseId: data.leaseId,
+      attorneyEmail: data.attorneyEmail ?? 'counsel@example.com',
+      attorneyName: data.attorneyName,
+      summary: data.summary,
+      approvalConfirmed: data.approvalConfirmed ?? true,
+    }),
+  });
+}
+
+export async function resolveLegalHold(data: { leaseId: string; reason?: string }) {
+  return api(`/payments/delinquency/by-payment/${data.leaseId}/promise-to-pay`, {
+    method: 'POST',
+    body: JSON.stringify({ reason: data.reason ?? 'Resolved from admin parity surface.' }),
+  });
+}
+
+export async function recordCourtDate(data: { leaseId: string; courtDate: string; docketNumber?: string; courtroom?: string; notes?: string }) {
+  return api('/payments/delinquency/record-court-date', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function createStripeCheckoutSession(data: { invoiceId: number; leaseId?: string; amount?: number; successUrl?: string; cancelUrl?: string }) {
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000';
+  return api('/payments/stripe/checkout-session', {
+    method: 'POST',
+    body: JSON.stringify({
+      invoiceId: data.invoiceId,
+      successUrl: data.successUrl ?? `${origin}/payments?checkout=success`,
+      cancelUrl: data.cancelUrl ?? `${origin}/payments?checkout=cancelled`,
+    }),
+  });
+}
+
+export async function createPaymentPlan(data: Record<string, unknown>) {
+  if (typeof data.invoiceId !== 'number') {
+    throw new Error('createPaymentPlan requires invoiceId for the current backend contract.');
+  }
+
+  return api('/payments/payment-plans', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function createManualCharge(data: Record<string, unknown>) {
+  return api('/payments/charges/manual', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function voidManualCharge(id: string, reason = 'Voided from admin parity surface.') {
+  return api(`/payments/charges/manual/${id}/void`, {
+    method: 'POST',
+    body: JSON.stringify({ reason }),
+  });
+}
+
+export async function fetchContractorBids(params?: { propertyId?: string; requestId?: string; status?: string }) {
+  return api(`/contractor-bidding/bids${buildQuery(params as Record<string, string | number | boolean | undefined | null>)}`);
+}
+
+export async function createBid(data: Record<string, unknown>) {
+  return api('/contractor-bidding/bids', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function awardBid(id: string) {
+  return api(`/contractor-bidding/bids/${id}/award`, {
+    method: 'PATCH',
+  });
+}
+
+export async function rejectBid(id: string) {
+  return api(`/contractor-bidding/bids/${id}/reject`, {
+    method: 'PATCH',
+  });
+}
+
+export async function aiScoreBid(id: string) {
+  return api(`/contractor-bidding/bids/${id}/ai-score`, {
+    method: 'POST',
+  });
+}
+
+export async function fetchContractorRecommendations(propertyId: string, scope = 'general') {
+  return api(`/contractor-bidding/properties/${propertyId}/recommendations${buildQuery({ scope })}`);
+}
+
+export async function fetchBillingSchedules() {
+  return api('/billing/schedules');
+}
+
+export async function createBillingSchedule(data: Record<string, unknown>) {
+  return api('/billing/schedules', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function fetchAutopay(params?: { leaseId?: string } | unknown) {
+  const query = params && typeof params === 'object' && 'leaseId' in (params as Record<string, unknown>)
+    ? { leaseId: (params as { leaseId?: string }).leaseId }
+    : undefined;
+
+  return api(`/billing/autopay${buildQuery(query as Record<string, string | number | boolean | undefined | null> | undefined)}`);
+}
+
+export async function enableAutopay(data: Record<string, unknown>) {
+  return api('/billing/autopay', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function disableAutopay(leaseId: string) {
+  return api(`/billing/autopay/${leaseId}/disable`, {
+    method: 'PATCH',
+  });
+}
+
+export async function fetchFeeScheduleVersions() {
+  return api('/billing/fee-schedules/versions');
+}
+
+export async function fetchLeadApplications(params?: { propertyId?: string; status?: string; dateFrom?: string; dateTo?: string; limit?: number; offset?: number }) {
+  const res = await api<any>(`/applications${buildQuery(params as Record<string, string | number | boolean | undefined | null>)}`);
+  return res?.applications ?? res?.items ?? res?.data ?? res;
+}
+
+export async function submitLeadApplication(data: Record<string, unknown>) {
+  return api('/applications/submit', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function updateLeadApplicationStatus(id: string, status: string, extras?: Record<string, unknown>) {
+  return api(`/applications/${id}/status`, {
+    method: 'PATCH',
+    body: JSON.stringify({ status, ...(extras ?? {}) }),
+  });
+}
+
+export async function triggerApplicationScreening(id: string, data?: Record<string, unknown>) {
+  return api(`/applications/${id}/screening`, {
+    method: 'PATCH',
+    body: JSON.stringify(data ?? {}),
+  });
+}
+
+export async function triggerSyndication(propertyId: string, data?: Record<string, unknown>) {
+  return api(`/listings/syndication/${propertyId}/trigger`, {
+    method: 'POST',
+    body: JSON.stringify(data ?? {}),
+  });
+}
+
+export async function getQuickBooksAuthUrl(): Promise<{ authUrl?: string; url?: string }> {
+  const result = await api<any>('/quickbooks/auth-url');
+  return {
+    ...result,
+    url: result?.url ?? result?.authUrl,
+    authUrl: result?.authUrl ?? result?.url,
+  };
+}
+
+export async function fetchQuickBooksStatus() {
+  return api('/quickbooks/status');
+}
+
+export async function fetchAccountingSyncStatus() {
+  return api('/quickbooks/status');
+}
+
+export async function syncQuickBooks() {
+  return api('/quickbooks/sync', {
+    method: 'POST',
+  });
+}
+
+export async function disconnectQuickBooks() {
+  return api('/quickbooks/disconnect', {
+    method: 'POST',
+  });
+}
+
+export async function testQuickBooksConnection() {
+  return api('/quickbooks/test-connection');
+}
+
+export async function fetchSecurityEvents(params?: { userId?: string; username?: string; type?: string; from?: string; to?: string; limit?: number; offset?: number }) {
+  return api(`/security-events${buildQuery(params as Record<string, string | number | boolean | undefined | null>)}`);
+}
+
+export async function fetchSmartDevices(params?: { propertyId?: string; unitId?: string }) {
+  return api(`/smart-devices${buildQuery(params as Record<string, string | number | boolean | undefined | null>)}`);
+}
+
+export async function registerSmartDevice(data: Record<string, unknown>) {
+  return api('/smart-devices', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function fetchAccessCodes(deviceId: string) {
+  return api(`/smart-devices/${deviceId}/access-codes`);
+}
+
+export async function createAccessCode(deviceId: string, data: Record<string, unknown>) {
+  return api(`/smart-devices/${deviceId}/access-codes`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function fetchTenantInsurance(leaseId: string) {
+  return api(`/tenant-insurance/lease/${leaseId}`);
+}
+
+export async function recordTenantInsurance(leaseId: string, data: Record<string, unknown>) {
+  return api(`/tenant-insurance/lease/${leaseId}`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function recordMasterBill(data: Record<string, unknown>) {
+  return api('/utility-billing/master-bill', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function allocateMasterBill(id: string) {
+  return api(`/utility-billing/master-bill/${id}/allocate`, {
+    method: 'POST',
+  });
+}
+
+export async function fetchVendors() {
+  return api('/vendors');
+}
+
+export async function createVendor(data: Record<string, unknown>) {
+  return api('/vendors', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export function getVendors1099ExportUrl() {
+  const base = process.env.NEXT_PUBLIC_API_URL ?? '';
+  return `${base}/vendors/1099-export`;
+}
+
+export async function fetchRentRecommendations() {
+  return api('/rent-recommendations');
+}
+
+export async function fetchPendingRecommendations() {
+  return api('/rent-recommendations/pending');
+}
+
+export async function generateRecommendations(data?: { unitIds?: string[] }) {
+  return api('/rent-recommendations/generate', {
+    method: 'POST',
+    body: JSON.stringify({ unitIds: data?.unitIds ?? [] }),
+  });
+}
+
+export async function bulkGenerateRecommendations() {
+  return api('/rent-recommendations/bulk-generate/all', {
+    method: 'POST',
+  });
+}
+
+export async function acceptRecommendation(id: string) {
+  return api(`/rent-recommendations/${id}/accept`, {
+    method: 'POST',
+  });
+}
+
+export async function rejectRecommendation(id: string) {
+  return api(`/rent-recommendations/${id}/reject`, {
+    method: 'POST',
+  });
+}
+
+export async function applyRecommendation(id: string) {
+  return api(`/rent-recommendations/${id}/apply`, {
+    method: 'POST',
+  });
+}
+
+export async function startMoveIn(data: { leaseId: string; tenantId: string }) {
+  return api('/move-orchestration/move-in', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function startMoveOut(data: { leaseId: string; tenantId: string }) {
+  return api('/move-orchestration/move-out', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function fetchOwnerDraws(statementId: string) {
+  return api(`/owner-portal/draws/statement/${statementId}`);
+}
+
+export async function createOwnerDraw(statementId: string, data: { amount?: number; bankAccount?: string; bankAccountId?: string }) {
+  return api(`/owner-portal/draws/statement/${statementId}`, {
+    method: 'POST',
+    body: JSON.stringify({
+      amountCents: Math.round(Number(data.amount ?? 0) * 100),
+      bankAccountId: data.bankAccountId ?? data.bankAccount,
+    }),
+  });
+}
+
+export async function allocateTransaction(
+  id: string,
+  data: { propertyId?: string; unitId?: string; leaseId?: string; vendorId?: string; ownerId?: string; accountId?: string; amountCents?: number },
+) {
+  return api(`/bookkeeping/transactions/${id}/allocate`, {
+    method: 'POST',
+    body: JSON.stringify({
+      allocations: [{
+        accountId: data.accountId ?? 'unassigned',
+        amountCents: data.amountCents ?? 0,
+        propertyId: data.propertyId,
+        unitId: data.unitId,
+        leaseId: data.leaseId,
+        vendorId: data.vendorId,
+        ownerId: data.ownerId,
+      }],
+    }),
+  });
+}
+
+export async function confirmReconciliationItem(id: string) {
+  return api(`/bookkeeping/reconciliation/items/${id}/confirm`, {
+    method: 'PATCH',
+  });
+}
+
+export async function flagTransactionException(id: string, data?: { reason?: string; reviewed?: boolean }) {
+  return api(`/bookkeeping/transactions/${id}/exception`, {
+    method: 'PATCH',
+    body: JSON.stringify({ reason: data?.reason ?? (data?.reviewed ? 'Marked for review from admin parity surface.' : 'Exception flagged from admin parity surface.') }),
+  });
+}
+
+export async function lockMonthlyClose(propertyId: string, month?: string) {
+  return api(`/bookkeeping/monthly-close/${propertyId}/lock`, {
+    method: 'POST',
+    body: JSON.stringify({ month: month ?? new Date().toISOString().slice(0, 7) }),
+  });
+}
+
+export async function reopenMonthlyClose(propertyId: string, month?: string, reason = 'Reopened from admin parity surface.') {
+  return api(`/bookkeeping/monthly-close/${propertyId}/reopen`, {
+    method: 'POST',
+    body: JSON.stringify({ month: month ?? new Date().toISOString().slice(0, 7), reason }),
+  });
+}
+
+export async function fetchLeaseAbstractions() {
+  return api('/lease-abstraction/abstractions');
+}
+
+export async function fetchLeaseAbstractionAnalytics(): Promise<{
+  totalAbstractions: number;
+  reviewedCount: number;
+  pendingCount: number;
+  accuracyScore: number | string;
+  [key: string]: unknown;
+}> {
+  const result = await api<any>('/lease-abstraction/analytics');
+  const reviewedCount = Number(result?.byStatus?.REVIEWED ?? 0);
+  const pendingCount = Number(result?.needsReview ?? result?.byStatus?.REVIEW_NEEDED ?? 0);
+  return {
+    ...result,
+    totalAbstractions: Number(result?.totalAbstractions ?? 0),
+    reviewedCount,
+    pendingCount,
+    accuracyScore: result?.averageConfidence ?? 'n/a',
+  };
+}
+
+export async function extractLease(data: FormData | { leaseId?: string; documentId?: string }) {
+  const leaseId = data instanceof FormData ? String(data.get('leaseId') ?? '') : (data.leaseId ?? '');
+  const documentId = data instanceof FormData ? String(data.get('documentId') ?? '') : (data.documentId ?? '');
+  return api('/lease-abstraction/extract', {
+    method: 'POST',
+    body: JSON.stringify({ leaseId, documentId }),
+  });
+}
+
+export async function bulkExtractLeases(_data?: FormData | unknown) {
+  return api('/lease-abstraction/bulk-extract', {
+    method: 'POST',
+  });
+}
+
+export async function reviewLeaseAbstraction(id: string, data?: { reviewedById?: string; reviewed?: boolean; approved?: boolean }) {
+  return api(`/lease-abstraction/abstractions/${id}/review`, {
+    method: 'PATCH',
+    body: JSON.stringify({ reviewedById: data?.reviewedById ?? 'admin' }),
+  });
+}
+
+export async function fetchChatSession(sessionId: string): Promise<{ messages: any[]; thread: any[] }> {
+  const messages = await api<any[]>(`/chatbot/session/${sessionId}`);
+  const normalized = Array.isArray(messages) ? messages : [];
+  return { messages: normalized, thread: normalized };
+}
+
+export async function sendChatMessage(message: string, sessionId?: string): Promise<{ sessionId?: string; [key: string]: unknown }> {
+  return api('/chatbot/message', {
+    method: 'POST',
+    body: JSON.stringify({ message, sessionId }),
+  });
+}
+
+export async function fetchCapexForecasts(): Promise<any[]> {
+  const result = await api<any>('/capex-forecasting/forecasts');
+  return Array.isArray(result) ? result : [];
+}
+
+export async function createCapexForecast(data: { propertyId: string; estimatedCost?: number; description?: string; category?: string; projectedYear?: number; urgency?: string; confidenceScore?: number; aiRationale?: string }) {
+  return api('/capex-forecasting/forecasts', {
+    method: 'POST',
+    body: JSON.stringify({
+      propertyId: data.propertyId,
+      category: data.category ?? 'GENERAL',
+      description: data.description,
+      estimatedCostCents: Math.round(Number(data.estimatedCost ?? 0) * 100),
+      projectedYear: data.projectedYear ?? new Date().getFullYear(),
+      urgency: data.urgency ?? 'MEDIUM',
+      confidenceScore: data.confidenceScore,
+      aiRationale: data.aiRationale,
+    }),
+  });
+}
+
+export async function approveCapexForecast(id: string, approvedBudget?: number) {
+  return api(`/capex-forecasting/forecasts/${id}/approve`, {
+    method: 'PATCH',
+    body: JSON.stringify({ approvedBudget: approvedBudget ?? 0 }),
+  });
+}
+
+export async function completeCapexForecast(id: string, actualCostCents?: number) {
+  return api(`/capex-forecasting/forecasts/${id}/complete`, {
+    method: 'PATCH',
+    body: JSON.stringify({ actualCostCents: actualCostCents ?? 0 }),
+  });
+}
+
+export async function generateCapexForecast(propertyId: string) {
+  return api(`/capex-forecasting/properties/${propertyId}/generate`, {
+    method: 'POST',
+  });
+}
+
+export async function fetchCapexSummary(): Promise<{
+  totalForecastedSpend: number;
+  approvedCount: number;
+  pendingCount: number;
+  [key: string]: unknown;
+}> {
+  const result = await api<any>('/capex-forecasting/summary');
+  const byUrgency = result?.byUrgency ?? {};
+  const totalForecasts = Number(result?.totalForecasts ?? 0);
+  const approvedCount = Number(byUrgency?.APPROVED ?? 0);
+  return {
+    ...result,
+    totalForecastedSpend: Number(result?.totalEstimatedCents ?? 0) / 100,
+    approvedCount,
+    pendingCount: Math.max(0, totalForecasts - approvedCount),
+  };
 }
 
 // fetchAuditLogs is defined above near fetchPortfolioAuditLogs
