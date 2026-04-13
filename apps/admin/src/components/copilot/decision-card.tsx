@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Brain, Loader2 } from 'lucide-react';
+import { Brain, Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { Decision, Urgency } from '@keyring/types';
 import { cn } from '@/lib/utils';
@@ -30,7 +30,14 @@ export function DecisionCard({ decision, onExecute, onDismiss }: DecisionCardPro
   const urg = urgencyStyle[decision.urgency];
 
   const handleAction = async (action: Decision['actions'][0]) => {
-    if (action.confirmRequired) return;
+    const shouldConfirm = action.confirmRequired || action.confirmation;
+    if (shouldConfirm) {
+      const confirmationMessage = action.confirmation
+        ? `${action.confirmation.title}\n\n${action.confirmation.message}`
+        : `Are you sure you want to ${action.label.toLowerCase()}?`;
+      if (!window.confirm(confirmationMessage)) return;
+    }
+
     setExecuting(action.label);
     setResult(null);
     try {
@@ -62,7 +69,21 @@ export function DecisionCard({ decision, onExecute, onDismiss }: DecisionCardPro
       </div>
 
       <h4 className="text-sm font-semibold text-[#F8FAFC]">{decision.title}</h4>
-      <p className="mb-3 text-xs leading-relaxed text-[#94A3B8]">{decision.context}</p>
+      <p className="mb-3 text-xs leading-relaxed text-[#94A3B8]">{decision.summary ?? decision.context}</p>
+
+      {decision.reasoning?.length ? (
+        <div className="mb-3 rounded-[14px] border border-white/8 bg-black/10 p-3">
+          <div className="mb-2 inline-flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.2em] text-[#7FA7D9]">
+            <Sparkles size={12} />
+            Why this surfaced
+          </div>
+          <ul className="space-y-1 text-xs text-[#CBD5E1]">
+            {decision.reasoning.slice(0, 3).map((reason, index) => (
+              <li key={`${decision.id}-reason-${index}`} className="leading-relaxed">• {reason}</li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
 
       {decision.aiRecommendation && (
         <div className="mb-3 flex items-start gap-2 rounded-[14px] border border-[#22D3EE]/10 bg-[#22D3EE]/5 p-3">
@@ -89,6 +110,17 @@ export function DecisionCard({ decision, onExecute, onDismiss }: DecisionCardPro
           </Button>
         ))}
       </div>
+
+      {decision.priority !== undefined || decision.type ? (
+        <div className="mt-3 flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.18em] text-[#6E85A5]">
+          {decision.type ? (
+            <span className="rounded-full border border-white/8 bg-black/10 px-2 py-1">{decision.type.replace(/_/g, ' ')}</span>
+          ) : null}
+          {decision.priority !== undefined ? (
+            <span className="rounded-full border border-white/8 bg-black/10 px-2 py-1">priority {decision.priority}</span>
+          ) : null}
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -7,6 +7,7 @@ import { RefreshCw } from 'lucide-react';
 import { WorkspaceShell } from '@/components/shell/workspace-shell';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { FloatingValidation } from '@/components/forms/floating-validation';
 import { createMaintenanceRequest } from '@/lib/tenant-api';
 import { cn } from '@/lib/utils';
 
@@ -47,7 +48,7 @@ export default function NewMaintenancePage() {
 
   return (
     <WorkspaceShell title="New Maintenance Request" backHref="/maintenance" backLabel="Maintenance">
-      <Card>
+      <Card className="transition-all duration-300 hover:shadow-[0_18px_60px_rgba(2,8,23,0.28)]">
         <CardHeader>
           <CardTitle>Submit a Request</CardTitle>
         </CardHeader>
@@ -65,7 +66,7 @@ export default function NewMaintenancePage() {
                   errors.title ? 'border-[#F43F5E]' : 'border-[#1E3350]',
                 )}
               />
-              {errors.title && <p className="text-xs text-[#F43F5E]">{errors.title}</p>}
+              <FloatingValidation message={errors.title} />
             </div>
 
             {/* Category */}
@@ -84,7 +85,7 @@ export default function NewMaintenancePage() {
                   <option key={c} value={c}>{c}</option>
                 ))}
               </select>
-              {errors.category && <p className="text-xs text-[#F43F5E]">{errors.category}</p>}
+              <FloatingValidation message={errors.category} />
             </div>
 
             {/* Description */}
@@ -102,7 +103,7 @@ export default function NewMaintenancePage() {
                   errors.description ? 'border-[#F43F5E]' : 'border-[#1E3350]',
                 )}
               />
-              {errors.description && <p className="text-xs text-[#F43F5E]">{errors.description}</p>}
+              <FloatingValidation message={errors.description} />
             </div>
 
             {/* Priority */}

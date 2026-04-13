@@ -1,6 +1,8 @@
 export type Severity = 'critical' | 'high' | 'medium' | 'low';
 export type Domain = 'portfolio' | 'payments' | 'leasing' | 'screening' | 'repairs' | 'renewals' | 'financials' | 'workflows';
 export type Urgency = 'immediate' | 'today' | 'this_week';
+export type DecisionType = 'approval' | 'review' | 'escalation';
+export type DecisionRisk = 'low' | 'medium' | 'high';
 
 export interface Signal {
   id: string;
@@ -14,13 +16,45 @@ export interface Signal {
   createdAt: string;
 }
 
+export interface DecisionActionConfirmation {
+  title: string;
+  message: string;
+  confirmLabel?: string;
+  cancelLabel?: string;
+}
+
+export interface DecisionActionMetadata {
+  trackingId?: string;
+  category?: string;
+  estimatedTime?: string;
+  dependencies?: string[];
+  [key: string]: unknown;
+}
+
+export interface DecisionImpact {
+  financial?: number;
+  timeline?: string;
+  risk?: DecisionRisk;
+}
+
+export interface DecisionWorkflow {
+  stage: string;
+  totalStages?: number;
+  currentStageIndex?: number;
+  eta?: string;
+}
+
 export interface DecisionAction {
   label: string;
   endpoint: string;
   method: 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   body?: Record<string, unknown>;
-  variant: 'primary' | 'danger' | 'neutral';
+  variant: 'primary' | 'danger' | 'neutral' | 'secondary';
   confirmRequired?: boolean;
+  description?: string;
+  tooltip?: string;
+  confirmation?: DecisionActionConfirmation;
+  metadata?: DecisionActionMetadata;
 }
 
 export interface Decision {
@@ -29,7 +63,15 @@ export interface Decision {
   entityType: string;
   entityId: string;
   title: string;
+  summary?: string;
   context: string;
+  reasoning?: string[];
+  priority?: number;
+  type?: DecisionType;
+  confidenceScore?: number;
+  impact?: DecisionImpact;
+  relatedDecisionIds?: string[];
+  workflow?: DecisionWorkflow;
   aiRecommendation?: string;
   actions: DecisionAction[];
   urgency: Urgency;

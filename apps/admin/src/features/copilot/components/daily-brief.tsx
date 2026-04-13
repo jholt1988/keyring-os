@@ -1,6 +1,6 @@
 'use client';
 
-import { AlertTriangle, Calendar, Clock, DollarSign, Activity, Home, Users, Wrench } from 'lucide-react';
+import { Calendar, Clock, DollarSign, Activity, Home, Users, Wrench } from 'lucide-react';
 import type { ReactElement } from 'react';
 import { useBriefing } from '@/app/hooks/useBriefing';
 import { DecisionCard, SignalCard, SectionCard } from '@/components/copilot';
@@ -22,22 +22,6 @@ const eventTypeIcon: Record<string, () => ReactElement> = {
   lease_expiration: () => <Clock size={15} className="text-[#F59E0B]" />,
   signing: () => <DollarSign size={15} className="text-[#10B981]" />,
 };
-
-function DecisionContractGap() {
-  return (
-    <div className="rounded-[22px] border border-[#F59E0B]/20 bg-[#F59E0B]/6 p-4 text-sm text-[#F9D38B]">
-      <div className="flex items-start gap-3">
-        <AlertTriangle size={16} className="mt-0.5 shrink-0 text-[#F59E0B]" />
-        <div>
-          <p className="font-medium text-[#F8E4B0]">Decision contract gap detected</p>
-          <p className="mt-1 text-xs leading-relaxed text-[#D4B26A]">
-            The current backend decision payload still exposes legacy fields like <code className="rounded bg-black/20 px-1 py-0.5">context</code> and <code className="rounded bg-black/20 px-1 py-0.5">urgency</code>. The directive target also needs <code className="rounded bg-black/20 px-1 py-0.5">type</code>, <code className="rounded bg-black/20 px-1 py-0.5">priority</code>, <code className="rounded bg-black/20 px-1 py-0.5">summary</code>, and <code className="rounded bg-black/20 px-1 py-0.5">reasoning[]</code> for first-class decision rendering.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export function DailyBrief() {
   const { data, isLoading, error, executeMutation, dismissDecision } = useBriefing();
@@ -89,8 +73,6 @@ export function DailyBrief() {
               )}
             </div>
           </div>
-
-          <DecisionContractGap />
 
           <div className="grid gap-6 lg:grid-cols-3">
             <SectionCard title="Critical Signals" subtitle="Top 3 risks worth attention now">
