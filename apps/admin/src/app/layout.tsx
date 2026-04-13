@@ -1,26 +1,27 @@
-import type { Metadata } from "next";
-import { Inter, Space_Grotesk, Geist_Mono } from "next/font/google";
-import Providers from "./providers";
-import "./globals.css";
-import { GlobalSidebar } from "@/components/shell/global-sidebar";
+import type { Metadata } from 'next';
+import { Inter, Space_Grotesk, Geist_Mono } from 'next/font/google';
+import Providers from './providers';
+import './globals.css';
+import { AppShell } from '@/features/copilot/components/app-shell';
+import { CommandSurfaceProvider } from '@/features/copilot/state/command-surface';
 
 const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
+  variable: '--font-inter',
+  subsets: ['latin'],
 });
 
 const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space",
-  subsets: ["latin"],
+  variable: '--font-space',
+  subsets: ['latin'],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-  title: 'Keyring OS — Decision Operations',
+  title: 'Keyring OS, Decision Operations',
   description: 'Decision-driven property operations',
 };
 
@@ -34,12 +35,11 @@ export default function RootLayout({
       lang="en"
       className={`dark ${inter.variable} ${spaceGrotesk.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex bg-[#07111F]">
+      <body className="min-h-full bg-[#07111F]">
         <Providers>
-          <GlobalSidebar />
-          <main className="flex-1 ml-[88px] min-h-screen overflow-y-auto">
-            {children}
-          </main>
+          <CommandSurfaceProvider>
+            <AppShell>{children}</AppShell>
+          </CommandSurfaceProvider>
         </Providers>
       </body>
     </html>
