@@ -45,7 +45,7 @@ export function CommandComposer() {
       <input
         value={query}
         onChange={(event) => setQuery(event.target.value)}
-        placeholder="What needs to happen now?"
+        placeholder="Ask, decide, or jump to a workflow"
         className="h-12 w-full rounded-full border border-white/10 bg-white/[0.04] pl-11 pr-28 text-sm text-[#F8FAFC] placeholder:text-[#6E85A5] outline-none transition-all duration-[180ms] focus:border-[#60A5FA]/60 focus:bg-white/[0.06]"
       />
       <button

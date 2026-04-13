@@ -1,15 +1,26 @@
 'use client';
 
 import type { ReactNode } from 'react';
+import { useState } from 'react';
+import { AmbientSignalCluster } from './ambient-signal-cluster';
+import { ContextPanel } from './context-panel';
 import { CommandNode } from './command-node';
 import { CommandComposer } from './command-composer';
 import { ContextRail } from './context-rail';
 import { RadialMenu } from './radial-menu';
 
 export function AppShell({ children }: { children: ReactNode }) {
+  const [panelOpen, setPanelOpen] = useState(false);
+
   return (
     <>
       <div className="relative min-h-screen bg-[radial-gradient(circle_at_top,rgba(23,48,78,0.42),transparent_48%),linear-gradient(180deg,#07111F_0%,#081221_100%)]">
+        <AmbientSignalCluster
+          signals={[
+            { id: 'portfolio-risk', severity: 'high', label: '3 risks surfacing', pulse: true },
+            { id: 'workflow-drift', severity: 'medium', label: '2 workflows active' },
+          ]}
+        />
         <ContextRail />
         <header className="mx-auto max-w-[1440px] px-4 pt-6 sm:px-6 lg:px-8 lg:pt-8">
           <div className="glass-panel rounded-[28px] px-5 py-5 sm:px-6">
@@ -27,14 +38,22 @@ export function AppShell({ children }: { children: ReactNode }) {
                   </p>
                 </div>
               </div>
-              <div className="w-full max-w-xl">
+              <div className="w-full max-w-xl space-y-3">
                 <CommandComposer />
+                <button
+                  type="button"
+                  onClick={() => setPanelOpen((current) => !current)}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-medium text-[#D9E8FF] transition-colors hover:border-white/20 hover:bg-white/[0.06]"
+                >
+                  {panelOpen ? 'Hide context panel' : 'Preview context panel'}
+                </button>
               </div>
             </div>
           </div>
         </header>
         <div className="pb-24">{children}</div>
       </div>
+      <ContextPanel open={panelOpen} onClose={() => setPanelOpen(false)} decision={null} />
       <RadialMenu />
       <CommandNode />
     </>

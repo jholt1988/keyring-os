@@ -74,6 +74,13 @@ export default function PaymentsPage() {
   const autopayPaymentMethodId =
     autopayEnrollment?.paymentMethodId ?? paymentMethods[0]?.id;
 
+  const paymentState = totalDue > 0
+    ? nextDue && new Date(nextDue.dueDate).getTime() < Date.now()
+      ? 'overdue'
+      : 'attention'
+    : 'healthy';
+  const paymentStateLabel = totalDue > 0 ? 'Payment due' : 'Account healthy';
+
   const checkoutMutation = useMutation({
     mutationFn: () =>
       createStripeCheckoutSession({
@@ -102,6 +109,16 @@ export default function PaymentsPage() {
 
   return (
     <WorkspaceShell title="Payments" backHref="/feed" backLabel="Feed">
+      <div className="mb-4 flex items-center justify-between rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
+        <div>
+          <p className="text-[11px] uppercase tracking-[0.24em] text-[#6E85A5]">Ambient payment state</p>
+          <p className="mt-1 text-sm font-medium text-[#F8FAFC]">{paymentStateLabel}</p>
+        </div>
+        <div className={`rounded-full px-3 py-1 text-xs font-medium ${paymentState === 'healthy' ? 'bg-[#10B981]/12 text-[#9AE6B4]' : paymentState === 'overdue' ? 'bg-[#F43F5E]/12 text-[#FDA4AF]' : 'bg-[#F59E0B]/12 text-[#FCD34D]'}`}>
+          {paymentState === 'healthy' ? 'Stable' : 'Action needed'}
+        </div>
+      </div>
+
       {/* Balance due card */}
       <Card>
         <CardHeader>
@@ -130,6 +147,11 @@ export default function PaymentsPage() {
                 {totalDue === 0 && (
                   <p className="mt-1 flex items-center gap-1.5 text-sm text-[#10B981]">
                     <CheckCircle2 size={14} /> No outstanding balance
+                  </p>
+                )}
+                {totalDue > 0 && (
+                  <p className="mt-1 flex items-center gap-1.5 text-sm text-[#F59E0B]">
+                    <AlertTriangle size={14} /> Action needed
                   </p>
                 )}
               </div>

@@ -502,3 +502,30 @@ export async function fetchInspection(id: number): Promise<Inspection | null> {
     return null;
   }
 }
+
+// ── Rental Applications ──────────────────────────────────────────────────────
+
+export async function createRentalApplication(data: Record<string, unknown>) {
+  return api('/rental-applications', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function updateRentalApplication(id: string, data: Record<string, unknown>) {
+  return api(`/rental-applications/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function submitRentalApplication(id: string) {
+  return api(`/rental-applications/${id}/submit`, {
+    method: 'POST',
+    body: JSON.stringify({}),
+  });
+}
+
+export async function fetchRentalApplication(id: string) {
+  return api(`/rental-applications/${id}`);
+}
