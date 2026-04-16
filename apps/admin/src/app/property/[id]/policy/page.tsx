@@ -1,0 +1,1 @@
+export { PolicySettingsPage as default } from '@/features/policy/components/policy-settings-page';

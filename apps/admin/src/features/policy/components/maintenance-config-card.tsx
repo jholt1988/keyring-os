@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { ChevronDown, ChevronRight, Plus, Trash2, Edit2, Save, X, Clock, AlertTriangle } from 'lucide-react';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 export type MaintenanceCategoryPriority = 'emergency' | 'high' | 'medium' | 'low';
 export type DispatchStrategy = 'ROUND_ROBIN' | 'PRIORITY_LIST';
@@ -35,6 +35,7 @@ export interface MaintenanceConfig {
 interface MaintenanceConfigCardProps {
   config: MaintenanceConfig;
   onConfigChange?: (config: MaintenanceConfig) => void;
+  onSave?: (config: MaintenanceConfig) => void;
 }
 
 const priorityOptions: { value: MaintenanceCategoryPriority; label: string }[] = [
@@ -56,7 +57,7 @@ const priorityColors: Record<MaintenanceCategoryPriority, string> = {
   low: 'text-[#94A3B8] bg-white/5 border-white/10',
 };
 
-export function MaintenanceConfigCard({ config, onConfigChange }: MaintenanceConfigCardProps) {
+export function MaintenanceConfigCard({ config, onConfigChange, onSave }: MaintenanceConfigCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [categories, setCategories] = useState<MaintenanceCategory[]>(config.categories);
   const [afterHoursDispatch, setAfterHoursDispatch] = useState(config.afterHoursDispatch);
@@ -75,6 +76,12 @@ export function MaintenanceConfigCard({ config, onConfigChange }: MaintenanceCon
   const [editingSubcategoryId, setEditingSubcategoryId] = useState<string | null>(null);
   const [editingCategory, setEditingCategory] = useState<Partial<MaintenanceCategory>>({});
   const [editingSubcategory, setEditingSubcategory] = useState<Partial<MaintenanceSubcategory>>({});
+
+  const handleSave = () => {
+    if (onSave) {
+      onSave({ categories, afterHoursDispatch });
+    }
+  };
 
   const handleAddCategory = () => {
     if (!newCategory.code || !newCategory.name) return;
@@ -397,6 +404,16 @@ export function MaintenanceConfigCard({ config, onConfigChange }: MaintenanceCon
               </div>
             </div>
           </div>
+
+          {/* Save Button */}
+          {onSave && (
+            <div className="mt-6 pt-4">
+              <Button onClick={handleSave} className="gap-2">
+                <Save className="h-4 w-4" />
+                Save Changes
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </div>
