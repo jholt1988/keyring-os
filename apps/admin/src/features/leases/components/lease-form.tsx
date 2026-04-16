@@ -16,6 +16,11 @@ export interface LeaseFormData {
   securityDeposit: number;
   leaseType: 'fixed-term' | 'month-to-month';
   status: 'draft' | 'pending' | 'active' | 'expired' | 'terminated';
+  moveInAt?: string;
+  moveOutAt?: string;
+  noticePeriodDays?: number;
+  autoRenew?: boolean;
+  autoRenewLeadDays?: number;
 }
 
 interface LeaseFormProps {
@@ -39,7 +44,7 @@ export function LeaseForm({ initialData, tenantOptions = [], propertyOptions = [
     status: 'draft',
   });
 
-  const handleChange = (field: keyof LeaseFormData, value: string | number) => {
+  const handleChange = (field: keyof LeaseFormData, value: string | number | boolean | undefined) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -187,6 +192,65 @@ export function LeaseForm({ initialData, tenantOptions = [], propertyOptions = [
             <option value="expired">Expired</option>
             <option value="terminated">Terminated</option>
           </select>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Move In Date</label>
+          <div className="relative">
+            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Input
+              type="date"
+              value={form.moveInAt || ''}
+              onChange={(e) => handleChange('moveInAt', e.target.value)}
+              className="pl-10"
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Move Out Date</label>
+          <div className="relative">
+            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Input
+              type="date"
+              value={form.moveOutAt || ''}
+              onChange={(e) => handleChange('moveOutAt', e.target.value)}
+              className="pl-10"
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Notice Period (days)</label>
+          <Input
+            type="number"
+            value={form.noticePeriodDays ?? ''}
+            onChange={(e) => handleChange('noticePeriodDays', e.target.value ? Number(e.target.value) : 0)}
+            placeholder="30"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Auto Renew</label>
+          <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-white/10 bg-[#0F1B31] p-3">
+            <input
+              type="checkbox"
+              checked={form.autoRenew ?? false}
+              onChange={(e) => handleChange('autoRenew', e.target.checked)}
+              className="h-4 w-4 rounded border-white/20 bg-[#0F1B31] text-[#3B82F6] focus:ring-[#3B82F6]"
+            />
+            <span className="text-sm text-[#F8FAFC]">Enable auto-renewal</span>
+          </label>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Auto Renew Lead Days</label>
+          <Input
+            type="number"
+            value={form.autoRenewLeadDays ?? ''}
+            onChange={(e) => handleChange('autoRenewLeadDays', e.target.value ? Number(e.target.value) : 0)}
+            placeholder="60"
+          />
         </div>
       </div>
 
