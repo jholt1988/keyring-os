@@ -1,12 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDown, ChevronUp, CreditCard, Calculator, Shield, CheckSquare, Square } from 'lucide-react';
+import { ChevronDown, ChevronUp, CreditCard, Calculator, Shield, CheckSquare, Square, Save } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import type { UnderwritingRules, CreditBand } from '@keyring/types';
 
 export interface UnderwritingRulesCardProps {
   rules: UnderwritingRules;
   onChange?: (rules: UnderwritingRules) => void;
+  onSave?: (rules: UnderwritingRules) => void;
   editable?: boolean;
 }
 
@@ -20,12 +22,18 @@ const creditBandLabels: Record<CreditBand, string> = {
   EXCELLENT: 'Excellent (750+)',
 };
 
-export function UnderwritingRulesCard({ rules, onChange, editable = false }: UnderwritingRulesCardProps) {
+export function UnderwritingRulesCard({ rules, onChange, onSave, editable = false }: UnderwritingRulesCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleChange = (field: keyof UnderwritingRules, value: string | number | boolean) => {
     if (onChange) {
       onChange({ ...rules, [field]: value });
+    }
+  };
+
+  const handleSave = () => {
+    if (onSave) {
+      onSave(rules);
     }
   };
 
@@ -189,6 +197,16 @@ export function UnderwritingRulesCard({ rules, onChange, editable = false }: Und
               <span className="text-sm text-[#F8FAFC]">Require second approval for deny → approve override</span>
             </label>
           </div>
+
+          {/* Save Button */}
+          {editable && onSave && (
+            <div className="mt-4 pt-4">
+              <Button onClick={handleSave} className="gap-2">
+                <Save className="h-4 w-4" />
+                Save Changes
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </div>

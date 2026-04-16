@@ -5,6 +5,7 @@ import { CreditCard, ChevronDown, ChevronUp, Save, DollarSign, Calendar, Hash, F
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { type PaymentPlanSettings } from '@keyring/types';
+import { updatePaymentPlanSettings } from './policy-api';
 
 interface PaymentPlanSettingsCardProps {
   propertyId: string;
@@ -40,8 +41,14 @@ export function PaymentPlanSettingsCard({
     setSettings((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSave = () => {
-    onSave?.(settings);
+  const handleSave = async () => {
+    try {
+      await updatePaymentPlanSettings(propertyId, settings);
+      onSave?.(settings);
+    } catch (error) {
+      console.error('Failed to save payment plan settings:', error);
+      throw error;
+    }
   };
 
   // Collapsed summary
