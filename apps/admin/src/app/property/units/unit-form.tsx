@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Home, Square, Bed, Bath, DollarSign, X, Save } from 'lucide-react';
+import { Home, Square, Bed, Bath, DollarSign, X, Save, Car, WashingMachine, Flame, Snowflake, Sofa, PawPrint } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
@@ -15,6 +15,13 @@ export interface UnitFormData {
   sqft: number;
   rent: number;
   status: 'vacant' | 'occupied' | 'maintenance' | 'reserved';
+  // Amenities from backend DTO
+  hasParking?: boolean;
+  hasLaundry?: boolean;
+  hasBalcony?: boolean;
+  hasAC?: boolean;
+  isFurnished?: boolean;
+  petsAllowed?: boolean;
 }
 
 interface UnitFormProps {
@@ -23,6 +30,21 @@ interface UnitFormProps {
   onSave: (data: UnitFormData) => void;
   onCancel: () => void;
 }
+
+interface CheckboxOption {
+  key: keyof UnitFormData;
+  label: string;
+  icon: React.ElementType;
+}
+
+const amenityOptions: CheckboxOption[] = [
+  { key: 'hasParking', label: 'Parking', icon: Car },
+  { key: 'hasLaundry', label: 'In-unit Laundry', icon: WashingMachine },
+  { key: 'hasBalcony', label: 'Balcony/Patio', icon: Flame },
+  { key: 'hasAC', label: 'Air Conditioning', icon: Snowflake },
+  { key: 'isFurnished', label: 'Furnished', icon: Sofa },
+  { key: 'petsAllowed', label: 'Pets Allowed', icon: PawPrint },
+];
 
 export function UnitForm({ initialData, propertyOptions = [], onSave, onCancel }: UnitFormProps) {
   const [form, setForm] = useState<UnitFormData>(initialData || {
@@ -33,9 +55,15 @@ export function UnitForm({ initialData, propertyOptions = [], onSave, onCancel }
     sqft: 0,
     rent: 0,
     status: 'vacant',
+    hasParking: false,
+    hasLaundry: false,
+    hasBalcony: false,
+    hasAC: false,
+    isFurnished: false,
+    petsAllowed: false,
   });
 
-  const handleChange = (field: keyof UnitFormData, value: string | number) => {
+  const handleChange = (field: keyof UnitFormData, value: string | number | boolean) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -61,7 +89,7 @@ export function UnitForm({ initialData, propertyOptions = [], onSave, onCancel }
           <select
             value={form.propertyId}
             onChange={(e) => handleChange('propertyId', e.target.value)}
-            className="flex h-11 w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] focus:border-[#3B82F6] focus:outline-none focus:ring-1 focus:ring-[#3B82F6]"
+            className="flex h-11 w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] focus:border-[#3B82F6]"
             required
           >
             <option value="">Select property</option>
@@ -89,8 +117,8 @@ export function UnitForm({ initialData, propertyOptions = [], onSave, onCancel }
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Status</label>
           <select
             value={form.status}
-            onChange={(e) => handleChange('status', e.target.value as UnitFormData['status'])}
-            className="flex h-11 w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] focus:border-[#3B82F6] focus:outline-none focus:ring-1 focus:ring-[#3B82F6]"
+            onChange={(e) => handleChange('status', e.target.value)}
+            className="flex h-11 w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC]"
           >
             <option value="vacant">Vacant</option>
             <option value="occupied">Occupied</option>
@@ -159,6 +187,35 @@ export function UnitForm({ initialData, propertyOptions = [], onSave, onCancel }
               className="pl-10"
               required
             />
+          </div>
+        </div>
+
+        <div className="space-y-2 md:col-span-2">
+          <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Amenities</label>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+            {amenityOptions.map((option) => {
+              const Icon = option.icon;
+              const isChecked = Boolean(form[option.key]);
+              return (
+                <label
+                  key={option.key}
+                  className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 transition-all ${
+                    isChecked
+                      ? 'border-[#38BDF8]/30 bg-[#38BDF8]/8 text-[#38BDF8]'
+                      : 'border-white/10 bg-white/[0.02] text-[#94A3B8] hover:border-white/20'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={isChecked}
+                    onChange={(e) => handleChange(option.key, e.target.checked)}
+                    className="hidden"
+                  />
+                  <Icon size={16} />
+                  <span className="text-sm">{option.label}</span>
+                </label>
+              );
+            })}
           </div>
         </div>
       </div>
