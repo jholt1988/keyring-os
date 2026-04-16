@@ -1,0 +1,1 @@
+export { TenantList, type Tenant } from './tenant-list';
