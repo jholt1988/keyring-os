@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { RequireRole } from '@/components/auth';
 import { useParams } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Shield, AlertCircle } from 'lucide-react';
+import { Shield, AlertCircle, Loader2 } from 'lucide-react';
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { Button } from '@/components/ui/button';
 import {
