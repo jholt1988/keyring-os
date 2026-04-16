@@ -7,6 +7,7 @@ import { ClipboardList, Plus, ChevronRight, CheckCircle2, Play, RefreshCw } from
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { SectionCard } from '@/components/copilot/section-card';
 import { Button } from '@/components/ui/button';
+import { RequireRole } from '@/components/auth';
 import { fetchInspections, completeInspection, startInspection } from '@/lib/copilot-api';
 import { useToast } from '@/components/ui/toast';
 
@@ -46,6 +47,7 @@ export default function InspectionsPage() {
   const past = (inspections as any[]).filter(i => !['SCHEDULED','IN_PROGRESS'].includes(i.status?.toUpperCase()));
 
   return (
+    <RequireRole requiredRoles={['ADMIN', 'PROPERTY_MANAGER']}>
     <WorkspaceShell title="Inspections" subtitle="Property Condition Management" icon={ClipboardList}
       actions={<Link href="/inspections/new"><Button size="sm"><Plus size={13} /> New Inspection</Button></Link>}
     >
@@ -115,5 +117,6 @@ export default function InspectionsPage() {
         </div>
       )}
     </WorkspaceShell>
+    </RequireRole>
   );
 }
