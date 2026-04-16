@@ -7,9 +7,20 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
+interface LoginResponse {
+  access_token?: string;
+  accessToken?: string;
+  statusMessage?: string;
+  user?: {
+    id: string;
+    username: string;
+    roles: string[];
+  };
+}
+
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -19,14 +30,35 @@ export default function LoginPage() {
     setIsLoading(true);
     setError('');
 
-    // Simulate login delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+      
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
 
-    // Demo: accept any credentials for now
-    if (email && password) {
+      const data: LoginResponse = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.statusMessage || 'Login failed');
+      }
+
+      // Store token in localStorage
+      const token = data.access_token || data.accessToken;
+      if (token) {
+        localStorage.setItem('auth_token', token);
+        if (data.user) {
+          localStorage.setItem('user', JSON.stringify(data.user));
+        }
+      }
+
       router.push('/');
-    } else {
-      setError('Please enter email and password');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Login failed. Please try again.');
       setIsLoading(false);
     }
   };
@@ -58,15 +90,16 @@ export default function LoginPage() {
 
             <div className="space-y-2">
               <label className="text-xs font-medium uppercase tracking-wider text-[#94A3B8]">
-                Email
+                Username
               </label>
               <div className="relative">
                 <Input
-                  type="email"
-                  placeholder="admin@keyring.os"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  type="text"
+                  placeholder="admin"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   className="h-11 border-white/10 bg-[#0F1B31] pl-10 text-[#F8FAFC] placeholder:text-[#64748B] focus:border-[#3B82F6] focus:ring-[#3B82F6]"
+                  autoComplete="username"
                 />
                 <div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
                   <svg
@@ -97,6 +130,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="h-11 border-white/10 bg-[#0F1B31] pl-10 text-[#F8FAFC] placeholder:text-[#64748B] focus:border-[#3B82F6] focus:ring-[#3B82F6]"
+                  autoComplete="current-password"
                 />
                 <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
               </div>
