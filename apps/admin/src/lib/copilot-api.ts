@@ -1371,3 +1371,41 @@ export async function fetchCapexSummary(): Promise<{
 }
 
 // fetchAuditLogs is defined above near fetchPortfolioAuditLogs
+
+// ========== GAP REMEDIATION: Admin API Connectors ==========
+
+export async function getDelinquencyLegalTracker(leaseId: string) {
+  return await api(`/payments/delinquency/legal-tracker/${leaseId}`);
+}
+
+export async function getLedgerAccount(leaseId: string) {
+  return await api(`/payments/ledger/accounts/${leaseId}`);
+}
+
+export async function assignVendor(maintenanceId: string, vendorId: string, notes?: string) {
+  return await api(`/maintenance/${maintenanceId}/assign-vendor`, {
+    method: 'POST',
+    body: JSON.stringify({ vendorId, notes }),
+  });
+}
+
+export async function notifyTenantMaintenance(maintenanceId: string, message: string) {
+  return await api(`/maintenance/${maintenanceId}/notify-tenant`, {
+    method: 'POST',
+    body: JSON.stringify({ message }),
+  });
+}
+
+export async function generateLeaseDocument(leaseId: string) {
+  return await api(`/leases/${leaseId}/generate-document`, {
+    method: 'POST',
+  });
+}
+
+export async function sendLeaseForSignature(leaseId: string, signerEmail?: string, signerName?: string) {
+  return await api(`/leases/${leaseId}/send-for-signature`, {
+    method: 'POST',
+    body: JSON.stringify({ signerEmail, signerName }),
+  });
+}
+
