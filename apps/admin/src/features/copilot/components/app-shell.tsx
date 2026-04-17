@@ -8,13 +8,16 @@ import { CommandNode } from './command-node';
 import { CommandComposer } from './command-composer';
 import { ContextRail } from './context-rail';
 import { RadialMenu } from './radial-menu';
+import { MinimalSidebar } from './minimal-sidebar';
+import { QuickActionsBar } from './quick-actions-bar';
 
 export function AppShell({ children }: { children: ReactNode }) {
   const [panelOpen, setPanelOpen] = useState(false);
 
   return (
     <>
-      <div className="relative min-h-screen bg-[radial-gradient(circle_at_top,rgba(23,48,78,0.42),transparent_48%),linear-gradient(180deg,#07111F_0%,#081221_100%)]">
+      <MinimalSidebar />
+      <div className="relative min-h-screen pl-20 bg-[radial-gradient(circle_at_top,rgba(23,48,78,0.42),transparent_48%),linear-gradient(180deg,#07111F_0%,#081221_100%)]">
         <AmbientSignalCluster
           signals={[
             { id: 'portfolio-risk', severity: 'high', label: '3 risks surfacing', pulse: true },
