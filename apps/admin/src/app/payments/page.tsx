@@ -18,7 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 import { WorkspaceShell, SectionCard } from '@/components/copilot';
 import { usePaymentsWorkspace } from '@/app/hooks/useWorkspace';
-import { issueDelinquencyNotice } from '@/lib/copilot-api';
+import { issueDelinquencyNotice, getDelinquencyLegalTracker, getLedgerAccount } from '@/lib/copilot-api';
 import { useToast } from '@/components/ui/toast';
 
 type DelinquentItem = {
@@ -211,10 +211,24 @@ export default function PaymentsPage() {
                         <Button size="sm" onClick={() => setRemindTarget(item)}>
                           <Send size={12} /> Send reminder
                         </Button>
-                        <Button size="sm" variant="outline">
+                        <Button size="sm" variant="outline" onClick={async () => {
+                          try {
+                            await getDelinquencyLegalTracker(item.leaseId ?? item.id ?? '');
+                            toast('Notice trail opened contextually.');
+                          } catch {
+                            toast('Failed to open notice trail.', 'error');
+                          }
+                        }}>
                           <Bell size={12} /> Review notice trail
                         </Button>
-                        <Button size="sm" variant="outline">
+                        <Button size="sm" variant="outline" onClick={async () => {
+                          try {
+                            await getLedgerAccount(item.leaseId ?? item.id ?? '');
+                            toast('Ledger context retrieved.');
+                          } catch {
+                            toast('Failed to access ledger.', 'error');
+                          }
+                        }}>
                           <ExternalLink size={12} /> Open ledger context
                         </Button>
                       </div>

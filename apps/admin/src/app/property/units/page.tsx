@@ -178,3 +178,11 @@ export function UnitList({ units, propertyId, propertyName, onSelectUnit, onBack
     </div>
   );
 }
+
+export default function PropertyUnitsPage() {
+  return (
+    <div className="p-6 text-center text-[#94A3B8]">
+      <p>Property units cannot be viewed without a selected property context.</p>
+    </div>
+  );
+}

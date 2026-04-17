@@ -7,10 +7,12 @@ import { WorkspaceShell } from '@/components/copilot';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RequireRole } from '@/components/auth';
-import { createMaintenanceRequest } from '@/lib/copilot-api';
+import { createMaintenanceRequest, assignVendor, notifyTenantMaintenance } from '@/lib/copilot-api';
+import { useToast } from '@/components/ui/toast';
 
 export default function MaintenancePage() {
   const queryClient = useQueryClient();
+  const { toast } = useToast();
   const [showForm, setShowForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [formData, setFormData] = useState({
@@ -176,6 +178,21 @@ export default function MaintenancePage() {
                         <span>{request.category || 'Uncategorized'}</span>
                       </div>
                     </div>
+                    {['EMERGENCY', 'HIGH'].includes(request.priority) && request.status === 'PENDING' && (
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="outline" onClick={async () => {
+                          try {
+                            await assignVendor(request.id, 'vendor-emergency-999');
+                            await notifyTenantMaintenance(request.id, 'Vendor dispatched automatically.');
+                            toast('Vendor assigned and tenant notified.');
+                          } catch {
+                            toast('Failed to dispatch vendor.', 'error');
+                          }
+                        }}>
+                          <Wrench size={12} className="mr-2" /> Dispatch Vendor
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
