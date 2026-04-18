@@ -1,4 +1,4 @@
-// Auth Middleware - Redirect unauthenticated users to login
+// Auth Middleware - Redirect unauthenticated users to login or landing
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
@@ -6,6 +6,7 @@ import type { NextRequest } from 'next/server';
 const publicPaths = [
   '/login',
   '/register',
+  '/landing',
   '/api/auth/login',
   '/api/auth/refresh',
   '/_vercel',
@@ -34,8 +35,18 @@ export function proxy(request: NextRequest) {
   const userStr = request.cookies.get('user')?.value;
   const hasUser = userStr ? true : false;
 
-  // If no token or user, redirect to login
+  // If no token or user, check if first-time visitor
   if (!authToken && !hasUser) {
+    // Check return user cookie
+    const returnUserCookie = request.cookies.get('keyring_return_visit');
+    
+    if (!returnUserCookie) {
+      // First-time user - show landing page
+      const landingUrl = new URL('/landing', request.url);
+      return NextResponse.redirect(landingUrl);
+    }
+    
+    // Return user without auth - redirect to login
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(loginUrl);
@@ -47,13 +58,6 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     */
     '/((?!_next/static|_next/image|favicon.ico|public/).*)',
   ],
 };

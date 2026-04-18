@@ -59,7 +59,7 @@ export function RadialMenu() {
 
   return (
     <div className="fixed inset-0 z-40 bg-[#020817]/40 backdrop-blur-[2px]" onClick={collapse}>
-      <div className="pointer-events-none absolute bottom-14 right-14 md:bottom-[92px] md:right-[92px]">
+      <div className="pointer-events-none absolute bottom-20 right-8 md:bottom-24 md:right-16">
         {radialState === 'primary-open' && domains.map((domain, index) => {
           const Icon = iconMap[domain.icon as keyof typeof iconMap] ?? Wallet;
           return (
