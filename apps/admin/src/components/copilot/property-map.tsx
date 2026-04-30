@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import L from 'leaflet';
+import type * as Leaflet from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 interface PropertyMapItem {
@@ -39,7 +39,7 @@ function getPropertyCoords(p: PropertyMapItem): [number, number] {
   return [hashToCoord(seed + '_lat', 33.5, 40.5), hashToCoord(seed + '_lng', -118, -74)];
 }
 
-function createMarkerIcon(hasRisk: boolean) {
+function createMarkerIcon(L: typeof Leaflet, hasRisk: boolean) {
   const color = hasRisk ? '#F43F5E' : '#3B82F6';
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="36" viewBox="0 0 28 36">
     <path d="M14 0C6.268 0 0 6.268 0 14c0 10.5 14 22 14 22s14-11.5 14-22C28 6.268 21.732 0 14 0z" fill="${color}" stroke="#0F1B31" stroke-width="1.5"/>
@@ -115,7 +115,7 @@ function buildPopupHtml(p: PropertyMapItem): string {
 
 export function PropertyMap({ properties, className }: PropertyMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<L.Map | null>(null);
+  const mapInstanceRef = useRef<Leaflet.Map | null>(null);
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
 
@@ -131,26 +131,36 @@ export function PropertyMap({ properties, className }: PropertyMapProps) {
   useEffect(() => {
     if (!mounted || !mapRef.current || properties.length === 0) return;
 
-    if (mapInstanceRef.current) {
-      mapInstanceRef.current.remove();
-      mapInstanceRef.current = null;
-    }
+    const mapElement = mapRef.current;
+    let cancelled = false;
+    let activeMap: Leaflet.Map | null = null;
+    let popupClickHandler: ((e: MouseEvent) => void) | null = null;
 
-    const map = L.map(mapRef.current, {
+    async function initializeMap() {
+      const L = await import('leaflet');
+      if (cancelled) return;
+
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+
+      const map = L.map(mapElement, {
       zoomControl: true,
       attributionControl: false,
-    });
-    mapInstanceRef.current = map;
+      });
+      activeMap = map;
+      mapInstanceRef.current = map;
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
       maxZoom: 19,
-    }).addTo(map);
+      }).addTo(map);
 
-    const markers: L.Marker[] = [];
+      const markers: Leaflet.Marker[] = [];
 
-    coords.forEach(p => {
-      const hasRisk = (p.repairRiskCount ?? 0) > 0 || (p.overdueAmount ?? 0) > 0;
-      const marker = L.marker(p.coords, { icon: createMarkerIcon(hasRisk) }).addTo(map);
+      coords.forEach(p => {
+        const hasRisk = (p.repairRiskCount ?? 0) > 0 || (p.overdueAmount ?? 0) > 0;
+        const marker = L.marker(p.coords, { icon: createMarkerIcon(L, hasRisk) }).addTo(map);
 
       marker.bindTooltip(buildTooltipHtml(p), {
         direction: 'top',
@@ -165,26 +175,35 @@ export function PropertyMap({ properties, className }: PropertyMapProps) {
         closeButton: true,
       });
 
-      markers.push(marker);
-    });
+        markers.push(marker);
+      });
 
-    if (coords.length > 0) {
-      const bounds = L.latLngBounds(coords.map(p => p.coords));
-      map.fitBounds(bounds, { padding: [50, 50], maxZoom: 12 });
-    }
+      if (coords.length > 0) {
+        const bounds = L.latLngBounds(coords.map(p => p.coords));
+        map.fitBounds(bounds, { padding: [50, 50], maxZoom: 12 });
+      }
 
-    const handlePopupClick = (e: MouseEvent) => {
+      const handlePopupClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const link = target.closest('.property-map-view-link') as HTMLElement | null;
       if (link?.dataset.propertyId) {
         router.push(`/properties/${link.dataset.propertyId}`);
       }
-    };
-    mapRef.current.addEventListener('click', handlePopupClick);
+      };
+      popupClickHandler = handlePopupClick;
+      mapElement.addEventListener('click', handlePopupClick);
+
+      activeMap = map;
+    }
+
+    initializeMap();
 
     return () => {
-      mapRef.current?.removeEventListener('click', handlePopupClick);
-      map.remove();
+      cancelled = true;
+      if (popupClickHandler) {
+        mapElement.removeEventListener('click', popupClickHandler);
+      }
+      activeMap?.remove();
       mapInstanceRef.current = null;
     };
   }, [mounted, coords, router, properties.length]);
