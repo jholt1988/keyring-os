@@ -24,7 +24,7 @@ export function ReversePaymentForm({ onSave, onCancel }: ReversePaymentFormProps
       </div>
 
       <div className="rounded-lg border border-[#F59E0B]/20 bg-[#F59E0B]/5 p-4">
-        <p className="text-sm text-[#F59E0B]">This will reverse the payment. The amount will be re-added to the tenant's balance.</p>
+        <p className="text-sm text-[#F59E0B]">This will reverse the payment. The amount will be re-added to the tenant&apos;s balance.</p>
       </div>
 
       <div className="space-y-2">

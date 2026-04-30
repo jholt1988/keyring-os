@@ -28,7 +28,7 @@ interface TenantFormProps {
 }
 
 export function TenantForm({ initialData, propertyOptions = [], onSave, onCancel }: TenantFormProps) {
-  const [form, setForm] = useState<TenantFormData>(initialData || {
+  const [form, setForm] = useState<TenantFormData>(() => initialData || {
     firstName: '',
     lastName: '',
     email: '',

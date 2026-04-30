@@ -77,7 +77,7 @@ export function withFeatureFlag<P extends object>(
   Component: React.ComponentType<P>,
   flagKey: string
 ): React.FC<P> {
-  return (props: P) => {
+  const FeatureFlaggedComponent = (props: P) => {
     const { isEnabled } = useFeatureFlags();
     
     if (!isEnabled(flagKey)) {
@@ -86,6 +86,8 @@ export function withFeatureFlag<P extends object>(
     
     return <Component {...props} />;
   };
+  FeatureFlaggedComponent.displayName = `withFeatureFlag(${Component.displayName ?? Component.name ?? 'Component'})`;
+  return FeatureFlaggedComponent;
 }
 
 // Named exports for specific feature checks
