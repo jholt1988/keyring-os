@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { Calendar, MapPin, User, Home, FileText, Flag, X, Save } from 'lucide-react';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Calendar,FileText,Flag,Home,User,X } from 'lucide-react';
+import { useState } from 'react';
 
 export interface ScheduleEventFormData {
   type: 'TOUR' | 'MOVE_IN' | 'MOVE_OUT' | 'LEASE_EXPIRATION' | 'LEASE_RENEWAL' | 'INSPECTION' | 'MAINTENANCE';

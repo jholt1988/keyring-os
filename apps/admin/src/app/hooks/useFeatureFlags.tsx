@@ -9,13 +9,6 @@ export interface FeatureFlag {
   rolloutPercentage: number;
 }
 
-const FEATURE_FLAG_ENDPOINTS = {
-  LIST: '/api/v2/feature-flags',
-  GET: '/api/v2/feature-flags/:key',
-  ENABLE: '/api/v2/feature-flags/:key/enable',
-  DISABLE: '/api/v2/feature-flags/:key/disable',
-};
-
 // Default flags for frontend control
 export const DEFAULT_FLAGS: Record<string, boolean> = {
   // Production flags

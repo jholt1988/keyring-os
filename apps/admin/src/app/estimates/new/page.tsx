@@ -1,13 +1,12 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { RequireRole } from '@/components/auth';
+import { WorkspaceShell } from '@/components/copilot';
+import { useToast } from '@/components/ui/toast';
+import { EstimateForm,type EstimateFormData } from '@/features/repairs/components/estimate-form';
 import { useMutation } from '@tanstack/react-query';
 import { DollarSign } from 'lucide-react';
-import { WorkspaceShell } from '@/components/copilot';
-import { RequireRole } from '@/components/auth';
-import { EstimateForm, type EstimateFormData } from '@/features/repairs/components/estimate-form';
-import { useToast } from '@/components/ui/toast';
+import { useRouter } from 'next/navigation';
 
 // Stub API call - would need backend endpoint
 async function createEstimate(data: EstimateFormData) {

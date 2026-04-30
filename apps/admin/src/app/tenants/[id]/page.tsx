@@ -1,46 +1,43 @@
 'use client';
 
-import { useState } from 'react';
-import { useParams } from 'next/navigation';
-import Link from 'next/link';
-import {
-  UserCheck,
-  MessageSquare,
-  FileText,
-  Send,
-  RefreshCw,
-  DollarSign,
-  Wrench,
-  Shield,
-  Activity,
-  Home,
-  Users,
-  Heart,
-  Car,
-  PawPrint,
-  Mail,
-  Phone,
-  CheckCircle,
-  XCircle,
-  AlertTriangle,
-  Clock,
-  Calendar,
-  ArrowLeft,
-} from 'lucide-react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import { useTenantActivity,useTenantWorkspace } from '@/app/hooks/useWorkspace';
+import { RiskMeter,SectionCard } from '@/components/copilot';
+import { CommunicationTimeline,TenantHealthBadge } from '@/components/tenant';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
-import { SectionCard, MetricCard, RiskMeter } from '@/components/copilot';
-import { TenantHealthBadge, CommunicationTimeline } from '@/components/tenant';
-import { useTenantWorkspace, useTenantActivity } from '@/app/hooks/useWorkspace';
-import {
-  createConversation, recordLeaseNotice, logManualPayment,
-  createMaintenanceRequest, updateTenantProfile, addHouseholdMember, addViolation,
-} from '@/lib/copilot-api';
 import { useToast } from '@/components/ui/toast';
+import {
+addHouseholdMember,addViolation,
+createConversation,
+createMaintenanceRequest,
+logManualPayment,
+recordLeaseNotice,
+updateTenantProfile,
+} from '@/lib/copilot-api';
 import { cn } from '@/lib/utils';
 import type { Severity } from '@keyring/types';
+import { useMutation,useQueryClient } from '@tanstack/react-query';
+import {
+Activity,
+AlertTriangle,
+ArrowLeft,
+Car,
+CheckCircle,
+DollarSign,
+FileText,
+Heart,
+MessageSquare,
+PawPrint,
+RefreshCw,
+Send,
+Shield,
+UserCheck,
+Users,
+Wrench
+} from 'lucide-react';
+import Link from 'next/link';
+import { useParams,useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 const tabs = [
   { key: 'profile', label: 'Profile', icon: UserCheck },
@@ -695,7 +692,7 @@ function LeaseSection({ lease }: { lease: any }) {
   );
 }
 
-function PaymentsSection({ payments, lease }: { payments: any; lease: any }) {
+function PaymentsSection({ payments }: { payments: any; lease: any }) {
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
       <SectionCard title="Payment Summary" subtitle="Ledger overview">

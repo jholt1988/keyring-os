@@ -1,7 +1,7 @@
 'use client';
 
-import { Building, Plus, MapPin, Home, DollarSign, Calendar, ArrowRight, CheckCircle, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Building,Calendar,CheckCircle,DollarSign,Home,MapPin,XCircle } from 'lucide-react';
 
 export interface PropertyOnboardingDecision {
   id: string;

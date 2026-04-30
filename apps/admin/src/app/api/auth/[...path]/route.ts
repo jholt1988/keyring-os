@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest,NextResponse } from 'next/server';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://127.0.0.1:3001/api';
 
@@ -21,7 +21,7 @@ export async function GET(
 
     const data = await response.json();
     return NextResponse.json(data, { status: response.status });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { statusMessage: 'Backend unreachable' },
       { status: 502 }
@@ -49,7 +49,7 @@ export async function POST(
 
     const data = await response.json();
     return NextResponse.json(data, { status: response.status });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { statusMessage: 'Backend unreachable' },
       { status: 502 }

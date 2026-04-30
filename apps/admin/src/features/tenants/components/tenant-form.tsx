@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { User, Mail, Phone, Home, Calendar, DollarSign, X, Save } from 'lucide-react';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Calendar,DollarSign,Mail,Phone,Save,User,X } from 'lucide-react';
+import { useState } from 'react';
 
 export interface TenantFormData {
   id?: string;

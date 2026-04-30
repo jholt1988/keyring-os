@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { RefreshCw, CheckCircle, AlertTriangle, TrendingUp, Home, Send } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 import { WorkspaceShell, RiskMeter, ExplainableAction, SectionCard, MetricCard } from '@/components/copilot';
@@ -17,9 +17,6 @@ export default function RenewalsPage() {
   const qc = useQueryClient();
   const { toast } = useToast();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const filterTenantId = searchParams.get('tenantId');
-  const filterPropertyId = searchParams.get('propertyId');
 
   const [offerTarget, setOfferTarget] = useState<any>(null);
   const [offerForm, setOfferForm] = useState({ proposedRent: '', proposedStart: '', proposedEnd: '', expiresAt: '', message: '' });

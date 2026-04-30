@@ -1,14 +1,14 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useMutation } from '@tanstack/react-query';
-import { FileText, RefreshCw } from 'lucide-react';
-import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { SectionCard } from '@/components/copilot/section-card';
+import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { Button } from '@/components/ui/button';
-import { createLease } from '@/lib/copilot-api';
 import { useToast } from '@/components/ui/toast';
+import { createLease } from '@/lib/copilot-api';
+import { useMutation } from '@tanstack/react-query';
+import { FileText,RefreshCw } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function NewLeasePage() {
   const router = useRouter();
@@ -40,7 +40,7 @@ export default function NewLeasePage() {
       moveInAt: form.moveInAt || undefined,
       autoRenew: form.autoRenew,
     }),
-    onSuccess: (lease: any) => {
+    onSuccess: () => {
       toast('Lease created');
       router.push(`/tenants/${form.tenantId}`);
     },

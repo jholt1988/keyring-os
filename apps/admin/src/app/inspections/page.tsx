@@ -1,15 +1,14 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ClipboardList, Plus, ChevronRight, CheckCircle2, Play, RefreshCw } from 'lucide-react';
-import { WorkspaceShell } from '@/components/copilot/workspace-shell';
-import { SectionCard } from '@/components/copilot/section-card';
-import { Button } from '@/components/ui/button';
 import { RequireRole } from '@/components/auth';
-import { fetchInspections, completeInspection, startInspection } from '@/lib/copilot-api';
+import { SectionCard } from '@/components/copilot/section-card';
+import { WorkspaceShell } from '@/components/copilot/workspace-shell';
+import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/toast';
+import { completeInspection,fetchInspections,startInspection } from '@/lib/copilot-api';
+import { useMutation,useQuery,useQueryClient } from '@tanstack/react-query';
+import { CheckCircle2,ChevronRight,ClipboardList,Play,Plus,RefreshCw } from 'lucide-react';
+import Link from 'next/link';
 
 const TYPE_LABELS: Record<string, string> = {
   MOVE_IN: 'Move-In', MOVE_OUT: 'Move-Out', ROUTINE: 'Routine', ANNUAL: 'Annual', DRIVE_BY: 'Drive-By',

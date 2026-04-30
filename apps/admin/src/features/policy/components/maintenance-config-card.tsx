@@ -73,9 +73,7 @@ export function MaintenanceConfigCard({ config, onConfigChange, onSave }: Mainte
   
   // Editing state
   const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
-  const [editingSubcategoryId, setEditingSubcategoryId] = useState<string | null>(null);
   const [editingCategory, setEditingCategory] = useState<Partial<MaintenanceCategory>>({});
-  const [editingSubcategory, setEditingSubcategory] = useState<Partial<MaintenanceSubcategory>>({});
 
   const handleSave = () => {
     if (onSave) {

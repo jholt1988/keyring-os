@@ -28,7 +28,6 @@ import {
   resolveLegalHold,
   scheduleTour,
   updateTourStatus,
-  voidManualCharge,
 } from '@/lib/copilot-api';
 
 function getList<T>(value: any): T[] {
@@ -296,12 +295,6 @@ export function PaymentOperationsSection({ delinquentItems = [], invoices = [], 
       invalidate();
     },
     onError: () => toast('Failed to create manual charge', 'error'),
-  });
-
-  const voidChargeMutation = useMutation({
-    mutationFn: (id: string) => voidManualCharge(id),
-    onSuccess: () => { toast('Manual charge voided'); invalidate(); },
-    onError: () => toast('Failed to void manual charge', 'error'),
   });
 
   const checkoutMutation = useMutation({

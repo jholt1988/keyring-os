@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { ChevronDown, ChevronUp, CreditCard, Calculator, Shield, CheckSquare, Square, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import type { UnderwritingRules, CreditBand } from '@keyring/types';
+import type { CreditBand,UnderwritingRules } from '@keyring/types';
+import { Calculator,CheckSquare,ChevronDown,ChevronUp,CreditCard,Save,Shield } from 'lucide-react';
+import { useState } from 'react';
 
 export interface UnderwritingRulesCardProps {
   rules: UnderwritingRules;

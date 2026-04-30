@@ -134,7 +134,6 @@ function ReportContent({ tab }: { tab: TabId }) {
 
 export default function ReportsPage() {
   const [activeTab, setActiveTab] = useState<TabId>('rent-roll');
-  const ActiveIcon = TABS.find(t => t.id === activeTab)?.icon ?? BarChart3;
 
   return (
     <WorkspaceShell title="Reports" subtitle="Portfolio Analytics & Financials" icon={BarChart3}>

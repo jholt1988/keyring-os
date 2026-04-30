@@ -1,27 +1,35 @@
 'use client';
 
-import { useState } from 'react';
-import {
-  BookOpen, AlertTriangle, CheckCircle, Clock, FileText,
-  Lock, Unlock, Send, ArrowRightLeft, XCircle, RefreshCw,
-} from 'lucide-react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useFinancialsWorkspace } from '@/app/hooks/useWorkspace';
+import { MetricCard,RiskMeter,SectionCard,WorkspaceShell } from '@/components/copilot';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
-import { WorkspaceShell, RiskMeter, SectionCard, MetricCard } from '@/components/copilot';
-import { useFinancialsWorkspace } from '@/app/hooks/useWorkspace';
-import {
-  allocateTransaction,
-  categorizeTransaction,
-  approveOwnerStatement,
-  confirmReconciliationItem,
-  flagTransactionException,
-  lockMonthlyClose,
-  reopenMonthlyClose,
-  sendOwnerStatement,
-} from '@/lib/copilot-api';
 import { useToast } from '@/components/ui/toast';
+import {
+allocateTransaction,
+approveOwnerStatement,
+categorizeTransaction,
+confirmReconciliationItem,
+flagTransactionException,
+lockMonthlyClose,
+reopenMonthlyClose,
+sendOwnerStatement,
+} from '@/lib/copilot-api';
 import type { Severity } from '@keyring/types';
+import { useMutation,useQueryClient } from '@tanstack/react-query';
+import {
+AlertTriangle,
+ArrowRightLeft,
+BookOpen,
+CheckCircle,
+FileText,
+Lock,
+RefreshCw,
+Send,
+Unlock,
+XCircle
+} from 'lucide-react';
+import { useState } from 'react';
 
 const closeStepLabel: Record<string, string> = {
   open: 'Open',

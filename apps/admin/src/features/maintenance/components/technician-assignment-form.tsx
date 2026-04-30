@@ -1,9 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import { User, Wrench, X, Save, Check } from 'lucide-react';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { User,Wrench,X } from 'lucide-react';
+import { useState } from 'react';
 
 export interface TechnicianAssignmentFormData {
   requestId: string;

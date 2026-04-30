@@ -1,9 +1,8 @@
-import * as React from "react"
-import * as DialogPrimitive from "@radix-ui/react-dialog"
-import { mergeProps } from "@base-ui/react/merge-props"
-import { useRender } from "@base-ui/react/use-render"
-import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
+import { useRender } from "@base-ui/react/use-render"
+import * as DialogPrimitive from "@radix-ui/react-dialog"
+import { cva,type VariantProps } from "class-variance-authority"
+import * as React from "react"
 
 const dialogContentVariants = cva(
   "fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-[24px] border border-[#1E3350] bg-[#13233C] p-6 shadow-[0_8px_30px_rgba(2,6,23,0.40)] duration-200",
@@ -86,13 +85,5 @@ DialogDescription.displayName = "DialogDescription"
 const DialogClose = DialogPrimitive.Close
 
 export {
-  Dialog,
-  DialogTrigger,
-  DialogPortal,
-  DialogContent,
-  DialogHeader,
-  DialogFooter,
-  DialogTitle,
-  DialogDescription,
-  DialogClose,
+Dialog,DialogClose,DialogContent,DialogDescription,DialogFooter,DialogHeader,DialogPortal,DialogTitle,DialogTrigger
 }

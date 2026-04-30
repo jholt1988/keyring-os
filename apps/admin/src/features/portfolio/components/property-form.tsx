@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { Building, MapPin, Home, DollarSign, X, Save, FileText, Globe, Tag } from 'lucide-react';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Building,DollarSign,FileText,Globe,MapPin,Save,Tag,X } from 'lucide-react';
+import { useState } from 'react';
 
 export interface PropertyFormData {
   id?: string;

@@ -1,27 +1,24 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useTenantsIndex } from '@/app/hooks/useWorkspace';
+import { MetricCard,WorkspaceShell } from '@/components/copilot';
+import { TenantCard,TenantHealthBadge } from '@/components/tenant';
+import { Button } from '@/components/ui/button';
 import {
-  UserCheck,
-  Search,
-  Filter,
-  AlertTriangle,
-  Clock,
-  XCircle,
-  Users,
-  RefreshCw,
-  MessageSquare,
-  Send,
-  FileText,
-  ChevronRight,
-  Calendar,
-  Wrench,
+AlertTriangle,
+Calendar,
+Clock,
+FileText,
+MessageSquare,
+RefreshCw,
+Search,
+Send,
+UserCheck,
+Users,
+XCircle
 } from 'lucide-react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { WorkspaceShell, SectionCard, MetricCard } from '@/components/copilot';
-import { TenantCard, TenantHealthBadge } from '@/components/tenant';
-import { useTenantsIndex } from '@/app/hooks/useWorkspace';
+import { useMemo,useState } from 'react';
 
 const filterTabs = [
   { key: 'all', label: 'All Tenants', icon: Users },

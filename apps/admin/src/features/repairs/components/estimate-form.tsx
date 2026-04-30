@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
-import { DollarSign, Plus, Trash2, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Card,CardContent,CardHeader,CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { DollarSign,Plus,Save,Trash2 } from 'lucide-react';
+import { useState } from 'react';
 
 interface LineItem {
   id: string;
@@ -146,7 +146,7 @@ export function EstimateForm({ onSave, onCancel, isSubmitting }: EstimateFormPro
               </Button>
             </div>
 
-            {formData.lineItems.map((item, index) => (
+            {formData.lineItems.map((item) => (
               <div key={item.id} className="flex gap-2 items-start">
                 <select
                   value={item.category}
