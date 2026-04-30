@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Camera, X, Upload, Image } from 'lucide-react';
+import { Camera, X, Upload, ImageIcon } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
@@ -66,7 +66,7 @@ export function MaintenancePhotoForm({ onSave, onCancel }: MaintenancePhotoFormP
       {form.url && (
         <div className="rounded-lg border border-white/10 p-2">
           <div className="relative flex items-center justify-center">
-            <Image className="h-32 w-full object-cover rounded" />
+            <ImageIcon className="h-32 w-full object-cover rounded" aria-hidden="true" />
           </div>
         </div>
       )}
