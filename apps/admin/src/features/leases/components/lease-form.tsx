@@ -32,7 +32,7 @@ interface LeaseFormProps {
 }
 
 export function LeaseForm({ initialData, tenantOptions = [], propertyOptions = [], onSave, onCancel }: LeaseFormProps) {
-  const [form, setForm] = useState<LeaseFormData>(initialData || {
+  const [form, setForm] = useState<LeaseFormData>(() => initialData || {
     tenantId: '',
     propertyId: '',
     unitId: '',

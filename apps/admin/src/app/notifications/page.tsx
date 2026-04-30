@@ -68,7 +68,7 @@ export default function NotificationsPage() {
         <SectionCard title="No Notifications">
           <div className="py-12 text-center">
             <BellOff size={32} className="mx-auto mb-3 text-[#94A3B8]" />
-            <p className="text-sm text-[#94A3B8]">You're all caught up.</p>
+            <p className="text-sm text-[#94A3B8]">You&apos;re all caught up.</p>
           </div>
         </SectionCard>
       ) : (

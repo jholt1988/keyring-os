@@ -21,15 +21,6 @@ export default function LeasingPage() {
   const [appOpen, setAppOpen] = useState(false);
   const [appForm, setAppForm] = useState({ leadId: '', propertyId: '', status: 'NEW' });
 
-  if (isLoading) {
-    return (
-      <WorkspaceShell title="Leasing" subtitle="Revenue Pipeline Engine" icon={Home}>
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          {[1, 2, 3, 4].map((i) => <div key={i} className="h-64 animate-pulse rounded-[24px] bg-[#0F1B31]" />)}
-        </div>
-      </WorkspaceShell>
-    );
-  }
 
   const stats = (data?.stats as any) ?? {};
   const leads = (data?.leads as any)?.leads ?? data?.leads ?? [];
@@ -84,6 +75,16 @@ export default function LeasingPage() {
     const status = (lead.status ?? 'NEW').toUpperCase();
     (pipelineCounts[status] ?? pipelineCounts.NEW).push(lead);
   });
+
+  if (isLoading) {
+    return (
+      <WorkspaceShell title="Leasing" subtitle="Revenue Pipeline Engine" icon={Home}>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          {[1, 2, 3, 4].map((i) => <div key={i} className="h-64 animate-pulse rounded-[24px] bg-[#0F1B31]" />)}
+        </div>
+      </WorkspaceShell>
+    );
+  }
 
   return (
     <WorkspaceShell title="Leasing" subtitle="Revenue Pipeline Engine" icon={Home}>

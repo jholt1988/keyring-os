@@ -24,7 +24,7 @@ export function VoidChargeForm({ onSave, onCancel }: VoidChargeFormProps) {
       </div>
 
       <div className="rounded-lg border border-[#F43F5E]/20 bg-[#F43F5E]/5 p-4">
-        <p className="text-sm text-[#F43F5E]">This action cannot be undone. The charge will be removed from the tenant's account.</p>
+        <p className="text-sm text-[#F43F5E]">This action cannot be undone. The charge will be removed from the tenant&apos;s account.</p>
       </div>
 
       <div className="space-y-2">
