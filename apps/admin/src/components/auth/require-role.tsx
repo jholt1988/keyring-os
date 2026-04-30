@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth, UserRole } from '@/hooks/use-auth';
 import { Loader2 } from 'lucide-react';
@@ -19,9 +20,16 @@ export function RequireRole({ requiredRoles, fallbackRoute = '/login', children 
   const router = useRouter();
   const { isAuthenticated, hasRole, user } = useAuth();
 
+  const shouldRedirect = !isAuthenticated || !hasRole(requiredRoles);
+
+  useEffect(() => {
+    if (shouldRedirect) {
+      router.replace(fallbackRoute);
+    }
+  }, [fallbackRoute, router, shouldRedirect]);
+
   // Not logged in - redirect to login
   if (!isAuthenticated) {
-    router.replace(fallbackRoute);
     return (
       <div className="flex min-h-[400px] items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-[#3B82F6]" />
@@ -31,7 +39,6 @@ export function RequireRole({ requiredRoles, fallbackRoute = '/login', children 
 
   // Logged in but insufficient role - redirect to fallback
   if (!hasRole(requiredRoles)) {
-    router.replace(fallbackRoute);
     return (
       <div className="flex min-h-[400px] flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="rounded-full bg-[#F43F5E]/10 p-4">
