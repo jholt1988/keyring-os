@@ -3,13 +3,12 @@
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { AmbientSignalCluster } from './ambient-signal-cluster';
-import { ContextPanel } from './context-panel';
-import { CommandNode } from './command-node';
 import { CommandComposer } from './command-composer';
+import { CommandNode } from './command-node';
+import { ContextPanel } from './context-panel';
 import { ContextRail } from './context-rail';
-import { RadialMenu } from './radial-menu';
 import { MinimalSidebar } from './minimal-sidebar';
-import { QuickActionsBar } from './quick-actions-bar';
+import { RadialMenu } from './radial-menu';
 
 export function AppShell({ children }: { children: ReactNode }) {
   const [panelOpen, setPanelOpen] = useState(false);

@@ -1,4 +1,4 @@
-import type { BriefingData, Signal, Decision, PolicyEvaluation } from '@keyring/types';
+import type { BriefingData,Decision,PolicyEvaluation,Signal } from '@keyring/types';
 
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
 const headers = (): HeadersInit => ({
@@ -22,14 +22,6 @@ function buildQuery(params?: Record<string, string | number | boolean | undefine
   }
   const query = qs.toString();
   return query ? `?${query}` : '';
-}
-
-async function safeGet<T>(path: string, fallback: T): Promise<T> {
-  try {
-    return await api<T>(path);
-  } catch {
-    return fallback;
-  }
 }
 
 export async function fetchBriefing(): Promise<BriefingData> {
@@ -1285,7 +1277,7 @@ export async function extractLease(data: FormData | { leaseId?: string; document
   });
 }
 
-export async function bulkExtractLeases(_data?: FormData | unknown) {
+export async function bulkExtractLeases() {
   return api('/lease-abstraction/bulk-extract', {
     method: 'POST',
   });
@@ -1408,4 +1400,3 @@ export async function sendLeaseForSignature(leaseId: string, signerEmail?: strin
     body: JSON.stringify({ signerEmail, signerName }),
   });
 }
-

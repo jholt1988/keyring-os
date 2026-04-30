@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Home, XCircle, Clock, RefreshCw } from 'lucide-react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
@@ -16,7 +16,6 @@ export default function UnitPage() {
   const id = params.id as string;
   const unitId = params.unitId as string;
   const router = useRouter();
-  const qc = useQueryClient();
   const { toast } = useToast();
 
   const [unit, setUnit] = useState<any>(null);

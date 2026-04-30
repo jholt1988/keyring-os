@@ -1,7 +1,7 @@
 'use client';
 
-import { Home, ArrowRight, ArrowLeft, Clock, CheckCircle, XCircle, Building } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ArrowRight,Building,CheckCircle,Clock,Home,XCircle } from 'lucide-react';
 
 export type UnitStatus = 'vacant' | 'available' | 'occupied' | 'maintenance' | 'reserved' | 'off-market';
 

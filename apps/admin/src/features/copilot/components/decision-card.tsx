@@ -3,17 +3,15 @@
 
 'use client';
 
-import { useState } from 'react';
-import { 
-  AlertCircle, 
-  Clock, 
-  Home, 
-  ChevronRight, 
-  CheckCircle2,
-  Loader2,
-  Zap
-} from 'lucide-react';
 import { cn } from '@/lib/utils';
+import {
+CheckCircle2,
+ChevronRight,
+Clock,
+Loader2,
+Zap
+} from 'lucide-react';
+import { useState } from 'react';
 
 export type UrgencyLevel = 'immediate' | 'today' | 'this_week' | 'later';
 export type SeverityLevel = 'critical' | 'high' | 'medium' | 'low';
@@ -63,7 +61,6 @@ const urgencyLabels: Record<UrgencyLevel, string> = {
 };
 
 export function DecisionCard({
-  id,
   title,
   subtitle,
   severity = 'medium',
@@ -77,9 +74,6 @@ export function DecisionCard({
   className,
 }: DecisionCardProps) {
   const [executingAction, setExecutingAction] = useState<string | null>(null);
-  const [dismissed, setDismissed] = useState(false);
-
-  if (dismissed) return null;
 
   const handleAction = async (action: DecisionAction) => {
     if (!entityId) return;

@@ -1,7 +1,7 @@
 'use client';
 
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { CheckCircle2, XCircle, X } from 'lucide-react';
+import { CheckCircle2,X,XCircle } from 'lucide-react';
+import { createContext,useCallback,useContext,useState } from 'react';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 

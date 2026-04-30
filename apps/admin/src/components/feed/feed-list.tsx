@@ -1,16 +1,15 @@
 'use client'
-import React, { useMemo } from 'react';
-import type { FeedItem, UserRole } from '@keyring/types';
-import { FeedCard } from './feed-card';
-import { ActuarialFeedCard } from './ActuarialFeedCard';
 import { useCoPilotFeed } from '@/app/hooks/useCoPilotFeed';
-import { Loader2, Inbox, Filter } from 'lucide-react';
+import type { FeedItem,UserRole } from '@keyring/types';
+import { Filter,Inbox,Loader2 } from 'lucide-react';
+import React,{ useMemo } from 'react';
+import { ActuarialFeedCard } from './ActuarialFeedCard';
 
 type FeedListProps = {
   role: UserRole;
 };
 
-export function FeedList({ role: _role }: FeedListProps) {
+export function FeedList({}: FeedListProps) {
  const { items, userRole, isLoading, performAction } = useCoPilotFeed();
 
 const sortedItems = useMemo(() => {

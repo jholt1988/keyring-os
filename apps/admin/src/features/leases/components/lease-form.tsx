@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { FileText, User, Home, DollarSign, Calendar, X, Save, ArrowRight } from 'lucide-react';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Calendar,DollarSign,Home,Save,User,X } from 'lucide-react';
+import { useState } from 'react';
 
 export interface LeaseFormData {
   id?: string;

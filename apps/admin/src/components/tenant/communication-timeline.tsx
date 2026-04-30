@@ -1,7 +1,7 @@
 'use client';
 
-import { Mail, MessageSquare, Phone, Bell, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Bell,FileText,Mail,MessageSquare } from 'lucide-react';
 
 const typeIcons: Record<string, React.ElementType> = {
   payment: FileText,

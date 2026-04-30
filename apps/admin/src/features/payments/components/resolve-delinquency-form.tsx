@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import { CheckCircle, FileText, X, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { CheckCircle,X } from 'lucide-react';
+import { useState } from 'react';
 
 export interface ResolveDelinquencyFormData {
   leaseId: string;

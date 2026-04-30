@@ -1,8 +1,8 @@
 'use client';
 
-import { AlertTriangle, Wrench, User, Clock } from 'lucide-react';
 import { RiskMeter } from '@/components/copilot';
 import type { Severity } from '@keyring/types';
+import { AlertTriangle,User } from 'lucide-react';
 
 export interface RepairRequest {
   id: string;

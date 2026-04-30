@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
-import { FileWarning, ChevronDown, ChevronUp, Save, Mail, MessageSquare, AppWindow, Mailbox } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import type { DenialCompliance, Channel } from '@keyring/types';
+import type { Channel,DenialCompliance } from '@keyring/types';
+import { AppWindow,ChevronDown,ChevronUp,FileWarning,Mail,Mailbox,MessageSquare,Save } from 'lucide-react';
+import { useState } from 'react';
 
 interface DenialComplianceCardProps {
   propertyId: string;
@@ -29,7 +29,6 @@ const DEFAULT_SETTINGS: DenialCompliance = {
 };
 
 export function DenialComplianceCard({
-  propertyId,
   initialSettings,
   onSave,
 }: DenialComplianceCardProps) {

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest,NextResponse } from 'next/server';
 
 // PDF Rental Application Generator
 // Returns HTML that can be printed to PDF
@@ -390,10 +390,7 @@ const generateApplicationHTML = (params: {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ propertyId: string }> }
 ) {
-  const { propertyId } = await params;
-  
   // Parse query params
   const { searchParams } = new URL(request.url);
   const propertyName = searchParams.get('property') || 'Riverside Apartments';
@@ -409,13 +406,8 @@ export async function GET(
   });
 }
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ propertyId: string }> }
-) {
+export async function POST() {
   // Could handle form submission here
-  const body = await request.json();
-  
   return NextResponse.json({
     success: true,
     message: 'Application received',

@@ -1,26 +1,26 @@
 'use client';
 
-import { useState } from 'react';
-import { 
-  CheckCircle, 
-  XCircle, 
-  Clock, 
-  AlertTriangle, 
-  User, 
-  Home, 
-  Briefcase, 
-  FileText,
-  ChevronDown,
-  ChevronUp,
-  Mail,
-  Phone,
-  Calendar,
-  MapPin,
-  DollarSign,
-  Building
-} from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card,CardContent } from '@/components/ui/card';
+import {
+AlertTriangle,
+Briefcase,
+Building,
+Calendar,
+CheckCircle,
+ChevronDown,
+ChevronUp,
+Clock,
+DollarSign,
+FileText,
+Home,
+Mail,
+MapPin,
+Phone,
+User,
+XCircle
+} from 'lucide-react';
+import { useState } from 'react';
 
 export interface RentalApplication {
   id: string;
@@ -128,7 +128,6 @@ export function ApplicationReview({
   application,
   onApprove,
   onReject,
-  onRequestInfo,
 }: ApplicationReviewProps) {
   const [activeTab, setActiveTab] = useState<'overview' | 'applicant' | 'employment' | 'documents'>('overview');
   const status = STATUS_CONFIG[application.status];

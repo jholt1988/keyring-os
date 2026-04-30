@@ -1,19 +1,18 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { RequireRole } from '@/components/auth';
-import { useParams } from 'next/navigation';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Shield, AlertCircle, Loader2 } from 'lucide-react';
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { Button } from '@/components/ui/button';
+import type { DenialCompliance,PaymentPlanSettings,PolicyBundle,UnderwritingRules } from '@keyring/types';
+import { useMutation,useQuery,useQueryClient } from '@tanstack/react-query';
+import { AlertCircle,Shield } from 'lucide-react';
+import { useParams } from 'next/navigation';
+import { useEffect,useState } from 'react';
 import {
-  UnderwritingRulesCard,
-  PaymentPlanSettingsCard,
-  MaintenanceConfigCard,
-  DenialComplianceCard,
+DenialComplianceCard,
+MaintenanceConfigCard,
+PaymentPlanSettingsCard,
+UnderwritingRulesCard,
 } from './index';
-import type { PolicyBundle, UnderwritingRules, PaymentPlanSettings, DenialCompliance } from '@keyring/types';
 import type { MaintenanceConfig } from './maintenance-config-card';
 
 // Extended PolicyBundle type to include maintenance config
