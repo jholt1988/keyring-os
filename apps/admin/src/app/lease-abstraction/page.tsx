@@ -18,7 +18,7 @@ export default function LeaseAbstractionPage() {
   const abstractions = Array.isArray(data) ? data : [];
   const refresh = () => qc.invalidateQueries({ queryKey: ['lease-abstractions'] });
   const extractM = useMutation({ mutationFn: async () => { const fd = new FormData(); if (single) fd.append('file', single); return extractLease(fd); }, onSuccess: () => { toast('Lease uploaded for extraction'); refresh(); } });
-  const bulkM = useMutation({ mutationFn: async () => { const fd = new FormData(); Array.from(bulk ?? []).forEach((file) => fd.append('files', file)); return bulkExtractLeases(fd); }, onSuccess: () => { toast('Bulk extraction started'); refresh(); } });
+  const bulkM = useMutation({ mutationFn: async () => { return bulkExtractLeases(); }, onSuccess: () => { toast('Bulk extraction started'); refresh(); } });
   const reviewM = useMutation({ mutationFn: (id: string) => reviewLeaseAbstraction(id, { reviewed: true, approved: true }), onSuccess: () => { toast('Abstraction reviewed'); refresh(); } });
 
   return (
