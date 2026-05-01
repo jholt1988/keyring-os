@@ -12,12 +12,7 @@ export function useCoPilotFeed() {
   const { data, isLoading } = useQuery<FeedResponse>({
     queryKey: ['copilot-feed'],
     queryFn: async () => {
-      const res = await fetch(`${BACKEND_URL}/feed`, {
-        headers: {
-          'X-Mock-User-Id': 'dev-admin-uuid-001',
-          'X-Mock-Role': 'ADMIN',
-        },
-      });
+      const res = await fetch(`${BACKEND_URL}/feed`);
       if (!res.ok) {
 
         console.error('Failed to fetch feed');
