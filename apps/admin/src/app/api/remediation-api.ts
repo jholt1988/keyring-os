@@ -62,7 +62,7 @@ export async function completeMoveIn(unitId: string, notes?: string) {
 // ========== Screening Risk Reasoning (Issue 5) ==========
 
 export async function getScreeningReasoning(applicationId: number) {
-  return fetch(`${API_BASE}/rental-applications/${applicationId}/screening-reasoning`, {
+  return fetch(`${API_BASE}/portal/rental-applications/${applicationId}/screening-reasoning`, {
     method: 'GET',
   }).then(r => r.json());
 }
