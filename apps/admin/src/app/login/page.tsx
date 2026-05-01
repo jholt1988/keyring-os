@@ -32,9 +32,7 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:3000';
-      
-      const response = await fetch(apiUrl + '/api/v2/auth/login', {
+      const response = await fetch('/api/v2/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -48,16 +46,9 @@ export default function LoginPage() {
         throw new Error(data.statusMessage || 'Login failed');
       }
 
-      // Store token in cookies and localStorage for auth middleware
-      const token = data.access_token || data.accessToken;
-      if (token) {
-        // Set cookie for middleware auth check
-        document.cookie = `auth_token=${token}; path=/; max-age=86400; SameSite=Strict`;
-        if (data.user) {
-          document.cookie = `user=${JSON.stringify(data.user)}; path=/; max-age=86400; SameSite=Strict`;
-          localStorage.setItem('user', JSON.stringify(data.user));
-        }
-        localStorage.setItem('auth_token', token);
+      // The API proxy stores tokens in httpOnly cookies; do not expose them to client JS.
+      if (!(data.access_token || data.accessToken)) {
+        throw new Error('Login response did not include a session token');
       }
 
       // Redirect to original destination or home

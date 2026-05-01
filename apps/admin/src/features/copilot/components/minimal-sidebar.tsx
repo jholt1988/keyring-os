@@ -31,7 +31,7 @@ interface NavItem {
 const mainNav: NavItem[] = [
   { icon: LayoutDashboard, label: 'Briefing', href: '/' },
   { icon: CreditCard, label: 'Payments', href: '/payments', badge: 3 },
-  { icon: FileText, label: 'Leases', href: '/leases' },
+  { icon: FileText, label: 'Leases', href: '/leasing' },
   { icon: Wrench, label: 'Repairs', href: '/maintenance', badge: 5 },
   { icon: Home, label: 'Properties', href: '/portfolio' },
   { icon: Users, label: 'Tenants', href: '/tenants' },
@@ -40,7 +40,7 @@ const mainNav: NavItem[] = [
 ];
 
 const bottomNav: NavItem[] = [
-  { icon: Settings, label: 'Settings', href: '/settings' },
+  { icon: Settings, label: 'Settings', href: '/settings/security' },
 ];
 
 export function MinimalSidebar() {
