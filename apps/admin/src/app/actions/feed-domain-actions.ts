@@ -46,8 +46,6 @@ export async function executeFeedDomainAction(action: MutationAction, item: Feed
   const base = requireBackendUrl();
   const headers = {
     'Content-Type': 'application/json',
-    'X-Mock-User-Id': 'dev-admin-uuid-001',
-    'X-Mock-Role': 'ADMIN',
   };
 
   switch (action.intent) {

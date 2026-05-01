@@ -3,8 +3,6 @@ import type { BriefingData,Decision,PolicyEvaluation,Signal } from '@keyring/typ
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
 const headers = (): HeadersInit => ({
   'Content-Type': 'application/json',
-  'X-Mock-User-Id': 'dev-admin-uuid-001',
-  'X-Mock-Role': 'ADMIN',
 });
 
 async function api<T>(path: string, opts?: RequestInit): Promise<T> {
@@ -698,7 +696,6 @@ export async function uploadDocument(formData: FormData) {
   const BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
   const res = await fetch(`${BASE}/documents/upload`, {
     method: 'POST',
-    headers: { 'X-Mock-Role': 'PROPERTY_MANAGER' },
     body: formData,
   });
   if (!res.ok) throw new Error('Upload failed');
