@@ -9,6 +9,8 @@ const publicPaths = [
   '/landing',
   '/api/auth/login',
   '/api/auth/refresh',
+  '/api/v2/auth/login',
+  '/api/v2/auth/refresh',
   '/_vercel',
   '/_next',
   '/favicon.ico',
@@ -28,11 +30,9 @@ export function proxy(request: NextRequest) {
   }
 
   // Check for auth token
-  const authToken = request.cookies.get('auth_token')?.value 
-    || request.cookies.get('accessToken')?.value
-    || request.headers.get('authorization')?.replace('Bearer ', '');
+  const authToken = request.cookies.get('auth_token')?.value;
 
-  // A user-profile cookie is not sufficient for route access; require a bearer/session token.
+  // A user-profile cookie or caller-provided Authorization header is not sufficient for route access; require our httpOnly session cookie.
   if (!authToken) {
     // Check return user cookie
     const returnUserCookie = request.cookies.get('keyring_return_visit');
