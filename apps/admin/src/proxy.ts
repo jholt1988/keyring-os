@@ -32,11 +32,8 @@ export function proxy(request: NextRequest) {
     || request.cookies.get('accessToken')?.value
     || request.headers.get('authorization')?.replace('Bearer ', '');
 
-  const userStr = request.cookies.get('user')?.value;
-  const hasUser = userStr ? true : false;
-
-  // If no token or user, check if first-time visitor
-  if (!authToken && !hasUser) {
+  // A user-profile cookie is not sufficient for route access; require a bearer/session token.
+  if (!authToken) {
     // Check return user cookie
     const returnUserCookie = request.cookies.get('keyring_return_visit');
     
@@ -52,7 +49,7 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // Authenticated - allow access
+  // Token-present requests may proceed; backend API calls still enforce JWT validity and role/org guards.
   return NextResponse.next();
 }
 
