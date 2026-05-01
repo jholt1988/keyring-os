@@ -11,13 +11,13 @@ function getBackendBase(): string {
     if (process.env.NODE_ENV === 'production') {
       throw new Error('API_URL or NEXT_PUBLIC_API_URL must be configured in production');
     }
-    return 'http://127.0.0.1:3001/api/v2';
+    return 'http://127.0.0.1:3001/api';
   }
 
   const trimmed = configured.replace(/\/+$/, '');
-  if (trimmed.endsWith('/api/v2')) return trimmed;
-  if (trimmed.endsWith('/api')) return `${trimmed}/v2`;
-  return `${trimmed}/api/v2`;
+  if (trimmed.endsWith('/api/v2')) return trimmed.slice(0, -3);
+  if (trimmed.endsWith('/api')) return trimmed;
+  return `${trimmed}/api`;
 }
 
 function copyResponseHeaders(response: Response): Headers {
