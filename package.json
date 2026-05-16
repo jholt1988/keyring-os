@@ -1,6 +1,6 @@
 {
   "name": "keyring-os",
-  "private": true,
+  "private": "false",
   "packageManager": "pnpm@10.30.3",
   "scripts": {
     "dev": "turbo dev",
@@ -24,6 +24,7 @@
     "@tanstack/react-query": "^5.96.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "framer-motion": "^12.38.0",
     "radix-ui": "^1.4.3",
     "tailwind-merge": "^3.5.0"
   }

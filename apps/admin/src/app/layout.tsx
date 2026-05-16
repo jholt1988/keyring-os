@@ -3,7 +3,6 @@ import { Inter, Space_Grotesk, Geist_Mono } from 'next/font/google';
 import Providers from './providers';
 import './globals.css';
 import { AppShell } from '@/features/copilot/components/app-shell';
-import { CommandSurfaceProvider } from '@/features/copilot/state/command-surface';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -37,9 +36,7 @@ export default function RootLayout({
     >
       <body className="min-h-full bg-[#07111F]">
         <Providers>
-          <CommandSurfaceProvider>
-            <AppShell>{children}</AppShell>
-          </CommandSurfaceProvider>
+          <AppShell>{children}</AppShell>
         </Providers>
       </body>
     </html>
