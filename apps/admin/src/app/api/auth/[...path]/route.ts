@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 function getBackendBase(): string {
-  const configured = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL;
+  const configured = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL;
   if (!configured) {
     if (process.env.NODE_ENV === 'production') {
-      throw new Error('API_URL or NEXT_PUBLIC_API_URL must be configured in production');
-    }
-    return 'http://127.0.0.1:3001/api';
+      throw new Error('API_URL, NEXT_PUBLIC_API_URL, or NEXT_PUBLIC_API_BASE_URL must be configured in production');
+    }  
+    return 'http://localhost:3001/api';
   }
 
   const trimmed = configured.replace(/\/+$/, '');
