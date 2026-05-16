@@ -70,7 +70,33 @@ export default function MaintenancePage() {
         subtitle="Create and manage maintenance requests"
         icon={Wrench}
       >
-        <div className="space-y-4">
+        <div className="space-y-6">
+          <div className="glass-panel rounded-[30px] p-6">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.22em] text-[#7FA7D9]">Maintenance Operations</p>
+                <h2 className="mt-2 font-[family-name:var(--font-space)] text-3xl font-semibold tracking-tight text-[#F8FAFC]">
+                  Resolve requests efficiently.
+                </h2>
+                <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#8DA4C5]">
+                  Track, assign, and manage vendor dispatches to keep properties in top condition.
+                </p>
+              </div>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {[
+                  { label: 'Total requests', value: String(requests.length), tone: 'text-[#F8FAFC]' },
+                  { label: 'Pending', value: String(requests.filter((r: any) => r.status === 'PENDING').length), tone: 'text-[#FBBF24]' },
+                  { label: 'Emergency', value: String(requests.filter((r: any) => r.priority === 'EMERGENCY').length), tone: 'text-[#F87171]' },
+                ].map((item) => (
+                  <div key={item.label} className="rounded-[20px] border border-white/8 bg-black/10 px-4 py-3">
+                    <div className="text-[11px] uppercase tracking-[0.18em] text-[#6E85A5]">{item.label}</div>
+                    <div className={`mt-2 text-xl font-semibold ${item.tone}`}>{item.value}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
           {/* Header Actions */}
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="relative flex-1 max-w-md">

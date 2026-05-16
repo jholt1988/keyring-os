@@ -141,12 +141,32 @@ export default function FinancialsPage() {
   return (
     <>
     <WorkspaceShell title="Financials" subtitle="Bookkeeping & Reconciliation" icon={BookOpen}>
-      <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-5">
-        <MetricCard value={metrics.pendingCategorization ?? 0} label="Pending Review" variant="warning" />
-        <MetricCard value={metrics.exceptionsCount ?? 0} label="Exceptions" variant="danger" />
-        <MetricCard value={`$${((metrics.unreconciledAmount ?? 0) / 100).toLocaleString()}`} label="Unreconciled" variant="info" />
-        <MetricCard value={metrics.monthsOpen ?? 0} label="Months Open" variant="warning" />
-        <MetricCard value={metrics.ownerDistributionsDue ?? 0} label="Distributions Due" variant="success" />
+      <div className="glass-panel rounded-[30px] p-6 mb-6">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.22em] text-[#7FA7D9]">Ledger Operations</p>
+            <h2 className="mt-2 font-[family-name:var(--font-space)] text-3xl font-semibold tracking-tight text-[#F8FAFC]">
+              Automated Bookkeeping
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#8DA4C5]">
+              Review categorized transactions, resolve exceptions, and manage owner distributions from a unified financial command center.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+            {[
+              { label: 'Pending', value: String(metrics.pendingCategorization ?? 0), tone: 'text-[#FBBF24]' },
+              { label: 'Exceptions', value: String(metrics.exceptionsCount ?? 0), tone: 'text-[#F87171]' },
+              { label: 'Unreconciled', value: `$${((metrics.unreconciledAmount ?? 0) / 100).toLocaleString()}`, tone: 'text-[#60A5FA]' },
+              { label: 'Months Open', value: String(metrics.monthsOpen ?? 0), tone: 'text-[#FBBF24]' },
+              { label: 'Distributions', value: String(metrics.ownerDistributionsDue ?? 0), tone: 'text-[#10B981]' },
+            ].map((item) => (
+              <div key={item.label} className="rounded-[20px] border border-white/8 bg-black/10 px-4 py-3">
+                <div className="text-[11px] uppercase tracking-[0.18em] text-[#6E85A5]">{item.label}</div>
+                <div className={`mt-2 text-xl font-semibold ${item.tone}`}>{item.value}</div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
