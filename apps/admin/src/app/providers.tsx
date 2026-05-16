@@ -4,6 +4,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ToastProvider } from '@/components/ui/toast';
+import { CommandSurfaceProvider } from '@/features/copilot/state/command-surface';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient({
@@ -19,7 +20,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <ToastProvider>
-        {children}
+        <CommandSurfaceProvider>
+          {children}
+        </CommandSurfaceProvider>
       </ToastProvider>
     </QueryClientProvider>
   );

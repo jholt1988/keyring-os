@@ -58,8 +58,8 @@ export function RadialMenu() {
   if (radialState === 'idle') return null;
 
   return (
-    <div className="fixed inset-0 z-40 bg-[#020817]/40 backdrop-blur-[2px]" onClick={collapse}>
-      <div className="pointer-events-none absolute bottom-20 right-8 md:bottom-24 md:right-16">
+    <div className=" fixed inset-24 z-40 bg-[#020817]/40 backdrop-blur-[2px]" onClick={collapse}>
+      <div className="pointer-events-none absolute bottom-30 right-8 md:bottom-32 md:right-16">
         {radialState === 'primary-open' && domains.map((domain, index) => {
           const Icon = iconMap[domain.icon as keyof typeof iconMap] ?? Wallet;
           return (
@@ -72,7 +72,7 @@ export function RadialMenu() {
                 setActiveContext({ domain: domain.id });
               }}
               style={polarStyle(index, domains.length, 132)}
-              className="pointer-events-auto absolute left-0 top-0 inline-flex size-16 items-center justify-center rounded-full border border-white/12 bg-[#0E1B2F] text-[#F8FAFC] shadow-[0_16px_40px_rgba(2,8,23,0.32)] transition-all duration-[200ms] hover:scale-[1.03]"
+              className="pointer-events-auto absolute left-24 top-24 inline-flex size-16 items-center justify-center rounded-full border border-white/12 bg-[#0E1B2F] text-[#F8FAFC] shadow-[0_16px_40px_rgba(2,8,23,0.32)] transition-all duration-[200ms] hover:scale-[1.03]"
             >
               <span className="sr-only">{domain.label}</span>
               <Icon size={18} style={{ color: domain.color }} />
