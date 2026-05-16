@@ -26,6 +26,11 @@ export async function fetchFeed(role: UserRole): Promise<FeedResponse> {
       Accept: 'application/json',
       // Phase 4: forward the user's JWT here once auth is wired.
       // Authorization: `Bearer ${token}`,
+      'Access-Control-Allow-Credentials': 'true',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Cookie': document.cookie,
     },
   });
 

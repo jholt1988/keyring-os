@@ -2,16 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const AUTH_COOKIE = 'auth_token';
 const REFRESH_COOKIE = 'refresh_token';
+const ROLE_COOKIE = 'user_role'; // non-httpOnly: readable by middleware for UX-layer role guards
 const ONE_DAY_SECONDS = 60 * 60 * 24;
 const THIRTY_DAYS_SECONDS = ONE_DAY_SECONDS * 30;
 
 function getBackendBase(): string {
-  const configured = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL;
+  const configured = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL;
   if (!configured) {
     if (process.env.NODE_ENV === 'production') {
-      throw new Error('API_URL or NEXT_PUBLIC_API_URL must be configured in production');
+      throw new Error('API_URL, NEXT_PUBLIC_API_URL, or NEXT_PUBLIC_API_BASE_URL must be configured in production');
     }
-    return 'http://127.0.0.1:3001/api';
+    return 'http://localhost:3001/api';
   }
 
   const trimmed = configured.replace(/\/+$/, '');
@@ -42,15 +43,22 @@ async function proxyRequest(
   if (contentType) headers.set('content-type', contentType);
   headers.set('accept', request.headers.get('accept') ?? 'application/json');
   if (token) headers.set('authorization', `Bearer ${token}`);
-  if (refreshToken && path === 'auth/refresh') headers.set('x-refresh-token', refreshToken);
+  
+  let finalBody = body;
+  if (refreshToken && path === 'auth/refresh') {
+    // The NestJS backend expects { refreshToken: "..." } in the JSON body
+    headers.set('content-type', 'application/json');
+    finalBody = JSON.stringify({ refreshToken });
+  }
 
   let backendResponse: Response;
   try {
     backendResponse = await fetch(`${getBackendBase()}/${path}${request.nextUrl.search}`, {
       method,
       headers,
-      body,
+      body: finalBody,
       cache: 'no-store',
+      signal: AbortSignal.timeout(10_000),
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Backend unreachable';
@@ -64,9 +72,10 @@ async function proxyRequest(
   });
 
   if (path === 'auth/login' && backendResponse.ok) {
-    const data = responseText ? JSON.parse(responseText) as { access_token?: string; accessToken?: string; refresh_token?: string; refreshToken?: string } : {};
+    const data = responseText ? JSON.parse(responseText) as { access_token?: string; accessToken?: string; refresh_token?: string; refreshToken?: string; user?: { role?: string } } : {};
     const access = data.access_token ?? data.accessToken;
     const refresh = data.refresh_token ?? data.refreshToken;
+    const role = data.user?.role;
     if (access) {
       nextResponse.cookies.set(AUTH_COOKIE, access, {
         httpOnly: true,
@@ -85,11 +94,23 @@ async function proxyRequest(
         maxAge: THIRTY_DAYS_SECONDS,
       });
     }
+    if (role) {
+      // Non-httpOnly: middleware reads this for UX-level role guards.
+      // Backend guards remain authoritative; this is not a security boundary.
+      nextResponse.cookies.set(ROLE_COOKIE, role, {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        path: '/',
+        maxAge: ONE_DAY_SECONDS,
+      });
+    }
   }
 
   if (path === 'auth/logout') {
     nextResponse.cookies.delete(AUTH_COOKIE);
     nextResponse.cookies.delete(REFRESH_COOKIE);
+    nextResponse.cookies.delete(ROLE_COOKIE);
   }
 
   return nextResponse;

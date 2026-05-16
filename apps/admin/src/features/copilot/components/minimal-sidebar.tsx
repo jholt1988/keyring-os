@@ -15,6 +15,7 @@ import {
   Users, 
   BarChart3,
   FolderOpen,
+  MessageSquare,
   Settings,
   ChevronLeft,
   Menu,
@@ -35,12 +36,13 @@ const mainNav: NavItem[] = [
   { icon: Wrench, label: 'Repairs', href: '/maintenance', badge: 5 },
   { icon: Home, label: 'Properties', href: '/portfolio' },
   { icon: Users, label: 'Tenants', href: '/tenants' },
+  { icon: MessageSquare, label: 'Messages', href: '/messages' },
   { icon: BarChart3, label: 'Financials', href: '/financials' },
-  { icon: FolderOpen, label: 'Documents', href: '/documents' },
+  { icon: FolderOpen, label: 'Renewals', href: '/renewals' },
 ];
 
 const bottomNav: NavItem[] = [
-  { icon: Settings, label: 'Settings', href: '/settings/security' },
+  { icon: Settings, label: 'Settings', href: '/settings' },
 ];
 
 export function MinimalSidebar() {
@@ -114,7 +116,7 @@ export function MinimalSidebar() {
         {/* Bottom Navigation */}
         <div className="border-t border-[#1E3350] py-4">
           {bottomNav.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive = pathname.startsWith(item.href);
             const Icon = item.icon;
             
             return (

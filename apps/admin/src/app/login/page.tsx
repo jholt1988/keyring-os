@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { Key, Lock, ArrowRight, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -41,6 +42,7 @@ export default function LoginPage() {
       });
 
       const data: LoginResponse = await response.json();
+      console.log(data);
 
       if (!response.ok) {
         throw new Error(data.statusMessage || 'Login failed');
@@ -186,6 +188,13 @@ export default function LoginPage() {
               )}
             </Button>
           </form>
+
+          <div className="mt-6 text-center text-sm text-[#94A3B8]">
+            Don't have an account?{' '}
+            <Link href="/register" className="text-[#38BDF8] hover:underline">
+              Create an account
+            </Link>
+          </div>
 
           <div className="mt-6 text-center text-xs text-[#64748B]">
             Protected by enterprise-grade security

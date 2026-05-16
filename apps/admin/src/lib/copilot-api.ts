@@ -1397,3 +1397,66 @@ export async function sendLeaseForSignature(leaseId: string, signerEmail?: strin
     body: JSON.stringify({ signerEmail, signerName }),
   });
 }
+
+// ─── Messaging ──────────────────────────────────────────────────────────────
+
+export async function fetchAdminConversations(params?: Record<string, string>) {
+  return await api<any>(`/messaging/admin/conversations${buildQuery(params)}`);
+}
+
+export async function fetchConversationMessages(conversationId: number) {
+  return await api<any[]>(`/messaging/conversations/${conversationId}/messages`);
+}
+
+export async function createMessageThread(dto: { subject?: string; content: string; participantIds: string[] }) {
+  return await api<any>('/messaging/threads', {
+    method: 'POST',
+    body: JSON.stringify(dto),
+  });
+}
+
+export async function replyToConversation(conversationId: number, content: string) {
+  return await api<any>(`/messaging/conversations/${conversationId}/messages`, {
+    method: 'POST',
+    body: JSON.stringify({ content }),
+  });
+}
+
+export async function fetchMessagingTenants() {
+  return await api<any[]>('/messaging/tenants');
+}
+
+export async function fetchMessageStats() {
+  return await api<any>('/messaging/stats');
+}
+
+// ─── Lease Notices ───────────────────────────────────────────────────────────
+
+export async function recordTenantNotice(
+  leaseId: string,
+  dto: { type: string; deliveryMethod: string; message?: string },
+) {
+  return await api<any>(`/leases/${leaseId}/notices`, {
+    method: 'POST',
+    body: JSON.stringify(dto),
+  });
+}
+
+// ─── Bank Import ─────────────────────────────────────────────────────────────
+
+export async function importBankTransactions(
+  transactions: Array<{
+    date: string;
+    description: string;
+    amount: string | number;
+    type?: 'CREDIT' | 'DEBIT';
+  }>,
+) {
+  return await api<{ imported: number; skipped: number; errors: any[]; total: number }>(
+    '/bookkeeping/transactions/import',
+    {
+      method: 'POST',
+      body: JSON.stringify({ transactions }),
+    },
+  );
+}

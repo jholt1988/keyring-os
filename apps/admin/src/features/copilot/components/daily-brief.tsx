@@ -3,6 +3,7 @@
 import { Calendar, Clock, DollarSign, Activity, Home, Users, Wrench } from 'lucide-react';
 import type { ReactElement } from 'react';
 import { useBriefing } from '@/app/hooks/useBriefing';
+import { useBriefingContext } from './briefing-context';
 import { DecisionCard, SignalCard, SectionCard } from '@/components/copilot';
 
 const formatTime = (iso: string) => {
@@ -25,6 +26,7 @@ const eventTypeIcon: Record<string, () => ReactElement> = {
 
 export function DailyBrief() {
   const { data, isLoading, error, executeMutation, dismissDecision } = useBriefing();
+  const { openPanel } = useBriefingContext();
 
   const topSignals = data?.signals.slice(0, 3) ?? [];
   const topDecisions = data?.decisions.slice(0, 3) ?? [];
@@ -93,6 +95,7 @@ export function DailyBrief() {
                       await executeMutation.mutateAsync({ endpoint, method, body });
                     }}
                     onDismiss={dismissDecision}
+                    onInspect={() => openPanel(decision)}
                   />
                 )) : (
                   <p className="text-sm text-[#94A3B8]">No active decisions. System is clear.</p>
