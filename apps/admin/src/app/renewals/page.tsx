@@ -80,11 +80,31 @@ export default function RenewalsPage() {
   return (
     <>
     <WorkspaceShell title="Renewals" subtitle="Revenue Continuity Engine" icon={RefreshCw}>
-      <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4">
-        <MetricCard value={expiringLeases.length} label="Expiring ≤90d" variant="warning" />
-        <MetricCard value={`$${totalMonthlyAtRisk.toLocaleString()}`} label="Monthly at Risk" variant="danger" />
-        <MetricCard value={renewalOffersSent} label="Offers Sent" variant="info" />
-        <MetricCard value={renewalsAccepted} label="Accepted" variant="success" />
+      <div className="glass-panel rounded-[30px] p-6 mb-6">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.22em] text-[#7FA7D9]">Revenue Continuity</p>
+            <h2 className="mt-2 font-[family-name:var(--font-space)] text-3xl font-semibold tracking-tight text-[#F8FAFC]">
+              AI-driven retention.
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#8DA4C5]">
+              Monitor expiring leases and send dynamically priced renewal offers to maximize revenue and minimize vacancy periods.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {[
+              { label: 'Expiring ≤90d', value: String(expiringLeases.length), tone: 'text-[#FBBF24]' },
+              { label: 'Monthly at Risk', value: `$${totalMonthlyAtRisk.toLocaleString()}`, tone: 'text-[#F87171]' },
+              { label: 'Offers Sent', value: String(renewalOffersSent), tone: 'text-[#60A5FA]' },
+              { label: 'Accepted', value: String(renewalsAccepted), tone: 'text-[#10B981]' },
+            ].map((item) => (
+              <div key={item.label} className="rounded-[20px] border border-white/8 bg-black/10 px-4 py-3">
+                <div className="text-[11px] uppercase tracking-[0.18em] text-[#6E85A5]">{item.label}</div>
+                <div className={`mt-2 text-xl font-semibold ${item.tone}`}>{item.value}</div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">

@@ -80,9 +80,11 @@ async function buildFallbackBriefing(): Promise<BriefingData> {
           actions: (item.actions ?? []).map((a: any) => ({
             label: a.label ?? 'Take Action',
             endpoint: a.endpoint ?? '#',
-            method: a.method ?? 'POST',
+            method: a.method ?? (a.type === 'navigation' ? 'GET' : 'POST'),
             body: a.body,
             variant: a.variant ?? 'primary',
+            confirmRequired: Boolean(a.confirmRequired || a.requiresConfirm),
+            confirmation: a.confirmation,
           })),
           urgency: item.priorityScore > 80 ? 'immediate' : item.priorityScore > 50 ? 'today' : 'this_week',
         });
@@ -121,15 +123,17 @@ export async function executeDecisionAction(endpoint: string, method: string, bo
 }
 
 export async function fetchPaymentsWorkspace() {
-  const [delinquency, opsSummary, invoices] = await Promise.allSettled([
+  const [delinquency, opsSummary, invoices, decisions] = await Promise.allSettled([
     api('/payments/delinquency/queue'),
     api('/payments/ops-summary'),
     api('/payments/invoices'),
+    api('/payments/decisions'),
   ]);
   return {
     delinquency: delinquency.status === 'fulfilled' ? delinquency.value : null,
     opsSummary: opsSummary.status === 'fulfilled' ? opsSummary.value : null,
     invoices: invoices.status === 'fulfilled' ? invoices.value : null,
+    decisions: decisions.status === 'fulfilled' ? decisions.value : null,
   };
 }
 

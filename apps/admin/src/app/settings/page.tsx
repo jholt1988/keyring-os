@@ -186,14 +186,18 @@ export default function SettingsPage() {
       <WorkspaceShell title="Settings" subtitle="System Configuration" icon={Settings}>
         <div className="space-y-8">
           {/* Header summary */}
-          <div className="rounded-[28px] border border-white/8 bg-white/[0.02] px-6 py-5">
-            <p className="text-[11px] uppercase tracking-[0.22em] text-[#7FA7D9]">Admin configuration</p>
-            <h2 className="mt-2 text-xl font-semibold text-[#F8FAFC]">
-              System, integrations, and access control in one place.
-            </h2>
-            <p className="mt-1 text-sm leading-relaxed text-[#8DA4C5]">
-              Changes here affect the entire organization. Only admins can access this area.
-            </p>
+          <div className="glass-panel rounded-[30px] p-6">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.22em] text-[#7FA7D9]">Admin configuration</p>
+                <h2 className="mt-2 font-[family-name:var(--font-space)] text-3xl font-semibold tracking-tight text-[#F8FAFC]">
+                  System, integrations, and access control in one place.
+                </h2>
+                <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#8DA4C5]">
+                  Changes here affect the entire organization. Only admins can access this area.
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Sections */}
