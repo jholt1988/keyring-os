@@ -5,14 +5,14 @@ import { mockFeed } from '@keyring/types';
 import type { FeedResponse } from '@keyring/types';
 import { useExecuteFeedAction } from './useExecuteAction';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? '/api/v2';
 
 export function useCoPilotFeed() {
   const performAction = useExecuteFeedAction();
   const { data, isLoading } = useQuery<FeedResponse>({
     queryKey: ['copilot-feed'],
     queryFn: async () => {
-      const res = await fetch(`${BACKEND_URL}/feed`);
+      const res = await fetch(`${API_BASE}/feed`, { credentials: 'include' });
       if (!res.ok) {
 
         console.error('Failed to fetch feed');

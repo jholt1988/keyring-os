@@ -1,12 +1,16 @@
 import type { BriefingData,Decision,PolicyEvaluation,Signal } from '@keyring/types';
 
-const BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
+const BASE = process.env.NEXT_PUBLIC_API_URL ?? '/api/v2';
 const headers = (): HeadersInit => ({
   'Content-Type': 'application/json',
 });
 
 async function api<T>(path: string, opts?: RequestInit): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, { headers: headers(), ...opts });
+  const res = await fetch(`${BASE}${path}`, {
+    credentials: 'include',
+    headers: headers(),
+    ...opts,
+  });
   if (!res.ok) throw new Error(`API ${res.status}`);
   return res.json();
 }
@@ -24,7 +28,7 @@ function buildQuery(params?: Record<string, string | number | boolean | undefine
 
 export async function fetchBriefing(): Promise<BriefingData> {
   try {
-    return await api<BriefingData>('/api/briefing/daily');
+    return await api<BriefingData>('/briefing/daily');
   } catch {
     return buildFallbackBriefing();
   }

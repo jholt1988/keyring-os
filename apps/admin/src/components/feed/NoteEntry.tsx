@@ -14,8 +14,9 @@ export const NoteEntry = ({ itemId, existingNote }: Props) => {
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (text: string) => {
-      const res = await fetch(`/api/feed/${itemId}/notes`, {
+      const res = await fetch(`/api/v2/feed/${itemId}/notes`, {
         method: 'PATCH',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ narrative: text }),
       });

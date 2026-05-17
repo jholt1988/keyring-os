@@ -28,6 +28,23 @@ function copyResponseHeaders(response: Response): Headers {
   return headers;
 }
 
+function resolveUserRole(payload: unknown): string | undefined {
+  if (!payload || typeof payload !== 'object') return undefined;
+  const user = (payload as { user?: { role?: unknown; roles?: unknown } }).user;
+  if (!user || typeof user !== 'object') return undefined;
+
+  if (typeof user.role === 'string' && user.role.trim()) {
+    return user.role;
+  }
+
+  if (Array.isArray(user.roles)) {
+    const firstRole = user.roles.find((value) => typeof value === 'string' && value.trim());
+    if (typeof firstRole === 'string') return firstRole;
+  }
+
+  return undefined;
+}
+
 async function proxyRequest(
   request: NextRequest,
   { params }: { params: Promise<{ path: string[] }> }
@@ -71,11 +88,11 @@ async function proxyRequest(
     headers: copyResponseHeaders(backendResponse),
   });
 
-  if (path === 'auth/login' && backendResponse.ok) {
-    const data = responseText ? JSON.parse(responseText) as { access_token?: string; accessToken?: string; refresh_token?: string; refreshToken?: string; user?: { role?: string } } : {};
+  if ((path === 'auth/login' || path === 'auth/refresh') && backendResponse.ok) {
+    const data = responseText ? JSON.parse(responseText) as { access_token?: string; accessToken?: string; refresh_token?: string; refreshToken?: string } : {};
     const access = data.access_token ?? data.accessToken;
     const refresh = data.refresh_token ?? data.refreshToken;
-    const role = data.user?.role;
+    const role = resolveUserRole(data);
     if (access) {
       nextResponse.cookies.set(AUTH_COOKIE, access, {
         httpOnly: true,
@@ -97,6 +114,20 @@ async function proxyRequest(
     if (role) {
       // Non-httpOnly: middleware reads this for UX-level role guards.
       // Backend guards remain authoritative; this is not a security boundary.
+      nextResponse.cookies.set(ROLE_COOKIE, role, {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        path: '/',
+        maxAge: ONE_DAY_SECONDS,
+      });
+    }
+  }
+
+  if (path === 'auth/me' && backendResponse.ok) {
+    const data = responseText ? JSON.parse(responseText) as unknown : undefined;
+    const role = resolveUserRole(data);
+    if (role) {
       nextResponse.cookies.set(ROLE_COOKIE, role, {
         httpOnly: false,
         secure: process.env.NODE_ENV === 'production',

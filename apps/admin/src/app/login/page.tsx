@@ -38,24 +38,35 @@ export default function LoginPage() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({ username, password }),
       });
 
       const data: LoginResponse = await response.json();
-      console.log(data);
 
       if (!response.ok) {
         throw new Error(data.statusMessage || 'Login failed');
       }
 
-      // The API proxy stores tokens in httpOnly cookies; do not expose them to client JS.
-      if (!(data.access_token || data.accessToken)) {
-        throw new Error('Login response did not include a session token');
+      // Confirm the session cookie is established before redirecting.
+      const meResponse = await fetch('/api/v2/auth/me', {
+        cache: 'no-store',
+        credentials: 'include',
+      });
+      if (!meResponse.ok) {
+        throw new Error('Session verification failed after login');
       }
 
       // Redirect to original destination or home
-      const redirectUrl = searchParams.get('redirect') || '/';
-      router.push(redirectUrl);
+      const requestedRedirect = searchParams.get('redirect') || '/';
+      const redirectUrl = requestedRedirect.startsWith('/login') ||
+        requestedRedirect.startsWith('/register') ||
+        requestedRedirect.startsWith('/landing')
+        ? '/'
+        : requestedRedirect;
+      router.replace(redirectUrl);
+      router.refresh();
+      window.location.assign(redirectUrl);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed. Please try again.');
       setIsLoading(false);
