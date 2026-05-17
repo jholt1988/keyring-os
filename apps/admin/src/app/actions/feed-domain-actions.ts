@@ -9,9 +9,7 @@ export interface FeedDomainActionResponse {
 }
 
 function requireBackendUrl(): string {
-  const base = process.env.NEXT_PUBLIC_API_URL;
-  if (!base) throw new Error('BACKEND_URL is not set.');
-  return base;
+  return process.env.NEXT_PUBLIC_API_URL ?? '/api/v2';
 }
 
 function requirePaymentId(item: FeedItem): number {
@@ -24,7 +22,7 @@ function requirePaymentId(item: FeedItem): number {
 }
 
 async function callJson(url: string, init: RequestInit): Promise<FeedDomainActionResponse> {
-  const res = await fetch(url, init);
+  const res = await fetch(url, { ...init, credentials: 'include' });
   const data = await res.json().catch(() => ({}));
 
   if (!res.ok) {
