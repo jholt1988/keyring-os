@@ -1,4 +1,5 @@
 import type { Decision, DecisionAction } from './copilot';
+import { describe, expect, it } from 'vitest';
 
 const action: DecisionAction = {
   label: 'Approve',
@@ -39,3 +40,10 @@ const decision: Decision = {
 
 void decision;
 void action;
+
+describe('copilot types', () => {
+  it('compiles representative shapes', () => {
+    expect(decision.id).toBe('d1');
+    expect(action.label).toBe('Approve');
+  });
+});
