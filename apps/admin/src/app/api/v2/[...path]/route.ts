@@ -30,16 +30,30 @@ function copyResponseHeaders(response: Response): Headers {
 
 function resolveUserRole(payload: unknown): string | undefined {
   if (!payload || typeof payload !== 'object') return undefined;
-  const user = (payload as { user?: { role?: unknown; roles?: unknown } }).user;
-  if (!user || typeof user !== 'object') return undefined;
-
-  if (typeof user.role === 'string' && user.role.trim()) {
-    return user.role;
+  
+  const obj = payload as { role?: unknown; roles?: unknown; user?: { role?: unknown; roles?: unknown } };
+  
+  // 1. Check direct role at root
+  if (typeof obj.role === 'string' && obj.role.trim()) {
+    return obj.role;
   }
-
-  if (Array.isArray(user.roles)) {
-    const firstRole = user.roles.find((value) => typeof value === 'string' && value.trim());
+  
+  // 2. Check direct roles at root
+  if (Array.isArray(obj.roles)) {
+    const firstRole = obj.roles.find((value) => typeof value === 'string' && value.trim());
     if (typeof firstRole === 'string') return firstRole;
+  }
+  
+  // 3. Check nested user role
+  const user = obj.user;
+  if (user && typeof user === 'object') {
+    if (typeof user.role === 'string' && user.role.trim()) {
+      return user.role;
+    }
+    if (Array.isArray(user.roles)) {
+      const firstRole = user.roles.find((value) => typeof value === 'string' && value.trim());
+      if (typeof firstRole === 'string') return firstRole;
+    }
   }
 
   return undefined;

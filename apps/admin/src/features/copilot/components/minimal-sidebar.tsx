@@ -19,7 +19,8 @@ import {
   Settings,
   ChevronLeft,
   Menu,
-  Zap
+  Zap,
+  Sliders
 } from 'lucide-react';
 
 interface NavItem {
@@ -39,6 +40,7 @@ const mainNav: NavItem[] = [
   { icon: MessageSquare, label: 'Messages', href: '/messages' },
   { icon: BarChart3, label: 'Financials', href: '/financials' },
   { icon: FolderOpen, label: 'Renewals', href: '/renewals' },
+  { icon: Sliders, label: 'Operator', href: '/operator' },
 ];
 
 const bottomNav: NavItem[] = [
