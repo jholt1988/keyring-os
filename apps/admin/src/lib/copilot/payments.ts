@@ -1,5 +1,5 @@
 import { api } from './core';
-import { executeDecisionAction } from './legacy';
+import { executeDecisionAction } from './briefing';
 
 export async function fetchUnitLedger(leaseId: string) {
   try {

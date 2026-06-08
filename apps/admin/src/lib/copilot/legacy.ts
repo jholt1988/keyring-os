@@ -26,7 +26,7 @@ function buildQuery(params?: Record<string, string | number | boolean | undefine
   return query ? `?${query}` : '';
 }
 
-export async function fetchBriefing(): Promise<BriefingData> {
+async function fetchBriefing(): Promise<BriefingData> {
   try {
     return await api<BriefingData>('/briefing/daily');
   } catch {
@@ -122,11 +122,11 @@ async function buildFallbackBriefing(): Promise<BriefingData> {
   };
 }
 
-export async function executeDecisionAction(endpoint: string, method: string, body?: Record<string, unknown>) {
+async function executeDecisionAction(endpoint: string, method: string, body?: Record<string, unknown>) {
   return api(endpoint, { method, body: body ? JSON.stringify(body) : undefined });
 }
 
-export async function fetchPaymentsWorkspace() {
+async function fetchPaymentsWorkspace() {
   const [delinquency, opsSummary, invoices, decisions] = await Promise.allSettled([
     api('/payments/delinquency/queue'),
     api('/payments/ops-summary'),
@@ -141,7 +141,7 @@ export async function fetchPaymentsWorkspace() {
   };
 }
 
-export async function fetchLeasingWorkspace() {
+async function fetchLeasingWorkspace() {
   const [opsSummary, stats, leads] = await Promise.allSettled([
     api('/leasing/ops-summary'),
     api('/leasing/statistics'),
@@ -154,7 +154,7 @@ export async function fetchLeasingWorkspace() {
   };
 }
 
-export async function fetchRepairsWorkspace() {
+async function fetchRepairsWorkspace() {
   const [requests, estimates, aiMetrics] = await Promise.allSettled([
     api('/maintenance?sortBy=priority&sortOrder=asc'),
     api('/estimates'),
@@ -167,7 +167,7 @@ export async function fetchRepairsWorkspace() {
   };
 }
 
-export async function fetchRenewalsWorkspace() {
+async function fetchRenewalsWorkspace() {
   const [leases, recommendations] = await Promise.allSettled([
     api('/leases'),
     api('/rent-recommendations'),
@@ -178,7 +178,7 @@ export async function fetchRenewalsWorkspace() {
   };
 }
 
-export async function fetchScreeningWorkspace() {
+async function fetchScreeningWorkspace() {
   try {
     const apps = await api<any>('/rental-applications');
     return { applications: Array.isArray(apps) ? apps : apps?.data ?? apps?.applications ?? [] };
@@ -195,7 +195,7 @@ export async function fetchPolicyEvaluation(applicationId: string): Promise<Poli
   }
 }
 
-export async function fetchFinancialsWorkspace() {
+async function fetchFinancialsWorkspace() {
   const [workspace, reconciliation, chartOfAccounts] = await Promise.allSettled([
     api('/bookkeeping/workspace'),
     api('/bookkeeping/reconciliation'),
@@ -247,7 +247,7 @@ export async function fetchPropertyWorkspace(id: string) {
   };
 }
 
-export async function fetchUnitLedger(leaseId: string) {
+async function fetchUnitLedger(leaseId: string) {
   try {
     return await api(`/payments/ledger/accounts/${leaseId}`);
   } catch {
@@ -493,7 +493,7 @@ export async function createRenewalOffer(
 
 // ── Payment mutations ─────────────────────────────────────────────────────────
 
-export async function issueDelinquencyNotice(data: {
+async function issueDelinquencyNotice(data: {
   leaseId: string;
   deliveryMethod: string;
   approvalConfirmed: boolean;
@@ -505,7 +505,7 @@ export async function issueDelinquencyNotice(data: {
   });
 }
 
-export async function logManualPayment(data: {
+async function logManualPayment(data: {
   leaseId: string;
   propertyId: string;
   unitId?: string;
@@ -581,7 +581,7 @@ export async function sendMessage(conversationId: number, content: string) {
 
 // ── Notifications ─────────────────────────────────────────────────────────────
 
-export async function fetchNotifications(params?: { unread?: boolean; limit?: number }) {
+async function fetchNotifications(params?: { unread?: boolean; limit?: number }) {
   try {
     const qs = new URLSearchParams();
     if (params?.unread) qs.set('unread', 'true');
@@ -592,15 +592,15 @@ export async function fetchNotifications(params?: { unread?: boolean; limit?: nu
   }
 }
 
-export async function markNotificationRead(id: number) {
+async function markNotificationRead(id: number) {
   return api(`/notifications/${id}/read`, { method: 'PUT' });
 }
 
-export async function markAllNotificationsRead() {
+async function markAllNotificationsRead() {
   return api('/notifications/read-all', { method: 'POST' });
 }
 
-export async function deleteNotification(id: number) {
+async function deleteNotification(id: number) {
   return api(`/notifications/${id}`, { method: 'DELETE' });
 }
 
@@ -910,7 +910,7 @@ export async function createStripeCheckoutSession(data: { invoiceId: number; lea
   });
 }
 
-export async function createPaymentPlan(data: Record<string, unknown>) {
+async function createPaymentPlan(data: Record<string, unknown>) {
   if (typeof data.invoiceId !== 'number') {
     throw new Error('createPaymentPlan requires invoiceId for the current backend contract.');
   }
@@ -1120,18 +1120,18 @@ export async function allocateMasterBill(id: string) {
   });
 }
 
-export async function fetchVendors() {
+async function fetchVendors() {
   return api('/vendors');
 }
 
-export async function createVendor(data: Record<string, unknown>) {
+async function createVendor(data: Record<string, unknown>) {
   return api('/vendors', {
     method: 'POST',
     body: JSON.stringify(data),
   });
 }
 
-export function getVendors1099ExportUrl() {
+function getVendors1099ExportUrl() {
   const base = process.env.NEXT_PUBLIC_API_URL ?? '';
   return `${base}/vendors/1099-export`;
 }
