@@ -187,6 +187,7 @@ async function fetchScreeningWorkspace() {
   }
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchPolicyEvaluation(applicationId: string): Promise<PolicyEvaluation | null> {
   try {
     return await api<PolicyEvaluation>(`/rental-applications/${applicationId}/policy-evaluation`);
@@ -215,6 +216,7 @@ async function fetchFinancialsWorkspace() {
   };
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchPortfolioWorkspace() {
   try {
     const propsRes = await api<any>('/properties');
@@ -236,6 +238,7 @@ export async function fetchPortfolioWorkspace() {
   }
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchPropertyWorkspace(id: string) {
   const [property, rollup] = await Promise.allSettled([
     api(`/properties/${id}`),
@@ -255,6 +258,7 @@ async function fetchUnitLedger(leaseId: string) {
   }
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchUnitWorkspace(propertyId: string, unitId: string) {
   const [property, rollup] = await Promise.allSettled([
     api(`/properties/${propertyId}`),
@@ -272,6 +276,7 @@ export async function fetchUnitWorkspace(propertyId: string, unitId: string) {
   };
 }
 
+/** @deprecated Use Operator API instead */
 export async function transitionUnitState(unitId: string, status: string) {
   return api(`/properties/units/${unitId}/transition`, {
     method: 'POST',
@@ -279,6 +284,7 @@ export async function transitionUnitState(unitId: string, status: string) {
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchWorkflows() {
   try {
     return await api('/workflows');
@@ -287,6 +293,7 @@ export async function fetchWorkflows() {
   }
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchWorkflowExecutions() {
   try {
     return await api('/workflows/executions?limit=20');
@@ -295,6 +302,7 @@ export async function fetchWorkflowExecutions() {
   }
 }
 
+/** @deprecated Use Operator API instead */
 export async function triggerWorkflow(id: string, input: Record<string, unknown>) {
   return api(`/workflows/${id}/execute`, {
     method: 'POST',
@@ -302,6 +310,7 @@ export async function triggerWorkflow(id: string, input: Record<string, unknown>
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchUnitRepairs(unitId: string) {
   try {
     const res = await api<any>(`/maintenance?unitId=${unitId}`);
@@ -311,6 +320,7 @@ export async function fetchUnitRepairs(unitId: string) {
   }
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchPropertyRepairs(propertyId: string) {
   try {
     const res = await api<any>(`/maintenance?propertyId=${propertyId}`);
@@ -320,6 +330,7 @@ export async function fetchPropertyRepairs(propertyId: string) {
   }
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchAuditLogs(params?: {
   entityId?: string;
   module?: string;
@@ -336,6 +347,7 @@ export async function fetchAuditLogs(params?: {
   }
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchPortfolioAuditLogs() {
   try {
     return await api<{ data: any[]; total: number }>('/audit-logs?limit=20');
@@ -344,6 +356,7 @@ export async function fetchPortfolioAuditLogs() {
   }
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchPortfolioRepairs() {
   try {
     const res = await api<any>('/maintenance');
@@ -355,6 +368,7 @@ export async function fetchPortfolioRepairs() {
 
 // ── Tenant Management ──────────────────────────────────────
 
+/** @deprecated Use Operator API instead */
 export async function fetchTenants(params?: Record<string, string>) {
   try {
     const res = await api<any>(`/tenants${buildQuery(params)}`);
@@ -364,10 +378,12 @@ export async function fetchTenants(params?: Record<string, string>) {
   }
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchTenantById(id: string) {
   return api<any>(`/tenants/${id}`);
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchTenantWorkspace(id: string) {
   try {
     return await api<any>(`/tenants/${id}/workspace`);
@@ -376,6 +392,7 @@ export async function fetchTenantWorkspace(id: string) {
   }
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchTenantHealth(id: string) {
   try {
     return await api<any>(`/tenants/${id}/health`);
@@ -384,6 +401,7 @@ export async function fetchTenantHealth(id: string) {
   }
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchTenantActivity(id: string, limit = 50) {
   try {
     return await api<any[]>(`/tenants/${id}/activity?limit=${limit}`);
@@ -392,6 +410,7 @@ export async function fetchTenantActivity(id: string, limit = 50) {
   }
 }
 
+/** @deprecated Use Operator API instead */
 export async function updateTenantProfile(id: string, data: Record<string, unknown>) {
   return api(`/tenants/${id}/profile`, {
     method: 'PUT',
@@ -399,6 +418,7 @@ export async function updateTenantProfile(id: string, data: Record<string, unkno
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function addHouseholdMember(tenantId: string, data: Record<string, unknown>) {
   return api(`/tenants/${tenantId}/household`, {
     method: 'POST',
@@ -406,6 +426,7 @@ export async function addHouseholdMember(tenantId: string, data: Record<string, 
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function addViolation(tenantId: string, data: Record<string, unknown>) {
   return api(`/tenants/${tenantId}/violations`, {
     method: 'POST',
@@ -416,6 +437,7 @@ export async function addViolation(tenantId: string, data: Record<string, unknow
 
 // ── Screening mutations ───────────────────────────────────────────────────────
 
+/** @deprecated Use Operator API instead */
 export async function reviewApplication(
   id: number,
   data: {
@@ -433,22 +455,26 @@ export async function reviewApplication(
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function createApplication(data: Record<string, unknown>) {
   return api('/rental-applications', { method: 'POST', body: JSON.stringify(data) });
 }
 
 // ── Estimate mutations ────────────────────────────────────────────────────────
 
+/** @deprecated Use Operator API instead */
 export async function approveEstimate(id: string) {
   return api(`/estimates/${id}/approve`, { method: 'PATCH' });
 }
 
+/** @deprecated Use Operator API instead */
 export async function rejectEstimate(id: string, reason?: string) {
   return api(`/estimates/${id}/reject`, { method: 'PATCH', body: JSON.stringify({ reason }) });
 }
 
 // ── Bookkeeping mutations ─────────────────────────────────────────────────────
 
+/** @deprecated Use Operator API instead */
 export async function categorizeTransaction(id: string, category: string) {
   return api(`/bookkeeping/transactions/${id}/categorize`, {
     method: 'PATCH',
@@ -456,14 +482,17 @@ export async function categorizeTransaction(id: string, category: string) {
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function approveOwnerStatement(id: string) {
   return api(`/bookkeeping/owner-statements/${id}/approve`, { method: 'PATCH' });
 }
 
+/** @deprecated Use Operator API instead */
 export async function sendOwnerStatement(id: string) {
   return api(`/bookkeeping/owner-statements/${id}/send`, { method: 'PATCH' });
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchChartOfAccounts() {
   try {
     return await api<Array<{ id: string; name: string; code: string }>>('/bookkeeping/chart-of-accounts');
@@ -474,6 +503,7 @@ export async function fetchChartOfAccounts() {
 
 // ── Renewal mutations ─────────────────────────────────────────────────────────
 
+/** @deprecated Use Operator API instead */
 export async function createRenewalOffer(
   leaseId: string,
   data: {
@@ -522,6 +552,7 @@ async function logManualPayment(data: {
 
 // ── Lease mutations ───────────────────────────────────────────────────────────
 
+/** @deprecated Use Operator API instead */
 export async function createLease(data: {
   startDate: string;
   endDate: string;
@@ -536,6 +567,7 @@ export async function createLease(data: {
   return api('/leases', { method: 'POST', body: JSON.stringify(data) });
 }
 
+/** @deprecated Use Operator API instead */
 export async function recordLeaseNotice(
   leaseId: string,
   data: { type: string; deliveryMethod: string; message?: string },
@@ -548,6 +580,7 @@ export async function recordLeaseNotice(
 
 // ── Messaging ─────────────────────────────────────────────────────────────────
 
+/** @deprecated Use Operator API instead */
 export async function fetchConversations() {
   try {
     return await api<any[]>('/messaging/conversations');
@@ -556,6 +589,7 @@ export async function fetchConversations() {
   }
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchMessages(conversationId: number) {
   try {
     return await api<any[]>(`/messaging/conversations/${conversationId}/messages`);
@@ -564,6 +598,7 @@ export async function fetchMessages(conversationId: number) {
   }
 }
 
+/** @deprecated Use Operator API instead */
 export async function createConversation(data: {
   subject?: string;
   content: string;
@@ -572,6 +607,7 @@ export async function createConversation(data: {
   return api('/messaging/conversations', { method: 'POST', body: JSON.stringify(data) });
 }
 
+/** @deprecated Use Operator API instead */
 export async function sendMessage(conversationId: number, content: string) {
   return api(`/messaging/conversations/${conversationId}/messages`, {
     method: 'POST',
@@ -606,6 +642,7 @@ async function deleteNotification(id: number) {
 
 // ── Maintenance mutations ─────────────────────────────────────────────────────
 
+/** @deprecated Use Operator API instead */
 export async function createMaintenanceRequest(data: {
   title: string;
   category: string;
@@ -620,6 +657,7 @@ export async function createMaintenanceRequest(data: {
 
 // ── Property mutations ────────────────────────────────────────────────────────
 
+/** @deprecated Use Operator API instead */
 export async function createProperty(data: {
   name: string;
   address: string;
@@ -632,10 +670,12 @@ export async function createProperty(data: {
   return api('/properties', { method: 'POST', body: JSON.stringify(data) });
 }
 
+/** @deprecated Use Operator API instead */
 export async function updateProperty(id: string, data: Record<string, unknown>) {
   return api(`/properties/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
 }
 
+/** @deprecated Use Operator API instead */
 export async function createUnit(
   propertyId: string,
   data: {
@@ -653,6 +693,7 @@ export async function createUnit(
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function updateUnit(propertyId: string, unitId: string, data: Record<string, unknown>) {
   return api(`/properties/${propertyId}/units/${unitId}`, {
     method: 'PATCH',
@@ -662,6 +703,7 @@ export async function updateUnit(propertyId: string, unitId: string, data: Recor
 
 // ── Inspections ───────────────────────────────────────────────────────────────
 
+/** @deprecated Use Operator API instead */
 export async function fetchInspections(params?: { propertyId?: string; status?: string }) {
   try {
     return await api<any[]>(`/inspections${buildQuery(params as Record<string, string>)}`);
@@ -670,6 +712,7 @@ export async function fetchInspections(params?: { propertyId?: string; status?: 
   }
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchInspection(id: number) {
   try {
     return await api<any>(`/inspections/${id}`);
@@ -678,20 +721,24 @@ export async function fetchInspection(id: number) {
   }
 }
 
+/** @deprecated Use Operator API instead */
 export async function createInspection(data: Record<string, unknown>) {
   return api('/inspections', { method: 'POST', body: JSON.stringify(data) });
 }
 
+/** @deprecated Use Operator API instead */
 export async function completeInspection(id: number) {
   return api(`/inspections/${id}/complete`, { method: 'POST' });
 }
 
+/** @deprecated Use Operator API instead */
 export async function startInspection(id: number) {
   return api('/inspections/start', { method: 'POST', body: JSON.stringify({ inspectionId: id }) });
 }
 
 // ── Documents ─────────────────────────────────────────────────────────────────
 
+/** @deprecated Use Operator API instead */
 export async function fetchDocuments(params?: { propertyId?: string; leaseId?: string; category?: string }) {
   try {
     return await api<any[]>(`/documents${buildQuery(params as Record<string, string>)}`);
@@ -700,6 +747,7 @@ export async function fetchDocuments(params?: { propertyId?: string; leaseId?: s
   }
 }
 
+/** @deprecated Use Operator API instead */
 export async function uploadDocument(formData: FormData) {
   const BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
   const res = await fetch(`${BASE}/documents/upload`, {
@@ -717,6 +765,7 @@ export function getDocumentDownloadUrl(id: number) {
 
 // ── E-Signatures ──────────────────────────────────────────────────────────────
 
+/** @deprecated Use Operator API instead */
 export async function fetchEsignEnvelopes() {
   try {
     return await api<any[]>('/esignature/risk-queue');
@@ -725,10 +774,12 @@ export async function fetchEsignEnvelopes() {
   }
 }
 
+/** @deprecated Use Operator API instead */
 export async function voidEnvelope(id: string) {
   return api(`/esignature/envelopes/${id}/void`, { method: 'PATCH' });
 }
 
+/** @deprecated Use Operator API instead */
 export async function resendEnvelope(id: string) {
   return api(`/esignature/envelopes/${id}/resend`, { method: 'POST' });
 }
@@ -740,72 +791,84 @@ export function getSignedDocUrl(id: string) {
 
 // ── Reports ───────────────────────────────────────────────────────────────────
 
+/** @deprecated Use Operator API instead */
 export async function fetchRentRoll(params?: { propertyId?: string }) {
   try {
     return await api<any>(`/reporting/rent-roll${buildQuery(params as Record<string, string>)}`);
   } catch { return null; }
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchProfitLoss(params?: { propertyId?: string; startDate?: string; endDate?: string }) {
   try {
     return await api<any>(`/reporting/profit-loss${buildQuery(params as Record<string, string>)}`);
   } catch { return null; }
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchVacancyRate(params?: { propertyId?: string }) {
   try {
     return await api<any>(`/reporting/vacancy-rate${buildQuery(params as Record<string, string>)}`);
   } catch { return null; }
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchDelinquencyAnalytics() {
   try {
     return await api<any>('/reporting/delinquency-analytics');
   } catch { return null; }
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchManualPaymentsSummary(params?: { propertyId?: string; startDate?: string; endDate?: string }) {
   try {
     return await api<any>(`/reporting/manual-payments-summary${buildQuery(params as Record<string, string>)}`);
   } catch { return null; }
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchManualChargesSummary(params?: { propertyId?: string; startDate?: string; endDate?: string }) {
   try {
     return await api<any>(`/reporting/manual-charges-summary${buildQuery(params as Record<string, string>)}`);
   } catch { return null; }
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchOpexAnomalies() {
   try {
     return await api<any>('/reporting/analytics/opex-anomalies');
   } catch { return null; }
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchReportHeatmap() {
   try {
     return await api<any>('/reporting/analytics/heatmap');
   } catch { return null; }
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchMaintenanceAnalytics(params?: { propertyId?: string; startDate?: string; endDate?: string }) {
   try {
     return await api<any>(`/reporting/maintenance-analytics${buildQuery(params as Record<string, string>)}`);
   } catch { return null; }
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchPaymentHistory(params?: { propertyId?: string; startDate?: string; endDate?: string }) {
   try {
     return await api<any>(`/reporting/payment-history${buildQuery(params as Record<string, string>)}`);
   } catch { return null; }
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchCapexAnalytics(params?: { propertyId?: string; upgradeCost?: number; rentBump?: number }) {
   try {
     return await api<any>(`/reporting/analytics/capex${buildQuery(params as Record<string, string | number>)}`);
   } catch { return null; }
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchTours(params?: { leadId?: string; propertyId?: string; status?: string; dateFrom?: string; dateTo?: string; limit?: number; offset?: number }) {
   if (params?.leadId) {
     const res = await api<any>(`/api/tours/lead/${params.leadId}`);
@@ -816,6 +879,7 @@ export async function fetchTours(params?: { leadId?: string; propertyId?: string
   return res?.tours ?? res;
 }
 
+/** @deprecated Use Operator API instead */
 export async function scheduleTour(data: { leadId: string; propertyId: string; unitId?: string; date?: string; time?: string; preferredDate?: string; preferredTime?: string; notes?: string; agentId?: string }) {
   return api('/api/tours/schedule', {
     method: 'POST',
@@ -830,6 +894,7 @@ export async function scheduleTour(data: { leadId: string; propertyId: string; u
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function updateTourStatus(id: string, status: string, feedback?: string) {
   return api(`/api/tours/${id}/status`, {
     method: 'PATCH',
@@ -837,6 +902,7 @@ export async function updateTourStatus(id: string, status: string, feedback?: st
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function assignTour(id: string, userId: string) {
   return api(`/api/tours/${id}/assign`, {
     method: 'PATCH',
@@ -844,6 +910,7 @@ export async function assignTour(id: string, userId: string) {
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function rescheduleTour(id: string, data: { scheduledAt?: string; scheduledDate?: string; scheduledTime?: string }) {
   const scheduledAt = data.scheduledAt ? new Date(data.scheduledAt) : null;
   const scheduledDate = data.scheduledDate ?? (scheduledAt ? scheduledAt.toISOString().slice(0, 10) : undefined);
@@ -855,6 +922,7 @@ export async function rescheduleTour(id: string, data: { scheduledAt?: string; s
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchPaymentPlans(params?: { invoiceId?: number } | unknown) {
   const query = params && typeof params === 'object' && 'invoiceId' in (params as Record<string, unknown>)
     ? { invoiceId: (params as { invoiceId?: number }).invoiceId }
@@ -863,14 +931,17 @@ export async function fetchPaymentPlans(params?: { invoiceId?: number } | unknow
   return api(`/payments/payment-plans${buildQuery(query as Record<string, string | number | boolean | undefined | null> | undefined)}`);
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchLegalTracker(leaseId: string) {
   return api(`/payments/delinquency/legal-tracker/${leaseId}`);
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchAttorneyPacket(leaseId: string) {
   return api(`/payments/delinquency/attorney-packet/${leaseId}`);
 }
 
+/** @deprecated Use Operator API instead */
 export async function referAttorney(data: { leaseId: string; attorneyEmail?: string; attorneyName?: string; summary?: string; approvalConfirmed?: boolean }) {
   return api('/payments/delinquency/refer-attorney', {
     method: 'POST',
@@ -884,6 +955,7 @@ export async function referAttorney(data: { leaseId: string; attorneyEmail?: str
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function resolveLegalHold(data: { leaseId: string; reason?: string }) {
   return api(`/payments/delinquency/by-payment/${data.leaseId}/promise-to-pay`, {
     method: 'POST',
@@ -891,6 +963,7 @@ export async function resolveLegalHold(data: { leaseId: string; reason?: string 
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function recordCourtDate(data: { leaseId: string; courtDate: string; docketNumber?: string; courtroom?: string; notes?: string }) {
   return api('/payments/delinquency/record-court-date', {
     method: 'POST',
@@ -898,6 +971,7 @@ export async function recordCourtDate(data: { leaseId: string; courtDate: string
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function createStripeCheckoutSession(data: { invoiceId: number; leaseId?: string; amount?: number; successUrl?: string; cancelUrl?: string }) {
   const origin = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000';
   return api('/payments/stripe/checkout-session', {
@@ -921,6 +995,7 @@ async function createPaymentPlan(data: Record<string, unknown>) {
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function createManualCharge(data: Record<string, unknown>) {
   return api('/payments/charges/manual', {
     method: 'POST',
@@ -928,6 +1003,7 @@ export async function createManualCharge(data: Record<string, unknown>) {
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function voidManualCharge(id: string, reason = 'Voided from admin parity surface.') {
   return api(`/payments/charges/manual/${id}/void`, {
     method: 'POST',
@@ -935,10 +1011,12 @@ export async function voidManualCharge(id: string, reason = 'Voided from admin p
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchContractorBids(params?: { propertyId?: string; requestId?: string; status?: string }) {
   return api(`/contractor-bidding/bids${buildQuery(params as Record<string, string | number | boolean | undefined | null>)}`);
 }
 
+/** @deprecated Use Operator API instead */
 export async function createBid(data: Record<string, unknown>) {
   return api('/contractor-bidding/bids', {
     method: 'POST',
@@ -946,32 +1024,38 @@ export async function createBid(data: Record<string, unknown>) {
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function awardBid(id: string) {
   return api(`/contractor-bidding/bids/${id}/award`, {
     method: 'PATCH',
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function rejectBid(id: string) {
   return api(`/contractor-bidding/bids/${id}/reject`, {
     method: 'PATCH',
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function aiScoreBid(id: string) {
   return api(`/contractor-bidding/bids/${id}/ai-score`, {
     method: 'POST',
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchContractorRecommendations(propertyId: string, scope = 'general') {
   return api(`/contractor-bidding/properties/${propertyId}/recommendations${buildQuery({ scope })}`);
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchBillingSchedules() {
   return api('/billing/schedules');
 }
 
+/** @deprecated Use Operator API instead */
 export async function createBillingSchedule(data: Record<string, unknown>) {
   return api('/billing/schedules', {
     method: 'POST',
@@ -979,6 +1063,7 @@ export async function createBillingSchedule(data: Record<string, unknown>) {
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchAutopay(params?: { leaseId?: string } | unknown) {
   const query = params && typeof params === 'object' && 'leaseId' in (params as Record<string, unknown>)
     ? { leaseId: (params as { leaseId?: string }).leaseId }
@@ -987,6 +1072,7 @@ export async function fetchAutopay(params?: { leaseId?: string } | unknown) {
   return api(`/billing/autopay${buildQuery(query as Record<string, string | number | boolean | undefined | null> | undefined)}`);
 }
 
+/** @deprecated Use Operator API instead */
 export async function enableAutopay(data: Record<string, unknown>) {
   return api('/billing/autopay', {
     method: 'POST',
@@ -994,21 +1080,25 @@ export async function enableAutopay(data: Record<string, unknown>) {
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function disableAutopay(leaseId: string) {
   return api(`/billing/autopay/${leaseId}/disable`, {
     method: 'PATCH',
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchFeeScheduleVersions() {
   return api('/billing/fee-schedules/versions');
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchLeadApplications(params?: { propertyId?: string; status?: string; dateFrom?: string; dateTo?: string; limit?: number; offset?: number }) {
   const res = await api<any>(`/applications${buildQuery(params as Record<string, string | number | boolean | undefined | null>)}`);
   return res?.applications ?? res?.items ?? res?.data ?? res;
 }
 
+/** @deprecated Use Operator API instead */
 export async function submitLeadApplication(data: Record<string, unknown>) {
   return api('/applications/submit', {
     method: 'POST',
@@ -1016,6 +1106,7 @@ export async function submitLeadApplication(data: Record<string, unknown>) {
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function updateLeadApplicationStatus(id: string, status: string, extras?: Record<string, unknown>) {
   return api(`/applications/${id}/status`, {
     method: 'PATCH',
@@ -1023,6 +1114,7 @@ export async function updateLeadApplicationStatus(id: string, status: string, ex
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function triggerApplicationScreening(id: string, data?: Record<string, unknown>) {
   return api(`/applications/${id}/screening`, {
     method: 'PATCH',
@@ -1030,6 +1122,7 @@ export async function triggerApplicationScreening(id: string, data?: Record<stri
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function triggerSyndication(propertyId: string, data?: Record<string, unknown>) {
   return api(`/listings/syndication/${propertyId}/trigger`, {
     method: 'POST',
@@ -1037,6 +1130,7 @@ export async function triggerSyndication(propertyId: string, data?: Record<strin
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function getQuickBooksAuthUrl(): Promise<{ authUrl?: string; url?: string }> {
   const result = await api<any>('/quickbooks/auth-url');
   return {
@@ -1046,38 +1140,46 @@ export async function getQuickBooksAuthUrl(): Promise<{ authUrl?: string; url?: 
   };
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchQuickBooksStatus() {
   return api('/quickbooks/status');
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchAccountingSyncStatus() {
   return api('/quickbooks/status');
 }
 
+/** @deprecated Use Operator API instead */
 export async function syncQuickBooks() {
   return api('/quickbooks/sync', {
     method: 'POST',
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function disconnectQuickBooks() {
   return api('/quickbooks/disconnect', {
     method: 'POST',
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function testQuickBooksConnection() {
   return api('/quickbooks/test-connection');
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchSecurityEvents(params?: { userId?: string; username?: string; type?: string; from?: string; to?: string; limit?: number; offset?: number }) {
   return api(`/security-events${buildQuery(params as Record<string, string | number | boolean | undefined | null>)}`);
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchSmartDevices(params?: { propertyId?: string; unitId?: string }) {
   return api(`/smart-devices${buildQuery(params as Record<string, string | number | boolean | undefined | null>)}`);
 }
 
+/** @deprecated Use Operator API instead */
 export async function registerSmartDevice(data: Record<string, unknown>) {
   return api('/smart-devices', {
     method: 'POST',
@@ -1085,10 +1187,12 @@ export async function registerSmartDevice(data: Record<string, unknown>) {
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchAccessCodes(deviceId: string) {
   return api(`/smart-devices/${deviceId}/access-codes`);
 }
 
+/** @deprecated Use Operator API instead */
 export async function createAccessCode(deviceId: string, data: Record<string, unknown>) {
   return api(`/smart-devices/${deviceId}/access-codes`, {
     method: 'POST',
@@ -1096,10 +1200,12 @@ export async function createAccessCode(deviceId: string, data: Record<string, un
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchTenantInsurance(leaseId: string) {
   return api(`/tenant-insurance/lease/${leaseId}`);
 }
 
+/** @deprecated Use Operator API instead */
 export async function recordTenantInsurance(leaseId: string, data: Record<string, unknown>) {
   return api(`/tenant-insurance/lease/${leaseId}`, {
     method: 'POST',
@@ -1107,6 +1213,7 @@ export async function recordTenantInsurance(leaseId: string, data: Record<string
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function recordMasterBill(data: Record<string, unknown>) {
   return api('/utility-billing/master-bill', {
     method: 'POST',
@@ -1114,6 +1221,7 @@ export async function recordMasterBill(data: Record<string, unknown>) {
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function allocateMasterBill(id: string) {
   return api(`/utility-billing/master-bill/${id}/allocate`, {
     method: 'POST',
@@ -1136,14 +1244,17 @@ function getVendors1099ExportUrl() {
   return `${base}/vendors/1099-export`;
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchRentRecommendations() {
   return api('/rent-recommendations');
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchPendingRecommendations() {
   return api('/rent-recommendations/pending');
 }
 
+/** @deprecated Use Operator API instead */
 export async function generateRecommendations(data?: { unitIds?: string[] }) {
   return api('/rent-recommendations/generate', {
     method: 'POST',
@@ -1151,30 +1262,35 @@ export async function generateRecommendations(data?: { unitIds?: string[] }) {
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function bulkGenerateRecommendations() {
   return api('/rent-recommendations/bulk-generate/all', {
     method: 'POST',
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function acceptRecommendation(id: string) {
   return api(`/rent-recommendations/${id}/accept`, {
     method: 'POST',
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function rejectRecommendation(id: string) {
   return api(`/rent-recommendations/${id}/reject`, {
     method: 'POST',
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function applyRecommendation(id: string) {
   return api(`/rent-recommendations/${id}/apply`, {
     method: 'POST',
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function startMoveIn(data: { leaseId: string; tenantId: string }) {
   return api('/move-orchestration/move-in', {
     method: 'POST',
@@ -1182,6 +1298,7 @@ export async function startMoveIn(data: { leaseId: string; tenantId: string }) {
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function startMoveOut(data: { leaseId: string; tenantId: string }) {
   return api('/move-orchestration/move-out', {
     method: 'POST',
@@ -1189,10 +1306,12 @@ export async function startMoveOut(data: { leaseId: string; tenantId: string }) 
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchOwnerDraws(statementId: string) {
   return api(`/owner-portal/draws/statement/${statementId}`);
 }
 
+/** @deprecated Use Operator API instead */
 export async function createOwnerDraw(statementId: string, data: { amount?: number; bankAccount?: string; bankAccountId?: string }) {
   return api(`/owner-portal/draws/statement/${statementId}`, {
     method: 'POST',
@@ -1203,6 +1322,7 @@ export async function createOwnerDraw(statementId: string, data: { amount?: numb
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function allocateTransaction(
   id: string,
   data: { propertyId?: string; unitId?: string; leaseId?: string; vendorId?: string; ownerId?: string; accountId?: string; amountCents?: number },
@@ -1223,12 +1343,14 @@ export async function allocateTransaction(
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function confirmReconciliationItem(id: string) {
   return api(`/bookkeeping/reconciliation/items/${id}/confirm`, {
     method: 'PATCH',
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function flagTransactionException(id: string, data?: { reason?: string; reviewed?: boolean }) {
   return api(`/bookkeeping/transactions/${id}/exception`, {
     method: 'PATCH',
@@ -1236,6 +1358,7 @@ export async function flagTransactionException(id: string, data?: { reason?: str
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function lockMonthlyClose(propertyId: string, month?: string) {
   return api(`/bookkeeping/monthly-close/${propertyId}/lock`, {
     method: 'POST',
@@ -1243,6 +1366,7 @@ export async function lockMonthlyClose(propertyId: string, month?: string) {
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function reopenMonthlyClose(propertyId: string, month?: string, reason = 'Reopened from admin parity surface.') {
   return api(`/bookkeeping/monthly-close/${propertyId}/reopen`, {
     method: 'POST',
@@ -1250,10 +1374,12 @@ export async function reopenMonthlyClose(propertyId: string, month?: string, rea
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchLeaseAbstractions() {
   return api('/lease-abstraction/abstractions');
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchLeaseAbstractionAnalytics(): Promise<{
   totalAbstractions: number;
   reviewedCount: number;
@@ -1273,6 +1399,7 @@ export async function fetchLeaseAbstractionAnalytics(): Promise<{
   };
 }
 
+/** @deprecated Use Operator API instead */
 export async function extractLease(data: FormData | { leaseId?: string; documentId?: string }) {
   const leaseId = data instanceof FormData ? String(data.get('leaseId') ?? '') : (data.leaseId ?? '');
   const documentId = data instanceof FormData ? String(data.get('documentId') ?? '') : (data.documentId ?? '');
@@ -1282,12 +1409,14 @@ export async function extractLease(data: FormData | { leaseId?: string; document
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function bulkExtractLeases() {
   return api('/lease-abstraction/bulk-extract', {
     method: 'POST',
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function reviewLeaseAbstraction(id: string, data?: { reviewedById?: string; reviewed?: boolean; approved?: boolean }) {
   return api(`/lease-abstraction/abstractions/${id}/review`, {
     method: 'PATCH',
@@ -1295,12 +1424,14 @@ export async function reviewLeaseAbstraction(id: string, data?: { reviewedById?:
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchChatSession(sessionId: string): Promise<{ messages: any[]; thread: any[] }> {
   const messages = await api<any[]>(`/chatbot/session/${sessionId}`);
   const normalized = Array.isArray(messages) ? messages : [];
   return { messages: normalized, thread: normalized };
 }
 
+/** @deprecated Use Operator API instead */
 export async function sendChatMessage(message: string, sessionId?: string): Promise<{ sessionId?: string; [key: string]: unknown }> {
   return api('/chatbot/message', {
     method: 'POST',
@@ -1308,11 +1439,13 @@ export async function sendChatMessage(message: string, sessionId?: string): Prom
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchCapexForecasts(): Promise<any[]> {
   const result = await api<any>('/capex-forecasting/forecasts');
   return Array.isArray(result) ? result : [];
 }
 
+/** @deprecated Use Operator API instead */
 export async function createCapexForecast(data: { propertyId: string; estimatedCost?: number; description?: string; category?: string; projectedYear?: number; urgency?: string; confidenceScore?: number; aiRationale?: string }) {
   return api('/capex-forecasting/forecasts', {
     method: 'POST',
@@ -1329,6 +1462,7 @@ export async function createCapexForecast(data: { propertyId: string; estimatedC
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function approveCapexForecast(id: string, approvedBudget?: number) {
   return api(`/capex-forecasting/forecasts/${id}/approve`, {
     method: 'PATCH',
@@ -1336,6 +1470,7 @@ export async function approveCapexForecast(id: string, approvedBudget?: number) 
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function completeCapexForecast(id: string, actualCostCents?: number) {
   return api(`/capex-forecasting/forecasts/${id}/complete`, {
     method: 'PATCH',
@@ -1343,12 +1478,14 @@ export async function completeCapexForecast(id: string, actualCostCents?: number
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function generateCapexForecast(propertyId: string) {
   return api(`/capex-forecasting/properties/${propertyId}/generate`, {
     method: 'POST',
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchCapexSummary(): Promise<{
   totalForecastedSpend: number;
   approvedCount: number;
@@ -1371,14 +1508,17 @@ export async function fetchCapexSummary(): Promise<{
 
 // ========== GAP REMEDIATION: Admin API Connectors ==========
 
+/** @deprecated Use Operator API instead */
 export async function getDelinquencyLegalTracker(leaseId: string) {
   return await api(`/payments/delinquency/legal-tracker/${leaseId}`);
 }
 
+/** @deprecated Use Operator API instead */
 export async function getLedgerAccount(leaseId: string) {
   return await api(`/payments/ledger/accounts/${leaseId}`);
 }
 
+/** @deprecated Use Operator API instead */
 export async function assignVendor(maintenanceId: string, vendorId: string, notes?: string) {
   return await api(`/maintenance/${maintenanceId}/assign-vendor`, {
     method: 'POST',
@@ -1386,6 +1526,7 @@ export async function assignVendor(maintenanceId: string, vendorId: string, note
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function notifyTenantMaintenance(maintenanceId: string, message: string) {
   return await api(`/maintenance/${maintenanceId}/notify-tenant`, {
     method: 'POST',
@@ -1393,12 +1534,14 @@ export async function notifyTenantMaintenance(maintenanceId: string, message: st
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function generateLeaseDocument(leaseId: string) {
   return await api(`/leases/${leaseId}/generate-document`, {
     method: 'POST',
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function sendLeaseForSignature(leaseId: string, signerEmail?: string, signerName?: string) {
   return await api(`/leases/${leaseId}/send-for-signature`, {
     method: 'POST',
@@ -1408,14 +1551,17 @@ export async function sendLeaseForSignature(leaseId: string, signerEmail?: strin
 
 // ─── Messaging ──────────────────────────────────────────────────────────────
 
+/** @deprecated Use Operator API instead */
 export async function fetchAdminConversations(params?: Record<string, string>) {
   return await api<any>(`/messaging/admin/conversations${buildQuery(params)}`);
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchConversationMessages(conversationId: number) {
   return await api<any[]>(`/messaging/conversations/${conversationId}/messages`);
 }
 
+/** @deprecated Use Operator API instead */
 export async function createMessageThread(dto: { subject?: string; content: string; participantIds: string[] }) {
   return await api<any>('/messaging/threads', {
     method: 'POST',
@@ -1423,6 +1569,7 @@ export async function createMessageThread(dto: { subject?: string; content: stri
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function replyToConversation(conversationId: number, content: string) {
   return await api<any>(`/messaging/conversations/${conversationId}/messages`, {
     method: 'POST',
@@ -1430,16 +1577,19 @@ export async function replyToConversation(conversationId: number, content: strin
   });
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchMessagingTenants() {
   return await api<any[]>('/messaging/tenants');
 }
 
+/** @deprecated Use Operator API instead */
 export async function fetchMessageStats() {
   return await api<any>('/messaging/stats');
 }
 
 // ─── Lease Notices ───────────────────────────────────────────────────────────
 
+/** @deprecated Use Operator API instead */
 export async function recordTenantNotice(
   leaseId: string,
   dto: { type: string; deliveryMethod: string; message?: string },
@@ -1452,6 +1602,7 @@ export async function recordTenantNotice(
 
 // ─── Bank Import ─────────────────────────────────────────────────────────────
 
+/** @deprecated Use Operator API instead */
 export async function importBankTransactions(
   transactions: Array<{
     date: string;

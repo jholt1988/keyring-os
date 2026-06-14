@@ -1,9 +1,5 @@
-import { OperatorReadOnlyShell } from './read-only-shell';
+import { redirect } from 'next/navigation';
 
-export default function OperatorPage() {
-  return (
-    <div className="operator-theme">
-      <OperatorReadOnlyShell />
-    </div>
-  );
+export default function OperatorRedirect() {
+  redirect('/');
 }

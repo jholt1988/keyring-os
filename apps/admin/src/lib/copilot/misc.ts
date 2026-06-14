@@ -4,7 +4,7 @@ import {
   fetchWorkflows,
   fetchWorkflowExecutions,
   triggerWorkflow,
-} from './legacy';
+} from './legacy-compat';
 
 export const copilotMiscApi = {
   fetchPolicyEvaluation,

@@ -9,17 +9,31 @@ import { ContextPanel } from './context-panel';
 import { ContextRail } from './context-rail';
 import { MinimalSidebar } from './minimal-sidebar';
 import { RadialMenu } from './radial-menu';
+import { OperatorDataProvider, useOperatorSignals } from '@/features/operator/context/operator-data-context';
 
-// Inner shell that consumes the BriefingContext (must be inside BriefingProvider)
+// Inner shell that consumes both BriefingContext and OperatorDataContext
 function ShellInner({ children }: { children: ReactNode }) {
-  const { signals, panelOpen, openPanel, closePanel, selectedDecision } = useBriefingContext();
+  const { signals: briefingSignals, panelOpen, openPanel, closePanel, selectedDecision } = useBriefingContext();
+
+  // Merge operator signals with briefing signals — operator takes priority
+  let ambientSignals: { id: string; severity: 'critical' | 'high' | 'medium' | 'low'; label: string; pulse?: boolean }[] = [];
+  try {
+    const operatorSignals = useOperatorSignals();
+    // Use operator signals if available, fall back to briefing signals
+    ambientSignals = operatorSignals.length > 0
+      ? operatorSignals
+      : briefingSignals.map(s => ({ ...s, label: (s as any).title || (s as any).type || 'Signal' })) as any;
+  } catch {
+    // Operator context not available — use briefing signals
+    ambientSignals = briefingSignals.map(s => ({ ...s, label: (s as any).title || (s as any).type || 'Signal' })) as any;
+  }
 
   return (
     <>
       <MinimalSidebar />
       <div className="relative min-h-screen pl-20 bg-[radial-gradient(circle_at_top,rgba(23,48,78,0.42),transparent_48%),linear-gradient(180deg,#07111F_0%,#081221_100%)]">
-        {/* P1-11: AmbientSignalCluster wired to real briefing signals */}
-        <AmbientSignalCluster signals={signals.map(s => ({ ...s, label: (s as any).title || (s as any).type || 'Signal' })) as any} />
+        {/* Ambient signals wired to operator data (with briefing fallback) */}
+        <AmbientSignalCluster signals={ambientSignals} />
         <ContextRail />
         <header className="mx-auto max-w-[1440px] px-4 pt-6 sm:px-6 lg:px-8 lg:pt-8">
           <div className="glass-panel rounded-[28px] px-5 py-5 sm:px-6">
@@ -39,7 +53,7 @@ function ShellInner({ children }: { children: ReactNode }) {
               </div>
               <div className="w-full max-w-xl space-y-3">
                 <CommandComposer />
-                {/* P1-12: Panel toggle now tracks selectedDecision from context */}
+                {/* Panel toggle tracks selectedDecision from context */}
                 <button
                   type="button"
                   onClick={() => (panelOpen ? closePanel() : openPanel())}
@@ -53,7 +67,7 @@ function ShellInner({ children }: { children: ReactNode }) {
         </header>
         <div className="pb-24">{children}</div>
       </div>
-      {/* P1-12: ContextPanel receives the live selected decision from context */}
+      {/* ContextPanel receives the live selected decision from context */}
       <ContextPanel open={panelOpen} onClose={closePanel} decision={selectedDecision} />
       <RadialMenu />
       <CommandNode />
@@ -63,8 +77,10 @@ function ShellInner({ children }: { children: ReactNode }) {
 
 export function AppShell({ children }: { children: ReactNode }) {
   return (
-    <BriefingProvider>
-      <ShellInner>{children}</ShellInner>
-    </BriefingProvider>
+    <OperatorDataProvider>
+      <BriefingProvider>
+        <ShellInner>{children}</ShellInner>
+      </BriefingProvider>
+    </OperatorDataProvider>
   );
 }
