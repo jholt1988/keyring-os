@@ -1,6 +1,6 @@
 'use client';
 
-import { RequireRole } from '@/components/auth';
+import { ApprovalGate } from '@/features/operator';
 import { WorkspaceShell } from '@/components/copilot';
 import { useToast } from '@/components/ui/toast';
 import { EstimateForm,type EstimateFormData } from '@/features/repairs/components/estimate-form';
@@ -39,7 +39,7 @@ export default function NewEstimatePage() {
   };
 
   return (
-    <RequireRole requiredRoles={['ADMIN', 'PROPERTY_MANAGER']}>
+    <ApprovalGate requiredRoles={['ADMIN', 'PROPERTY_MANAGER']}>
       <WorkspaceShell
         title="New Estimate"
         subtitle="Create a repair estimate"
@@ -53,6 +53,6 @@ export default function NewEstimatePage() {
           />
         </div>
       </WorkspaceShell>
-    </RequireRole>
+    </ApprovalGate>
   );
 }

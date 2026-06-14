@@ -2,8 +2,9 @@ import {
   fetchPortfolioWorkspace,
   fetchPropertyWorkspace,
   fetchUnitWorkspace,
-} from './legacy';
+} from './legacy-compat';
 import { api } from './core';
+import { loadReadOnlyOperatorData } from '../operator/read-only-data';
 
 export async function fetchPaymentsWorkspace() {
   const [delinquency, opsSummary, invoices, decisions] = await Promise.allSettled([
@@ -34,33 +35,32 @@ export async function fetchLeasingWorkspace() {
 }
 
 export async function fetchRepairsWorkspace() {
-  const [requests, estimates, aiMetrics] = await Promise.allSettled([
-    api('/maintenance?sortBy=priority&sortOrder=asc'),
-    api('/estimates'),
+  const opData = await loadReadOnlyOperatorData({});
+  const [aiMetrics] = await Promise.allSettled([
     api('/maintenance/ai-metrics'),
   ]);
   return {
-    requests: requests.status === 'fulfilled' ? requests.value : null,
-    estimates: estimates.status === 'fulfilled' ? estimates.value : null,
+    requests: opData.maintenanceDispatch?.requests?.map(r => ({ ...r, id: r.requestId })) ?? null,
+    estimates: opData.inspectionEstimates?.estimates ?? null,
     aiMetrics: aiMetrics.status === 'fulfilled' ? aiMetrics.value : null,
   };
 }
 
 export async function fetchRenewalsWorkspace() {
-  const [leases, recommendations] = await Promise.allSettled([
-    api('/leases'),
+  const opData = await loadReadOnlyOperatorData({});
+  const [recommendations] = await Promise.allSettled([
     api('/rent-recommendations'),
   ]);
   return {
-    leases: leases.status === 'fulfilled' ? leases.value : null,
+    leases: opData.renewals?.leases ?? null,
     recommendations: recommendations.status === 'fulfilled' ? recommendations.value : null,
   };
 }
 
 export async function fetchScreeningWorkspace() {
   try {
-    const apps = await api<any>('/rental-applications');
-    return { applications: Array.isArray(apps) ? apps : apps?.data ?? apps?.applications ?? [] };
+    const opData = await loadReadOnlyOperatorData({});
+    return { applications: opData.applications?.applications ?? [] };
   } catch {
     return { applications: [] };
   }

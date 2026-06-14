@@ -22,6 +22,7 @@ export default function RegisterPage() {
     password: '',
     confirmPassword: '',
     role: 'PROPERTY_MANAGER' as const,
+    organization: '',
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -57,6 +58,7 @@ export default function RegisterPage() {
           email: form.email,
           password: form.password,
           role: form.role,
+          organization: form.organization,
         }),
       });
 
@@ -165,6 +167,16 @@ export default function RegisterPage() {
                 <option value="OWNER">Owner</option>
                 <option value="ADMIN">Admin</option>
               </select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-medium uppercase tracking-wider text-[#94A3B8]">Organization</label>
+              <Input
+                value={form.organization}
+                onChange={(e) => handleChange('organization', e.target.value)}
+                placeholder="Acme Properties"
+                required
+              />
             </div>
 
             <div className="space-y-2">

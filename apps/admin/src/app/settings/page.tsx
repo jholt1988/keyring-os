@@ -17,7 +17,7 @@ import {
   Users,
   Zap,
 } from 'lucide-react';
-import { RequireRole } from '@/components/auth';
+import { ApprovalGate } from '@/features/operator';
 import { WorkspaceShell } from '@/components/copilot';
 
 interface SettingsSection {
@@ -182,7 +182,7 @@ function SettingCard({
 
 export default function SettingsPage() {
   return (
-    <RequireRole requiredRoles="ADMIN">
+    <ApprovalGate requiredRoles="ADMIN">
       <WorkspaceShell title="Settings" subtitle="System Configuration" icon={Settings}>
         <div className="space-y-8">
           {/* Header summary */}
@@ -213,6 +213,6 @@ export default function SettingsPage() {
           ))}
         </div>
       </WorkspaceShell>
-    </RequireRole>
+    </ApprovalGate>
   );
 }

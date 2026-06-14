@@ -22,6 +22,18 @@ export class OperatorApiError extends Error {
 
 const defaultBaseUrl = '/api/backend';
 
+/**
+ * Attempt to read the auth_token from document.cookie.
+ * The v2 proxy sets auth_token as httpOnly, so this only works
+ * for non-httpOnly copies. The backend proxy now forwards the
+ * httpOnly cookie server-side, so this is a client-side fallback.
+ */
+function getSessionToken(): string | undefined {
+  if (typeof document === 'undefined') return undefined;
+  const match = document.cookie.match(/(?:^|;\s*)operator_api_token=([^;]*)/);
+  return match?.[1] || undefined;
+}
+
 function buildUrl(path: string, query?: Record<string, string | number | boolean | undefined>, baseUrl = defaultBaseUrl) {
   const normalizedBase = baseUrl.replace(/\/$/, '');
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
@@ -45,11 +57,18 @@ export async function apiRequest<T>(
     signal?: AbortSignal;
   } = {},
 ): Promise<T> {
+  // Resolve token: explicit > localStorage > session cookie
+  const token = options.token
+    || (typeof window !== 'undefined' ? window.localStorage.getItem('operator_api_token') : null)
+    || getSessionToken()
+    || undefined;
+
   const response = await fetch(buildUrl(path, options.query, options.baseUrl), {
     method: method.toUpperCase(),
+    credentials: 'include', // Forward session cookies to backend proxy
     headers: {
       ...(options.body === undefined ? {} : { 'Content-Type': 'application/json' }),
-      ...(options.token ? { Authorization: `Bearer ${options.token}` } : {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
     body: options.body === undefined ? undefined : JSON.stringify(options.body),
     signal: options.signal,
@@ -64,3 +83,4 @@ export async function apiRequest<T>(
 
   return body as T;
 }
+
