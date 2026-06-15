@@ -1,7 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
-  testDir: './e2e',
+  testDir: './',
+  testMatch: '**/*.spec.ts',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
@@ -10,9 +11,36 @@ export default defineConfig({
   use: {
     baseURL: 'http://127.0.0.1:3000',
     trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
   },
   projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    { 
+      name: 'chromium', 
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: '**/*.spec.ts'
+    },
+    {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
+      testMatch: '**/*.spec.ts'
+    },
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
+      testMatch: '**/*.spec.ts'
+    },
+    // Mobile viewports for responsive testing
+    {
+      name: 'Mobile Chrome',
+      use: { ...devices['Pixel 5'] },
+      testMatch: '**/*.spec.ts'
+    },
+    {
+      name: 'Mobile Safari',
+      use: { ...devices['iPhone 12'] },
+      testMatch: '**/*.spec.ts'
+    },
   ],
   webServer: [
     {
