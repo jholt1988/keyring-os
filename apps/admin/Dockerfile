@@ -31,7 +31,7 @@ COPY packages/ ./packages/
 COPY apps/admin/ ./apps/admin/
 
 # Copy root-level config files needed by turbo / ts
-COPY apps/admin/tsconfig.json ./
+COPY apps/admin/tsconfig.json ./apps/admin/
 
 # Build the admin app via turbo (respects dependsOn for workspace packages)
 RUN pnpm turbo run build --filter=@keyring/admin
