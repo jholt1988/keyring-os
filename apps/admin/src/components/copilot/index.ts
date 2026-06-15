@@ -8,3 +8,4 @@ export { RiskMeter } from './risk-meter';
 export { TimelineRail } from './timeline-rail';
 export { MetricCard } from './metric-card';
 export { SectionCard } from './section-card';
+export { FocusView } from './focus-view';

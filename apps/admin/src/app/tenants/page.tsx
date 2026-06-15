@@ -4,6 +4,10 @@ import { useTenantsIndex } from '@/app/hooks/useWorkspace';
 import { MetricCard,WorkspaceShell } from '@/components/copilot';
 import { TenantCard,TenantHealthBadge } from '@/components/tenant';
 import { Button } from '@/components/ui/button';
+import { Modal } from '@/components/ui/modal';
+import { useToast } from '@/components/ui/toast';
+import { createMessageThread, recordTenantNotice } from '@/lib/copilot-api';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
 AlertTriangle,
 Calendar,
@@ -34,6 +38,20 @@ export default function TenantsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTenantId, setSelectedTenantId] = useState<string | null>(null);
 
+  // Message modal
+  const [msgOpen, setMsgOpen] = useState(false);
+  const [msgSubject, setMsgSubject] = useState('');
+  const [msgBody, setMsgBody] = useState('');
+
+  // Notice modal
+  const [noticeOpen, setNoticeOpen] = useState(false);
+  const [noticeType, setNoticeType] = useState('GENERAL');
+  const [noticeMethod, setNoticeMethod] = useState('EMAIL');
+  const [noticeMessage, setNoticeMessage] = useState('');
+
+  const { toast } = useToast();
+  const qc = useQueryClient();
+
   const params = useMemo(() => {
     const p: Record<string, string> = {};
     if (searchQuery) p.search = searchQuery;
@@ -54,6 +72,41 @@ export default function TenantsPage() {
   const atRiskCount = tenants.filter((t: any) => t.healthClass === 'AT_RISK' || t.healthClass === 'HIGH_TOUCH').length;
   const delinquentCount = tenants.filter((t: any) => t.status === 'DELINQUENT').length;
   const renewalCount = tenants.filter((t: any) => t.daysUntilLeaseEnd != null && t.daysUntilLeaseEnd <= 90 && t.daysUntilLeaseEnd > 0).length;
+
+  const messageMutation = useMutation({
+    mutationFn: () =>
+      createMessageThread({
+        subject: msgSubject || `Message to ${selectedTenant?.firstName ?? 'Tenant'}`,
+        content: msgBody,
+        participantIds: [selectedTenant?.userId ?? selectedTenant?.id].filter(Boolean),
+      }),
+    onSuccess: () => {
+      toast('Message sent');
+      setMsgOpen(false);
+      setMsgSubject('');
+      setMsgBody('');
+    },
+    onError: () => toast('Failed to send message', 'error'),
+  });
+
+  const noticeMutation = useMutation({
+    mutationFn: () =>
+      recordTenantNotice(selectedTenant?.leaseId, {
+        type: noticeType,
+        deliveryMethod: noticeMethod,
+        message: noticeMessage || undefined,
+      }),
+    onSuccess: () => {
+      toast('Notice recorded');
+      setNoticeOpen(false);
+      setNoticeType('GENERAL');
+      setNoticeMethod('EMAIL');
+      setNoticeMessage('');
+      qc.invalidateQueries({ queryKey: ['workspace', 'tenants'] });
+    },
+    onError: () => toast('Failed to record notice', 'error'),
+  });
+
 
   return (
     <WorkspaceShell title="Tenants" subtitle="Resident Relationship Management" icon={UserCheck}>
@@ -170,11 +223,20 @@ export default function TenantsPage() {
                     <FileText size={12} /> Open Workspace
                   </Button>
                 </Link>
-                <div className="grid grid-cols-2 gap-2">
-                  <Button size="sm" variant="outline">
+                  <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setMsgOpen(true)}
+                  >
                     <MessageSquare size={12} /> Message
                   </Button>
-                  <Button size="sm" variant="outline">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setNoticeOpen(true)}
+                    disabled={!selectedTenant?.leaseId}
+                  >
                     <Send size={12} /> Notice
                   </Button>
                 </div>
@@ -189,6 +251,104 @@ export default function TenantsPage() {
           )}
         </div>
       </div>
+
+      {/* Message Modal */}
+      <Modal
+        open={msgOpen}
+        onClose={() => setMsgOpen(false)}
+        title={`Message ${selectedTenant ? [selectedTenant.firstName, selectedTenant.lastName].filter(Boolean).join(' ') : 'Tenant'}`}
+        footer={
+          <>
+            <Button variant="outline" size="sm" onClick={() => setMsgOpen(false)}>Cancel</Button>
+            <Button
+              size="sm"
+              onClick={() => messageMutation.mutate()}
+              disabled={!msgBody.trim() || messageMutation.isPending}
+            >
+              {messageMutation.isPending ? <RefreshCw size={13} className="animate-spin" /> : <MessageSquare size={13} />} Send
+            </Button>
+          </>
+        }
+      >
+        <div className="space-y-3">
+          <div>
+            <label className="mb-1 block text-xs font-medium text-[#94A3B8]">Subject (optional)</label>
+            <input
+              type="text"
+              value={msgSubject}
+              onChange={(e) => setMsgSubject(e.target.value)}
+              placeholder="Lease renewal, maintenance update..."
+              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-medium text-[#94A3B8]">Message <span className="text-[#F43F5E]">*</span></label>
+            <textarea
+              value={msgBody}
+              onChange={(e) => setMsgBody(e.target.value)}
+              rows={4}
+              placeholder="Type your message..."
+              className="w-full resize-none rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]"
+            />
+          </div>
+        </div>
+      </Modal>
+
+      {/* Notice Modal */}
+      <Modal
+        open={noticeOpen}
+        onClose={() => setNoticeOpen(false)}
+        title="Record Notice"
+        footer={
+          <>
+            <Button variant="outline" size="sm" onClick={() => setNoticeOpen(false)}>Cancel</Button>
+            <Button
+              size="sm"
+              onClick={() => noticeMutation.mutate()}
+              disabled={noticeMutation.isPending}
+            >
+              {noticeMutation.isPending ? <RefreshCw size={13} className="animate-spin" /> : <Send size={13} />} Record
+            </Button>
+          </>
+        }
+      >
+        <div className="space-y-3">
+          <div>
+            <label className="mb-1 block text-xs font-medium text-[#94A3B8]">Notice type</label>
+            <select
+              value={noticeType}
+              onChange={(e) => setNoticeType(e.target.value)}
+              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] outline-none focus:border-[#3B82F6]"
+            >
+              {['GENERAL', 'MOVE_OUT', 'LEASE_VIOLATION', 'RENT_INCREASE', 'LEASE_RENEWAL', 'ENTRY_NOTICE'].map((t) => (
+                <option key={t} value={t}>{t.replace(/_/g, ' ')}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-medium text-[#94A3B8]">Delivery method</label>
+            <select
+              value={noticeMethod}
+              onChange={(e) => setNoticeMethod(e.target.value)}
+              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] outline-none focus:border-[#3B82F6]"
+            >
+              {['EMAIL', 'PORTAL', 'CERTIFIED_MAIL', 'IN_PERSON', 'POSTED'].map((m) => (
+                <option key={m} value={m}>{m.replace(/_/g, ' ')}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-medium text-[#94A3B8]">Message (optional)</label>
+            <textarea
+              value={noticeMessage}
+              onChange={(e) => setNoticeMessage(e.target.value)}
+              rows={3}
+              placeholder="Additional context for this notice..."
+              className="w-full resize-none rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]"
+            />
+          </div>
+        </div>
+      </Modal>
     </WorkspaceShell>
   );
 }

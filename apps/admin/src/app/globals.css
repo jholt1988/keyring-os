@@ -161,3 +161,19 @@
 .signal-pulse {
   animation: signal-pulse 2s ease-in-out infinite;
 }
+
+/* Operator theme adaptation for Keyring-os Admin premium dark look */
+.operator-theme {
+  --background: #07111F;
+  --foreground: #F8FAFC;
+  --muted: #94A3B8;
+  --panel: #13233C;
+  --panel-strong: #17304E;
+  --border: #1E3350;
+  --accent: #3B82F6;
+  --accent-strong: #60A5FA;
+  --warning: #F59E0B;
+  --danger: #F43F5E;
+  --success: #10B981;
+}
+

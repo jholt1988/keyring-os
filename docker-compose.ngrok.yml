@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  admin:
+    build:
+      context: .
+      dockerfile: apps/admin/Dockerfile
+    container_name: keyring-admin
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: keyring-ngrok
+    depends_on:
+      - admin
+    command:
+      - "http"
+      - "admin:3000"
+      - "--domain=${NGROK_DOMAIN}"
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
+    ports:
+      - "4040:4040"
+    restart: unless-stopped
+
