@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Usage Proposal - Delivery Partnership</title>
+    <style>
+        @page {
+            margin: 1in;
+            size: letter;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-size: 11pt;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: white;
+        }
+        
+        .container {
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 0;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 40px 0 30px;
+            border-bottom: 3px solid #1a365d;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 26pt;
+            font-weight: bold;
+            color: #1a365d;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+        
+        .header .subtitle {
+            font-size: 13pt;
+            color: #4a5568;
+            font-style: italic;
+        }
+        
+        .header .date {
+            font-size: 10pt;
+            color: #718096;
+            margin-top: 15px;
+        }
+        
+        .parties {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #f7fafc;
+            border-left: 4px solid #1a365d;
+        }
+        
+        .party {
+            flex: 1;
+        }
+        
+        .party h3 {
+            font-size: 11pt;
+            font-weight: bold;
+            color: #1a365d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .party p {
+            font-size: 10pt;
+            color: #2d3748;
+            margin-bottom: 4px;
+        }
+        
+        h2 {
+            font-size: 14pt;
+            font-weight: bold;
+            color: #1a365d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 35px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #1a365d;
+        }
+        
+        h3 {
+            font-size: 12pt;
+            font-weight: bold;
+            color: #2d3748;
+            margin: 20px 0 10px;
+        }
+        
+        p {
+            margin-bottom: 12px;
+            text-align: justify;
+        }
+        
+        ul {
+            margin: 10px 0 15px 25px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .terms-box {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            padding: 25px;
+            margin: 20px 0;
+        }
+        
+        .terms-box .term {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .terms-box .term:last-child {
+            border-bottom: none;
+        }
+        
+        .terms-box .term-label {
+            flex: 2;
+            font-weight: bold;
+            color: #2d3748;
+        }
+        
+        .terms-box .term-value {
+            flex: 3;
+            color: #4a5568;
+        }
+        
+        .financial-summary {
+            background: #1a365d;
+            color: white;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        
+        .financial-summary h3 {
+            color: white;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .financial-summary .item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .financial-summary .item:last-of-type {
+            border-bottom: none;
+        }
+        
+        .financial-summary .total {
+            font-weight: bold;
+            font-size: 12pt;
+            padding-top: 12px;
+            margin-top: 8px;
+            border-top: 2px solid rgba(255,255,255,0.5);
+        }
+        
+        .signatures {
+            margin-top: 50px;
+            page-break-inside: avoid;
+        }
+        
+        .signatures-grid {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+        
+        .signature-block {
+            flex: 1;
+            max-width: 45%;
+        }
+        
+        .signature-line {
+            border-bottom: 1px solid #1a1a1a;
+            width: 100%;
+            height: 40px;
+            margin-bottom: 8px;
+        }
+        
+        .signature-label {
+            font-size: 9pt;
+            color: #718096;
+        }
+        
+        .signature-name {
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+            font-size: 9pt;
+            color: #718096;
+        }
+        
+        .highlight {
+            background: #ebf8ff;
+            border-left: 4px solid #3182ce;
+            padding: 15px 20px;
+            margin: 20px 0;
+        }
+        
+        .highlight p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Vehicle Usage Agreement Proposal</h1>
+            <div class="subtitle">Delivery Services Partnership</div>
+            <div class="date">Date: June 15, 2026</div>
+        </header>
+        
+        <section class="parties">
+            <div class="party">
+                <h3>Vehicle Owner</h3>
+                <p>Paul LaBrue</p>
+                <p>1531 N. Sheridan</p>
+                <p>Wichita, KS 67203</p>
+                <p>316-350-4020</p>
+                <p>plabrue11@gmail.com</p>
+            </div>
+            <div class="party">
+                <h3>Vehicle User</h3>
+                <p>Jordan</p>
+                <p>1531 N. Sheridan</p>
+                <p>Wichita, KS 67203</p>
+                <p>316-945-6571</p>
+                <p>jordanh316@gmail.com</p>
+            </div>
+        </section>
+        
+        <section>
+            <h2>Purpose of Agreement</h2>
+            <p>This proposal outlines a mutually beneficial arrangement for the use of a vehicle to operate commercial delivery services through platforms such as DoorDash, Spark, and similar services. The purpose of this agreement is to establish clear terms that benefit both parties while maintaining the vehicle's condition and value.</p>
+            
+            <div class="highlight">
+                <p><strong>Shared Vision:</strong> This arrangement is designed to be a short-term partnership that creates value for both parties. The vehicle user will work diligently to maximize earnings while the owner receives guaranteed compensation and assistance with vehicle-related and household expenses.</p>
+            </div>
+        </section>
+        
+        <section>
+            <h2>Vehicle Information</h2>
+            <p>The following vehicles are subject to this agreement:</p>
+            <ul>
+                <li><strong>Nissan Altima:</strong> 2015, Red — Primary delivery vehicle (borrowed)</li>
+                <li><strong>Dodge Dakota:</strong> 1999, Grey — Secondary vehicle</li>
+                <li><strong>Truck:</strong> Available for use on certain platforms as needed</li>
+            </ul>
+            <p>Vehicles will be designated for delivery use as mutually agreed upon by both parties.</p>
+        </section>
+        
+        <section>
+            <h2>Terms and Conditions</h2>
+            
+            <h3>1. Vehicle Care and Maintenance</h3>
+            <div class="terms-box">
+                <div class="term">
+                    <div class="term-label">Cleanliness</div>
+                    <div class="term-value">Vehicle User agrees to maintain the vehicle in clean condition at all times, including regular interior and exterior cleaning.</div>
+                </div>
+                <div class="term">
+                    <div class="term-label">Fuel</div>
+                    <div class="term-value">Vehicle User agrees to keep the vehicle full of gas and return it with adequate fuel for the next use.</div>
+                </div>
+                <div class="term">
+                    <div class="term-label">General Care</div>
+                    <div class="term-value">Vehicle User agrees to operate the vehicle responsibly, follow all traffic laws, and report any mechanical issues promptly.</div>
+                </div>
+            </div>
+            
+            <h3>2. Compensation Structure</h3>
+            <div class="financial-summary">
+                <h3>Payment Summary</h3>
+                <div class="item">
+                    <span>Base Vehicle Rent</span>
+                    <span>$250.00 per month</span>
+                </div>
+                <div class="item">
+                    <span>Revenue Share (20% of earnings)</span>
+                    <span>20% of monthly delivery income</span>
+                </div>
+                <div class="item">
+                    <span>Estimated Weekly Earnings</span>
+                    <span>$700 - $1,300 per week</span>
+                </div>
+                <div class="item" style="font-size: 9pt; color: rgba(255,255,255,0.7);">
+                    <span>Estimated Monthly (20% share)</span>
+                    <span>$560 - $1,040 per month</span>
+                </div>
+                <div class="item total">
+                    <span>Total Monthly Payment</span>
+                    <span>$250 + 20% of earnings</span>
+                </div>
+            </div>
+            
+            <h3>3. Additional Vehicle Expenses</h3>
+            <div class="terms-box">
+                <div class="term">
+                    <div class="term-label">Dodge - Registration/Tags</div>
+                    <div class="term-value">Vehicle User agrees to pay for annual registration and tags for the Dodge Dakota.</div>
+                </div>
+                <div class="term">
+                    <div class="term-label">Nissan - Tire Replacement</div>
+                    <div class="term-value">Vehicle User agrees to replace tires on the Nissan Altima as needed.</div>
+                </div>
+                <div class="term">
+                    <div class="term-label">Truck - Tire Replacement (When Used)</div>
+                    <div class="term-value">Vehicle User agrees to replace tires on the truck when used for certain platforms.</div>
+                </div>
+            </div>
+            
+            <h3>4. Household and Rental Assistance</h3>
+            <p>Vehicle User agrees to provide assistance with the following:</p>
+            <ul>
+                <li>Help with rental property management tasks as needed</li>
+                <li>Assistance with household chores and maintenance</li>
+                <li>General support around the residence as mutually agreed</li>
+            </ul>
+        </section>
+        
+        <section>
+            <h2>Work Schedule and Time</h2>
+            <p>The specific hours and days of operation will be determined through discussion between both parties. The following items will be addressed during scheduling discussions:</p>
+            <ul>
+                <li>Days and hours available for delivery work</li>
+                <li>Scheduling around other commitments and obligations</li>
+                <li>Flexibility for unexpected schedule changes</li>
+                <li>Vehicle availability for personal use by the owner</li>
+            </ul>
+            <p>Both parties agree to communicate openly about scheduling needs and to provide reasonable notice for any changes to the schedule.</p>
+        </section>
+        
+        <section>
+            <h2>Duration and Exit Strategy</h2>
+            <p>This agreement is understood to be a <strong>temporary arrangement</strong> with the following terms:</p>
+            <ul>
+                <li><strong>Duration:</strong> This agreement will remain in effect until Vehicle User is able to purchase their own vehicle.</li>
+                <li><strong>Savings Goal:</strong> Vehicle User commits to actively saving money with the goal of purchasing a personal vehicle as soon as financially feasible.</li>
+                <li><strong>Flexibility:</strong> Either party may request modifications to this agreement with reasonable notice.</li>
+                <li><strong>End of Agreement:</strong> Upon Vehicle User's purchase of a personal vehicle, this agreement may transition to a different arrangement or conclude.</li>
+            </ul>
+            
+            <div class="highlight">
+                <p><strong>Income Potential:</strong> Based on current market conditions and platform availability, Vehicle User can reasonably expect to earn between $700 and $1,300 per week through DoorDash, Spark, and other delivery services. This translates to approximately $560 - $1,040 monthly from the 20% revenue share.</p>
+            </div>
+            
+            <div class="highlight">
+                <p><strong>Mutual Benefit:</strong> This arrangement allows Vehicle User to earn income and build savings while providing the Owner with additional income, household assistance, and help with vehicle expenses. Both parties benefit from this cooperation.</p>
+            </div>
+        </section>
+        
+        <section>
+            <h2>Summary of Terms</h2>
+            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                <tr style="background: #1a365d; color: white;">
+                    <th style="padding: 12px; text-align: left;">Obligation</th>
+                    <th style="padding: 12px; text-align: left;">Party Responsible</th>
+                </tr>
+                <tr style="background: #f7fafc;">
+                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Keep vehicle clean</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Vehicle User</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Keep vehicle full of gas</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Vehicle User</td>
+                </tr>
+                <tr style="background: #f7fafc;">
+                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Monthly base payment of $250</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Vehicle User</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">20% of delivery earnings</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Vehicle User</td>
+                </tr>
+                <tr style="background: #f7fafc;">
+                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Dodge Dakota registration/tags</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Vehicle User</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Nissan Altima tire replacement</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Vehicle User</td>
+                </tr>
+                <tr style="background: #f7fafc;">
+                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Truck tire replacement (when used)</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Vehicle User</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Rental property assistance</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Vehicle User</td>
+                </tr>
+                <tr style="background: #f7fafc;">
+                    <td style="padding: 10px;">Household assistance</td>
+                    <td style="padding: 10px;">Vehicle User</td>
+                </tr>
+            </table>
+        </section>
+        
+        <section class="signatures">
+            <h2>Acceptance and Signatures</h2>
+            <p>By signing below, both parties agree to the terms outlined in this proposal and commit to the spirit of mutual benefit and cooperation.</p>
+            
+            <div class="signatures-grid">
+                <div class="signature-block">
+                    <div class="signature-line"></div>
+                    <div class="signature-label">Vehicle Owner's Signature</div>
+                    <div class="signature-name">Paul LaBrue</div>
+                    <div class="signature-label" style="margin-top: 5px;">Date: _______________</div>
+                </div>
+                <div class="signature-block">
+                    <div class="signature-line"></div>
+                    <div class="signature-label">Vehicle User's Signature</div>
+                    <div class="signature-name">Jordan</div>
+                    <div class="signature-label" style="margin-top: 5px;">Date: _______________</div>
+                </div>
+            </div>
+        </section>
+        
+        <footer class="footer">
+            <p>This proposal is intended as a formal agreement between both parties. Please review carefully and discuss any questions or modifications before signing.</p>
+            <p style="margin-top: 10px;">Vehicle Usage Agreement Proposal | June 2026</p>
+        </footer>
+    </div>
+</body>
+</html>
