@@ -1,68 +1,73 @@
 'use client';
 
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export type UserRole = 'ADMIN' | 'OWNER' | 'PROPERTY_MANAGER' | 'TENANT';
 
 interface AuthUser {
   id: string;
-  username: string;
-  roles: UserRole[];
+  username?: string;
+  email?: string;
+  roles?: UserRole[];
+  role?: UserRole;
 }
 
-function getStoredUser(): AuthUser | null {
-  if (typeof window === 'undefined') return null;
-  const userStr = localStorage.getItem('user');
-  if (!userStr) return null;
-  try {
-    return JSON.parse(userStr) as AuthUser;
-  } catch {
-    return null;
-  }
-}
-
-function getStoredToken(): string | null {
-  if (typeof window === 'undefined') return null;
-  return localStorage.getItem('auth_token');
+function userRoles(user: AuthUser | null): UserRole[] {
+  if (!user) return [];
+  if (Array.isArray(user.roles)) return user.roles;
+  return user.role ? [user.role] : [];
 }
 
 export function useAuth() {
-  const user = useMemo(() => getStoredUser(), []);
-  const token = useMemo(() => getStoredToken(), []);
-  const isAuthenticated = !!token && !!user;
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch('/api/v2/auth/me', { cache: 'no-store' })
+      .then(async (response) => {
+        if (!response.ok) return null;
+        return response.json() as Promise<AuthUser>;
+      })
+      .then((nextUser) => {
+        if (!cancelled) setUser(nextUser);
+      })
+      .catch(() => {
+        if (!cancelled) setUser(null);
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const hasRole = useCallback(
     (requiredRoles: UserRole | UserRole[]): boolean => {
-      if (!user?.roles) return false;
       const roles = Array.isArray(requiredRoles) ? requiredRoles : [requiredRoles];
-      return user.roles.some((role) => roles.includes(role));
+      return userRoles(user).some((role) => roles.includes(role));
     },
     [user]
   );
 
-  const isAdmin = useCallback((): boolean => {
-    return hasRole('ADMIN');
-  }, [hasRole]);
+  const isAdmin = useCallback((): boolean => hasRole('ADMIN'), [hasRole]);
+  const isPropertyManager = useCallback((): boolean => hasRole(['ADMIN', 'PROPERTY_MANAGER']), [hasRole]);
+  const isOwner = useCallback((): boolean => hasRole(['ADMIN', 'PROPERTY_MANAGER', 'OWNER']), [hasRole]);
 
-  const isPropertyManager = useCallback((): boolean => {
-    return hasRole(['ADMIN', 'PROPERTY_MANAGER']);
-  }, [hasRole]);
-
-  const isOwner = useCallback((): boolean => {
-    return hasRole(['ADMIN', 'PROPERTY_MANAGER', 'OWNER']);
-  }, [hasRole]);
-
-  const logout = useCallback(() => {
-    if (typeof window === 'undefined') return;
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('user');
+  const logout = useCallback(async () => {
+    await fetch('/api/v2/auth/logout', { method: 'POST' }).catch(() => undefined);
+    setUser(null);
     window.location.href = '/login';
   }, []);
 
   return {
     user,
-    token,
-    isAuthenticated,
+    token: null,
+    isLoading,
+    isAuthenticated: !!user,
     hasRole,
     isAdmin,
     isPropertyManager,

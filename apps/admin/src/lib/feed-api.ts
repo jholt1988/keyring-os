@@ -24,8 +24,6 @@ export async function fetchFeed(role: UserRole): Promise<FeedResponse> {
     next: { revalidate: 60 },
     headers: {
       Accept: 'application/json',
-      // Phase 4: forward the user's JWT here once auth is wired.
-      // Authorization: `Bearer ${token}`,
     },
   });
 

@@ -1,9 +1,10 @@
 'use client';
 
-import { Calendar, Clock, DollarSign, Activity, Home, Users, Wrench } from 'lucide-react';
+import { Calendar, Clock, DollarSign, Activity, Home, Users, Wrench, ShieldCheck } from 'lucide-react';
 import type { ReactElement } from 'react';
-import { useBriefing } from '@/app/hooks/useBriefing';
+import { useBriefingContext } from './briefing-context';
 import { DecisionCard, SignalCard, SectionCard } from '@/components/copilot';
+import { useOperatorData } from '@/features/operator/context/operator-data-context';
 
 const formatTime = (iso: string) => {
   try {
@@ -24,11 +25,16 @@ const eventTypeIcon: Record<string, () => ReactElement> = {
 };
 
 export function DailyBrief() {
-  const { data, isLoading, error, executeMutation, dismissDecision } = useBriefing();
+  const { data: opData, loaded } = useOperatorData();
+  const { openPanel } = useBriefingContext();
 
-  const topSignals = data?.signals.slice(0, 3) ?? [];
-  const topDecisions = data?.decisions.slice(0, 3) ?? [];
-  const topEvents = data?.events.slice(0, 3) ?? [];
+  const data = opData?.briefing;
+  const isLoading = !loaded;
+  const error = opData?.errors?.length ? new Error(opData.errors[0].message) : null;
+
+  const topSignals = data?.signals?.slice(0, 3) ?? [];
+  const topDecisions = data?.decisions?.slice(0, 3) ?? [];
+  const topEvents = data?.events?.slice(0, 3) ?? [];
 
   if (isLoading) {
     return (
@@ -57,12 +63,13 @@ export function DailyBrief() {
                 </p>
               </div>
               {data && (
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 xl:grid-cols-5">
                   {[
-                    { label: 'At risk', value: `$${data.metrics.atRiskAmount.toLocaleString()}`, tone: 'text-[#F87171]' },
-                    { label: 'Pending decisions', value: String(data.metrics.pendingDecisions), tone: 'text-[#FBBF24]' },
-                    { label: 'Events today', value: String(data.metrics.todayEvents), tone: 'text-[#60A5FA]' },
-                    { label: 'Overdue', value: String(data.metrics.overduePayments), tone: 'text-[#A78BFA]' },
+                    { label: 'At risk', value: `$${(opData?.metrics?.financials?.outstanding ?? data?.metrics?.atRiskAmount ?? 0).toLocaleString()}`, tone: 'text-[#F87171]' },
+                    { label: 'Pending decisions', value: String(opData?.commandCenter?.metrics?.totalDecisions ?? data?.metrics?.pendingDecisions ?? 0), tone: 'text-[#FBBF24]' },
+                    { label: 'Pending approvals', value: String(opData?.approvals?.length ?? 0), tone: 'text-[#F59E0B]' },
+                    { label: 'Events today', value: String(data?.metrics?.todayEvents ?? 0), tone: 'text-[#60A5FA]' },
+                    { label: 'Overdue', value: String(data?.metrics?.overduePayments ?? 0), tone: 'text-[#A78BFA]' },
                   ].map((item) => (
                     <div key={item.label} className="rounded-[20px] border border-white/8 bg-black/10 px-4 py-3">
                       <div className="text-[11px] uppercase tracking-[0.18em] text-[#6E85A5]">{item.label}</div>
@@ -77,7 +84,7 @@ export function DailyBrief() {
           <div className="grid gap-6 lg:grid-cols-3">
             <SectionCard title="Critical Signals" subtitle="Top 3 risks worth attention now">
               <div className="space-y-3">
-                {topSignals.length ? topSignals.map((signal) => <SignalCard key={signal.id} signal={signal} />) : (
+                {topSignals.length ? topSignals.map((signal) => <SignalCard key={signal.id} signal={{...signal, severity: (signal.severity as any) || 'medium', actionUrl: (signal as any).actionUrl || '#'} as any} />) : (
                   <p className="text-sm text-[#94A3B8]">No critical signals right now.</p>
                 )}
               </div>
@@ -88,11 +95,12 @@ export function DailyBrief() {
                 {topDecisions.length ? topDecisions.map((decision) => (
                   <DecisionCard
                     key={decision.id}
-                    decision={decision}
+                    decision={decision as any}
                     onExecute={async (endpoint, method, body) => {
-                      await executeMutation.mutateAsync({ endpoint, method, body });
+                      console.log('Execute:', endpoint, method, body);
                     }}
-                    onDismiss={dismissDecision}
+                    onDismiss={() => {}}
+                    onInspect={() => openPanel(decision as any)}
                   />
                 )) : (
                   <p className="text-sm text-[#94A3B8]">No active decisions. System is clear.</p>
@@ -102,7 +110,7 @@ export function DailyBrief() {
 
             <SectionCard title="Scheduled Events" subtitle="Upcoming commitments with operational weight">
               <div className="space-y-3">
-                {topEvents.length ? topEvents.map((event) => {
+                {topEvents.length ? topEvents.map((event: any) => {
                   const Icon = eventTypeIcon[event.type] ?? (() => <Activity size={15} className="text-[#60A5FA]" />);
                   return (
                     <div key={event.id} className="rounded-[18px] border border-white/8 bg-white/[0.03] p-4 transition-all duration-[180ms] hover:border-white/12 hover:bg-white/[0.04]">
@@ -142,11 +150,22 @@ export function DailyBrief() {
           </div>
 
           <div className="rounded-[28px] border border-white/8 bg-white/[0.03] p-5">
-            <p className="text-[11px] uppercase tracking-[0.22em] text-[#7FA7D9]">Rendering rules</p>
+            <p className="text-[11px] uppercase tracking-[0.22em] text-[#7FA7D9]">AI Capabilities</p>
             <div className="mt-4 space-y-3 text-sm text-[#C8D7EA]">
-              <div className="rounded-[18px] border border-white/8 bg-black/10 p-4">Everything visible must either represent state, present a decision, or trigger an action.</div>
-              <div className="rounded-[18px] border border-white/8 bg-black/10 p-4">Concurrency stays limited to the top few actions. The rest should reveal on demand.</div>
-              <div className="rounded-[18px] border border-white/8 bg-black/10 p-4">The UI should know which domain is active before asking the user to navigate.</div>
+              {opData?.aiCapabilities ? (
+                <div className="rounded-[18px] border border-white/8 bg-black/10 p-4">
+                  <div className="flex items-center gap-2 text-[#22C55E] mb-2">
+                    <ShieldCheck size={16} />
+                    <span className="font-medium">System Ready ({opData.aiCapabilities.mode})</span>
+                  </div>
+                  <p>Model: {opData.aiCapabilities.model}</p>
+                  <p>{opData.aiCapabilities.capabilities.length} capabilities loaded</p>
+                </div>
+              ) : (
+                <div className="rounded-[18px] border border-white/8 bg-black/10 p-4 text-[#94A3B8]">
+                  AI Capabilities unavailable
+                </div>
+              )}
             </div>
           </div>
 

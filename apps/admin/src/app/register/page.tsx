@@ -18,9 +18,11 @@ export default function RegisterPage() {
     firstName: '',
     lastName: '',
     username: '',
+    email: '',
     password: '',
     confirmPassword: '',
     role: 'PROPERTY_MANAGER' as const,
+    organization: '',
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -46,15 +48,17 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/auth/register', {
+      const response = await fetch('/api/v2/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           firstName: form.firstName,
           lastName: form.lastName,
           username: form.username,
+          email: form.email,
           password: form.password,
           role: form.role,
+          organization: form.organization,
         }),
       });
 
@@ -64,7 +68,19 @@ export default function RegisterPage() {
         throw new Error(data.statusMessage || 'Registration failed');
       }
 
-      router.push('/login?registered=1');
+      // Auto-login after registration
+      const loginResponse = await fetch('/api/v2/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: form.username, password: form.password }),
+      });
+
+      if (!loginResponse.ok) {
+        router.push('/login?registered=1');
+        return;
+      }
+
+      router.push('/');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed');
       setIsLoading(false);
@@ -118,6 +134,17 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-2">
+              <label className="text-xs font-medium uppercase tracking-wider text-[#94A3B8]">Email</label>
+              <Input
+                type="email"
+                value={form.email}
+                onChange={(e) => handleChange('email', e.target.value)}
+                placeholder="john.doe@example.com"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
               <label className="text-xs font-medium uppercase tracking-wider text-[#94A3B8]">Username</label>
               <div className="relative">
                 <Input
@@ -140,6 +167,16 @@ export default function RegisterPage() {
                 <option value="OWNER">Owner</option>
                 <option value="ADMIN">Admin</option>
               </select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-medium uppercase tracking-wider text-[#94A3B8]">Organization</label>
+              <Input
+                value={form.organization}
+                onChange={(e) => handleChange('organization', e.target.value)}
+                placeholder="Acme Properties"
+                required
+              />
             </div>
 
             <div className="space-y-2">

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { Key, Lock, ArrowRight, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -32,13 +33,12 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:3000';
-      
-      const response = await fetch(apiUrl + '/api/v2/auth/login', {
+      const response = await fetch('/api/v2/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({ username, password }),
       });
 
@@ -48,21 +48,25 @@ export default function LoginPage() {
         throw new Error(data.statusMessage || 'Login failed');
       }
 
-      // Store token in cookies and localStorage for auth middleware
-      const token = data.access_token || data.accessToken;
-      if (token) {
-        // Set cookie for middleware auth check
-        document.cookie = `auth_token=${token}; path=/; max-age=86400; SameSite=Strict`;
-        if (data.user) {
-          document.cookie = `user=${JSON.stringify(data.user)}; path=/; max-age=86400; SameSite=Strict`;
-          localStorage.setItem('user', JSON.stringify(data.user));
-        }
-        localStorage.setItem('auth_token', token);
+      // Confirm the session cookie is established before redirecting.
+      const meResponse = await fetch('/api/v2/auth/me', {
+        cache: 'no-store',
+        credentials: 'include',
+      });
+      if (!meResponse.ok) {
+        throw new Error('Session verification failed after login');
       }
 
       // Redirect to original destination or home
-      const redirectUrl = searchParams.get('redirect') || '/';
-      router.push(redirectUrl);
+      const requestedRedirect = searchParams.get('redirect') || '/';
+      const redirectUrl = requestedRedirect.startsWith('/login') ||
+        requestedRedirect.startsWith('/register') ||
+        requestedRedirect.startsWith('/landing')
+        ? '/'
+        : requestedRedirect;
+      router.replace(redirectUrl);
+      router.refresh();
+      window.location.assign(redirectUrl);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed. Please try again.');
       setIsLoading(false);
@@ -195,6 +199,13 @@ export default function LoginPage() {
               )}
             </Button>
           </form>
+
+          <div className="mt-6 text-center text-sm text-[#94A3B8]">
+            Don't have an account?{' '}
+            <Link href="/register" className="text-[#38BDF8] hover:underline">
+              Create an account
+            </Link>
+          </div>
 
           <div className="mt-6 text-center text-xs text-[#64748B]">
             Protected by enterprise-grade security

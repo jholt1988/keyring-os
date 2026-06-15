@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Brain, Loader2, Sparkles } from 'lucide-react';
+import { Brain, Loader2, ScanSearch, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { Decision, Urgency } from '@keyring/types';
 import { cn } from '@/lib/utils';
@@ -22,9 +22,11 @@ interface DecisionCardProps {
   decision: Decision;
   onExecute: (endpoint: string, method: string, body?: Record<string, unknown>) => Promise<void>;
   onDismiss?: (id: string) => void;
+  /** Called when the user wants to inspect full context in the slide-over panel */
+  onInspect?: () => void;
 }
 
-export function DecisionCard({ decision, onExecute, onDismiss }: DecisionCardProps) {
+export function DecisionCard({ decision, onExecute, onDismiss, onInspect }: DecisionCardProps) {
   const [executing, setExecuting] = useState<string | null>(null);
   const [result, setResult] = useState<'success' | 'error' | null>(null);
   const urg = urgencyStyle[decision.urgency];
@@ -109,6 +111,15 @@ export function DecisionCard({ decision, onExecute, onDismiss }: DecisionCardPro
             {action.label}
           </Button>
         ))}
+        {onInspect && (
+          <button
+            type="button"
+            onClick={onInspect}
+            className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-white/8 bg-white/[0.03] px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.16em] text-[#7FA7D9] transition-colors hover:border-white/14 hover:text-[#A9C9FF]"
+          >
+            <ScanSearch size={11} /> Inspect
+          </button>
+        )}
       </div>
 
       {decision.priority !== undefined || decision.type ? (

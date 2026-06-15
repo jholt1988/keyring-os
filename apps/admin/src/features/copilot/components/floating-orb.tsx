@@ -1,8 +1,9 @@
 'use client';
 
 import type { ReactNode } from 'react';
+import { motion, HTMLMotionProps } from 'framer-motion';
 
-interface FloatingOrbProps {
+interface FloatingOrbProps extends Omit<HTMLMotionProps<'div'>, 'className'> {
   severity: 'critical' | 'high' | 'medium' | 'low';
   label: string;
   pulse?: boolean;
@@ -24,17 +25,20 @@ function severityClasses(severity: FloatingOrbProps['severity']) {
   }
 }
 
-export function FloatingOrb({ severity, label, pulse = false, children, className = '' }: FloatingOrbProps) {
+export function FloatingOrb({ severity, label, pulse = false, children, className, ...props }: FloatingOrbProps) {
   return (
-    <div className={`relative inline-flex flex-col items-center gap-2 ${className}`.trim()}>
+    <motion.div
+      className={`relative inline-flex flex-col items-center gap-1 ${className ?? ''}`.trim()}
+      {...props}
+    >
       <div
-        className={`inline-flex items-center justify-center rounded-full border bg-[radial-gradient(circle_at_30%_30%,rgba(96,165,250,0.45),rgba(23,48,78,0.95))] text-white backdrop-blur-md transition-all duration-[180ms] ${severityClasses(severity)} ${pulse ? 'animate-pulse' : ''}`.trim()}
+        className={`relative inline-flex items-center justify-center rounded-full border bg-[radial-gradient(circle_at_30%_30%,rgba(96,165,250,0.45),rgba(23,48,78,0.95))] text-white backdrop-blur-md transition-all duration-[180ms] ${severityClasses(severity)} ${pulse ? 'animate-pulse' : ''}`.trim()}
         aria-hidden="true"
       >
         {children}
       </div>
       <span className="max-w-28 text-center text-[11px] font-medium text-[#D9E8FF]">{label}</span>
-    </div>
+    </motion.div>
   );
 }
 
