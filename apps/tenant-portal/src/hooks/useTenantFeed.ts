@@ -26,13 +26,12 @@ export interface FeedItemData {
 }
 
 export function useTenantFeed() {
+  const [dismissed, setDismissed] = useState<Set<string>>(new Set());
+
   // Hydrate dismissed set from localStorage after mount
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setDismissed(getDismissed());
   }, []);
-
-  const [dismissed, setDismissed] = useState<Set<string>>(new Set());
 
   const primaryQuery = useQuery({
     queryKey: ['tenant-feed'],
@@ -46,6 +45,7 @@ export function useTenantFeed() {
 
   const items: FeedItemData[] =
     (primaryQuery.data?.items ?? []).filter((item: { id?: string }) => item?.id && !dismissed.has(item.id));
+
 
   const unreadCount = items.filter((item: { read?: boolean }) => !item?.read).length;
   const dismiss = (id: string) => {
