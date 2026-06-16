@@ -5,9 +5,10 @@ on:
   push:
     branches: [main]
 
-concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+# Do NOT cancel-in-progress — new pushes should not kill running jobs.
+# Keyring OS pushes rapidly; e2e takes 10+ min so it would always be cancelled
+# before completion. Each run should be allowed to finish. Use a dedicated
+# workflow_dispatch trigger if you need ad-hoc cancellation.
 
 jobs:
   quality:
