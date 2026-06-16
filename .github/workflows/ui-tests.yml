@@ -3,11 +3,10 @@ name: UI/UX Tests
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
   workflow_dispatch:
 
-# Do NOT add cancel-in-progress here — see ci.yml for rationale.
+# No cancel-in-progress — see ci.yml for rationale.
+# No pull_request trigger — see ci.yml for rationale.
 
 
 jobs:
@@ -60,6 +59,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+
 
       - name: Install pnpm
         run: npm install -g pnpm@10.30.3

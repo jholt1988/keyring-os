@@ -1,13 +1,16 @@
 name: ci
 
 on:
-  pull_request:
   push:
     branches: [main]
+  workflow_dispatch:
 
-# Do NOT cancel-in-progress — keyring-os pushes rapidly and e2e takes 10+ min,
-# meaning a new push would always kill the in-flight run before completion.
-# Each run should be allowed to finish. Use workflow_dispatch for manual cancellation.
+# No cancel-in-progress — keyring-os pushes rapidly, e2e takes 10+ min. Let each
+# run finish. Use workflow_dispatch for manual cancellation.
+#
+# NOTE: do NOT add pull_request trigger. When a PR is open for main, pushing
+# to main fires both push + pull_request events, creating duplicate runs that
+# GitHub cancels by default. The push trigger alone is sufficient.
 
 jobs:
   quality:
