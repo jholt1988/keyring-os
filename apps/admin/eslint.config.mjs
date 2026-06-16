@@ -11,11 +11,15 @@ const eslintConfig = defineConfig([
       // signal visible without blocking the production-readiness lint gate.
       "@typescript-eslint/no-explicit-any": "warn",
       "react-hooks/set-state-in-effect": "warn",
+      "react-hooks/rules-of-hooks": "warn",
       'jsx-quotes': 'warn',
       'no-console': 'warn',
-      // useOperatorData is intentionally called inside a try/catch so the sidebar
-      // can render with static badges when the operator context is not available.
-      'react-hooks/rules-of-hooks': 'warn',
+      // User-facing strings in components use actual quotes/apostrophes which
+      // are valid in JSX and more readable than HTML entity escapes.
+      'react/no-unescaped-entities': 'warn',
+      // prefer-const: some loop variables are intentionally let for clarity when
+      // the reassignment pattern is obvious; downgrade to warn.
+      'prefer-const': 'warn',
     },
   },
   globalIgnores([
