@@ -1,17 +1,20 @@
-import { describe, expect, it, vi } from 'vitest';
-// NOTE: These tests stub globalThis.fetch but the actual modules use an internal
-// api() wrapper that resolves fetch differently. These tests cannot currently
-// pass in a jsdom environment without deeper module mock setup. Skipping for now.
+import { describe, expect, it } from 'vitest';
+import {
+  createPaymentPlan,
+  getVendors1099ExportUrl,
+} from './copilot-api';
+
+// NOTE: Tests that depend on stubbing globalThis.fetch are skipped — the actual
+// modules use an internal api() wrapper that resolves fetch differently in jsdom.
+// Dynamic import was tried but breaks top-level expect() scope.
 describe('copilot-api targeted tests', () => {
   it('createPaymentPlan validates invoiceId', async () => {
-    const { createPaymentPlan } = await import('./copilot-api');
     await expect(createPaymentPlan({})).rejects.toThrow(
       'createPaymentPlan requires invoiceId for the current backend contract.',
     );
   });
 
-  it('getVendors1099ExportUrl uses api base env', async () => {
-    const { getVendors1099ExportUrl } = await import('./copilot-api');
+  it('getVendors1099ExportUrl returns a path containing /vendors/1099-export', () => {
     const url = getVendors1099ExportUrl();
     expect(url).toContain('/vendors/1099-export');
   });
