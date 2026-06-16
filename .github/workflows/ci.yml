@@ -5,10 +5,9 @@ on:
   push:
     branches: [main]
 
-# Do NOT cancel-in-progress — new pushes should not kill running jobs.
-# Keyring OS pushes rapidly; e2e takes 10+ min so it would always be cancelled
-# before completion. Each run should be allowed to finish. Use a dedicated
-# workflow_dispatch trigger if you need ad-hoc cancellation.
+# Do NOT cancel-in-progress — keyring-os pushes rapidly and e2e takes 10+ min,
+# meaning a new push would always kill the in-flight run before completion.
+# Each run should be allowed to finish. Use workflow_dispatch for manual cancellation.
 
 jobs:
   quality:
@@ -65,6 +64,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:e2e
+        env:
+          CI: true
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@v4
