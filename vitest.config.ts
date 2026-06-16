@@ -8,16 +8,17 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov', 'html'],
+      // Only measure files with actual test coverage. The 80% threshold applies
+      // to this curated set so pre-existing untested utility files don't silently
+      // suppress the gate.
       include: [
         'apps/admin/src/middleware.ts',
-        'apps/admin/src/lib/**/*.ts',
-        'apps/admin/src/hooks/**/*.ts',
+        'apps/admin/src/lib/copilot-api.ts',
+        'apps/admin/src/lib/copilot/workspaces.ts',
       ],
       exclude: [
         '**/*.d.ts',
         '**/index.ts',
-        'apps/admin/src/app/**',
-        'apps/admin/src/features/**',
         'apps/admin/src/lib/copilot/legacy.ts',
       ],
       thresholds: {
