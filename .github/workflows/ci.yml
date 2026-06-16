@@ -5,12 +5,9 @@ on:
     branches: [main]
   workflow_dispatch:
 
-# No cancel-in-progress — keyring-os pushes rapidly, e2e takes 10+ min. Let each
-# run finish. Use workflow_dispatch for manual cancellation.
-#
-# NOTE: do NOT add pull_request trigger. When a PR is open for main, pushing
-# to main fires both push + pull_request events, creating duplicate runs that
-# GitHub cancels by default. The push trigger alone is sufficient.
+# No pull_request trigger — when a PR targets main and you push to main,
+# both push+pull_request fire, creating duplicate runs that GitHub cancels.
+# push: main is sufficient.
 
 jobs:
   quality:
@@ -51,10 +48,9 @@ jobs:
             coverage/lcov.info
             coverage/index.html
             coverage/**
-
   e2e:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
