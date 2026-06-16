@@ -15,7 +15,6 @@ const eslintConfig = defineConfig([
       'no-console': 'warn',
       // useOperatorData is intentionally called inside a try/catch so the sidebar
       // can render with static badges when the operator context is not available.
-      // This is a genuine hooks violation; downgrade to warn until refactored.
       'react-hooks/rules-of-hooks': 'warn',
     },
   },
@@ -24,7 +23,7 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
-    // Route generation uses require() intentionally.
+    // Route generation uses require() intentionally for Next.js config loading.
     "generate-routes.js",
   ]),
 ]);
