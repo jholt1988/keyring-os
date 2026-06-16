@@ -13,6 +13,13 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  {
+    rules: {
+      // Warn rather than error: the pattern of hydrating localStorage state in
+      // a useEffect is a deliberate architectural choice for SSR-safe persistence.
+      'react-hooks/set-state-in-effect': 'warn',
+    },
+  },
 ]);
 
 export default eslintConfig;
