@@ -17,7 +17,7 @@ export interface MFAFormData {
 interface MFAFormProps {
   currentMfaEnabled?: boolean;
   accountName?: string;
-  onSave: (data: MFAFormData) => void;
+  onSave: (data: MFAFormData) => void | Promise<void>;
   onCancel: () => void;
 }
 
@@ -38,6 +38,7 @@ export function MFAForm({
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
   const [step, setStep] = useState<'setup' | 'verify' | 'recovery'>('setup');
+  const [loading, setLoading] = useState(false);
 
   const isActivating = form.action === 'activate';
 
@@ -85,23 +86,51 @@ export function MFAForm({
     return errors;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const errors = validateForm();
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
       return;
     }
-    
-    onSave(form);
+
+    setLoading(true);
+    try {
+      // Persist the MFA change (activate/disable). onSave may be async.
+      await onSave(form);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleNextStep = () => {
+  const handleNextStep = async () => {
     if (step === 'setup') {
-      setStep('verify');
+      // Confirm the generated MFA setup data before moving to verification.
+      setLoading(true);
+      try {
+        const data = generateMFASetupData(accountName);
+        setMfaSetupData(data);
+        setStep('verify');
+      } finally {
+        setLoading(false);
+      }
     } else if (step === 'verify') {
-      setStep('recovery');
+      // Validate the entered code against the authenticator setup.
+      setLoading(true);
+      try {
+        if (form.code && validateMFACode(form.code)) {
+          setStep('recovery');
+        } else {
+          setFormErrors((prev) => ({
+            ...prev,
+            code: 'Please enter a valid 6-digit code',
+          }));
+          setTouchedFields((prev) => new Set([...prev, 'code']));
+        }
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
