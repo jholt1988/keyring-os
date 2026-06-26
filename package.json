@@ -23,7 +23,7 @@
     "test:e2e:all": "playwright test",
     "test:e2e:report": "playwright test --reporter=html",
     "test:e2e:install": "npx playwright install --with-deps",
-    "check:no-mock-auth": "! grep -R \"X-Mock-User-Id\\|X-Mock-Role\" -n apps/admin/src",
+    "check:no-mock-auth": "bash scripts/check-no-mock-auth.sh",
     "format": "prettier --write ."
   },
   "devDependencies": {
