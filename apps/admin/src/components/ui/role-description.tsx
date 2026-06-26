@@ -1,6 +1,6 @@
 'use client';
 
-import { Info, Shield, Building2, UserCheck, Settings } from 'lucide-react';
+import { Info, Shield, Building2, UserCheck, Settings, type LucideIcon } from 'lucide-react';
 import { useState } from 'react';
 
 export type UserRole = 'TENANT' | 'PROPERTY_MANAGER' | 'OWNER' | 'ADMIN';
@@ -14,7 +14,7 @@ const ROLE_DETAILS: Record<UserRole, {
   title: string;
   description: string;
   permissions: string[];
-  icon: React.ComponentType<{ className?: string }>;
+  icon: LucideIcon;
   color: string;
 }> = {
   TENANT: {
