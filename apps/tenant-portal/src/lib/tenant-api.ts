@@ -1,45 +1,36 @@
 import type { TenantFeedResponse } from '@keyring/types';
 
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
-
-// SECURITY STOPGAP: tenant-portal has no real login flow wired yet (unlike admin,
-// which proxies via apps/admin/src/app/api/v2/[...path]/route.ts using httpOnly+secure
-// cookies and an Authorization: Bearer header). Until that cookie-based proxy is wired
-// here, mock identity headers are FAIL-CLOSED: they are only attached for local dev when
-// BOTH NODE_ENV !== 'production' AND NEXT_PUBLIC_ENABLE_MOCK_AUTH === 'true' (default OFF).
-// In production — or whenever the explicit opt-in flag is absent — NO client-supplied
-// identity header is ever sent, so the backend can never be tricked into impersonation.
-const MOCK_AUTH_ENABLED =
-  process.env.NODE_ENV !== 'production' &&
-  process.env.NEXT_PUBLIC_ENABLE_MOCK_AUTH === 'true';
-
-// Resolved lazily/guarded so the mock id is only referenced when mock auth is enabled.
 const MOCK_USER_ID = process.env.NEXT_PUBLIC_MOCK_USER_ID ?? 'dev-tenant-uuid-001';
+const USE_MOCK_AUTH = process.env.NEXT_PUBLIC_USE_MOCK_AUTH === 'true';
 
+/**
+ * Get auth headers for API requests.
+ *
+ * Production: uses httpOnly cookie (JWT set by Next.js API route /api/auth/login).
+ * Development: if NEXT_PUBLIC_USE_MOCK_AUTH=true, uses X-Mock-* headers.
+ */
 function headers(): HeadersInit {
-  const base: Record<string, string> = {
-    'Content-Type': 'application/json',
-  };
-  if (MOCK_AUTH_ENABLED) {
-    // Dev-only mock identity. Never reached in production (see MOCK_AUTH_ENABLED above).
-    base['X-Mock-User-Id'] = MOCK_USER_ID;
-    base['X-Mock-Role'] = 'TENANT';
+  const base: HeadersInit = { 'Content-Type': 'application/json' };
+
+  if (USE_MOCK_AUTH) {
+    return {
+      ...base,
+      'X-Mock-User-Id': MOCK_USER_ID,
+      'X-Mock-Role': 'TENANT',
+    };
   }
+
+  // Production: credentials: 'include' sends the httpOnly JWT cookie
   return base;
 }
 
-/**
- * Current tenant user id for client-side ownership checks (e.g. "is this my message?").
- * SECURITY STOPGAP: returns the mock id ONLY in dev when mock auth is explicitly enabled.
- * In production it returns undefined until real cookie-based auth is wired, so no UI logic
- * silently trusts a build-time mock identity.
- */
-export function getCurrentUserId(): string | undefined {
-  return MOCK_AUTH_ENABLED ? MOCK_USER_ID : undefined;
-}
-
 async function api<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, { ...init, headers: headers() });
+  const res = await fetch(`${BASE}${path}`, {
+    ...init,
+    headers: headers(),
+    credentials: USE_MOCK_AUTH ? 'omit' : 'include',
+  });
   if (!res.ok) throw new Error(`API ${res.status}: ${path}`);
   return res.json() as Promise<T>;
 }
