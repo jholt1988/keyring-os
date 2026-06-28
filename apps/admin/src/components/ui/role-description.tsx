@@ -1,6 +1,6 @@
 'use client';
 
-import { Info, Shield, Building2, UserCheck, Settings } from 'lucide-react';
+import { Info, Shield, Building2, UserCheck, Settings, type LucideIcon } from 'lucide-react';
 import { useState } from 'react';
 
 export type UserRole = 'TENANT' | 'PROPERTY_MANAGER' | 'OWNER' | 'ADMIN';
@@ -14,7 +14,7 @@ const ROLE_DETAILS: Record<UserRole, {
   title: string;
   description: string;
   permissions: string[];
-  icon: React.ComponentType<{ className?: string }>;
+  icon: LucideIcon;
   color: string;
 }> = {
   TENANT: {
@@ -86,12 +86,9 @@ export function RoleDescription({ role, className = '' }: RoleDescriptionProps) 
         <div className="flex items-center gap-3">
           <div 
             className="flex h-8 w-8 items-center justify-center rounded-md"
-            style={{ backgroundColor: `${details.color}20`,  color: details.color }}
+            style={{ backgroundColor: `${details.color}20` }}
           >
-              <Icon 
-              className="h-4 w-4" 
-             
-            />
+            <Icon className="h-4 w-4" style={{ color: details.color }} />
           </div>
           <div className="text-left">
             <div className="text-sm font-semibold text-[#F8FAFC]">{details.title}</div>

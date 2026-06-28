@@ -38,6 +38,8 @@
     "../../packages/ui/src/components/feed/feed-card.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "**/*.test.ts",
+    "**/*.test.tsx"
   ]
 }

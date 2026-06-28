@@ -26,18 +26,13 @@ function categoryBadge(category?: string) {
   return <Badge variant="muted">{label}</Badge>;
 }
 
-function fileTypeIcon(fileType?: string) {
-  // All documents use the same icon for now; extend with PDF/image icons as needed
-  return <FileText size={18} className="text-[#3B82F6] shrink-0" />;
-}
-
 // ── Document Row ──────────────────────────────────────────────────────────────
 
 function DocumentRow({ doc }: { doc: Document }) {
   return (
     <div className="flex items-center justify-between gap-4 rounded-lg border border-[#1E3350] bg-[#0F1B31] px-4 py-3 transition-colors hover:border-[#2B4A73]">
       <div className="flex items-center gap-3 min-w-0">
-        {fileTypeIcon(doc.fileType)}
+        <FileText size={18} className="text-[#3B82F6] shrink-0" />
         <div className="min-w-0">
           <p className="text-sm font-medium text-[#F8FAFC] truncate">{doc.name}</p>
           <p className="text-xs text-[#94A3B8]">Added {formatDate(doc.createdAt)}</p>

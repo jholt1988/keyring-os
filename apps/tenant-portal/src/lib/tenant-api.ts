@@ -2,17 +2,35 @@ import type { TenantFeedResponse } from '@keyring/types';
 
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
 const MOCK_USER_ID = process.env.NEXT_PUBLIC_MOCK_USER_ID ?? 'dev-tenant-uuid-001';
+const USE_MOCK_AUTH = process.env.NEXT_PUBLIC_USE_MOCK_AUTH === 'true';
 
+/**
+ * Get auth headers for API requests.
+ *
+ * Production: uses httpOnly cookie (JWT set by Next.js API route /api/auth/login).
+ * Development: if NEXT_PUBLIC_USE_MOCK_AUTH=true, uses X-Mock-* headers.
+ */
 function headers(): HeadersInit {
-  return {
-    'Content-Type': 'application/json',
-    'X-Mock-User-Id': MOCK_USER_ID,
-    'X-Mock-Role': 'TENANT',
-  };
+  const base: HeadersInit = { 'Content-Type': 'application/json' };
+
+  if (USE_MOCK_AUTH) {
+    return {
+      ...base,
+      'X-Mock-User-Id': MOCK_USER_ID,
+      'X-Mock-Role': 'TENANT',
+    };
+  }
+
+  // Production: credentials: 'include' sends the httpOnly JWT cookie
+  return base;
 }
 
 async function api<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, { ...init, headers: headers() });
+  const res = await fetch(`${BASE}${path}`, {
+    ...init,
+    headers: headers(),
+    credentials: USE_MOCK_AUTH ? 'omit' : 'include',
+  });
   if (!res.ok) throw new Error(`API ${res.status}: ${path}`);
   return res.json() as Promise<T>;
 }
