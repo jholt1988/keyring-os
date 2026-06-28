@@ -86,9 +86,12 @@ export function RoleDescription({ role, className = '' }: RoleDescriptionProps) 
         <div className="flex items-center gap-3">
           <div 
             className="flex h-8 w-8 items-center justify-center rounded-md"
-            style={{ backgroundColor: `${details.color}20` }}
+            style={{ backgroundColor: `${details.color}20`,  color: details.color }}
           >
-            <Icon className="h-4 w-4" style={{ color: details.color }} />
+              <Icon 
+              className="h-4 w-4" 
+             
+            />
           </div>
           <div className="text-left">
             <div className="text-sm font-semibold text-[#F8FAFC]">{details.title}</div>

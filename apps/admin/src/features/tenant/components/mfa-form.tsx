@@ -1,5 +1,6 @@
 'use client';
 
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { QRCodeDisplay } from '@/components/ui/qr-code-display';
@@ -17,6 +18,7 @@ export interface MFAFormData {
 interface MFAFormProps {
   currentMfaEnabled?: boolean;
   accountName?: string;
+  isLoading?: boolean; // <-- Add this
   onSave: (data: MFAFormData) => void;
   onCancel: () => void;
 }
@@ -24,9 +26,10 @@ interface MFAFormProps {
 export function MFAForm({ 
   currentMfaEnabled = false, 
   accountName = 'User Account',
+  isLoading  = false, // <-- Add this
   onSave, 
   onCancel 
-}: MFAFormProps) {
+}: MFAFormProps)   {
   const [form, setForm] = useState<MFAFormData>({
     action: currentMfaEnabled ? 'disable' : 'activate',
     code: '',
@@ -167,8 +170,8 @@ export function MFAForm({
       />
 
       <div className="flex justify-end">
-        <Button type="button" onClick={handleNextStep} disabled={loading}>
-          {loading ? 'Generating...' : 'Next: Verify Code'}
+        <Button type="button" onClick={handleNextStep} disabled={isLoading}>
+          {isLoading ? 'Generating...' : 'Next: Verify Code'}
         </Button>
       </div>
     </div>
@@ -220,8 +223,8 @@ export function MFAForm({
         <Button type="button" variant="outline" onClick={handleBackStep}>
           Back to Setup
         </Button>
-        <Button type="button" onClick={handleNextStep} disabled={!form.code || !validateMFACode(form.code) || loading}>
-          {loading ? 'Verifying...' : 'Next: Save Recovery Codes'}
+        <Button type="button" onClick={handleNextStep} disabled={!form.code || !validateMFACode(form.code) || isLoading}>
+          {isLoading ? 'Verifying...' : 'Next: Save Recovery Codes'}
         </Button>
       </div>
     </div>
@@ -274,8 +277,8 @@ export function MFAForm({
         <Button type="button" variant="outline" onClick={handleBackStep}>
           Back to Verification
         </Button>
-        <Button type="submit" disabled={loading}>
-          {loading ? (
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? (
             <span className="flex items-center gap-2">
               <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
               Saving...
@@ -345,8 +348,8 @@ export function MFAForm({
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
         </Button>
-        <Button type="submit" variant="destructive" disabled={!form.code || !validateMFACode(form.code) || loading}>
-          {loading ? (
+        <Button type="submit" variant="destructive" disabled={!form.code || !validateMFACode(form.code) || isLoading}>
+          {isLoading ? (
             <span className="flex items-center gap-2">
               <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
               Disabling...
