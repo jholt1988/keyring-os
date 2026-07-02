@@ -76,7 +76,8 @@ async function proxyRequest(
   if (token) headers.set('authorization', `Bearer ${token}`);
   
   if (path === 'auth/me' && !token) {
-    return NextResponse.json({ statusMessage: 'Proxy: No auth_token cookie received from browser' }, { status: 401 });
+    const allCookies = request.cookies.getAll().map(c => c.name).join(', ');
+    return NextResponse.json({ statusMessage: `Proxy: No auth_token cookie received from browser. Received cookies: ${allCookies || 'none'}` }, { status: 401 });
   }
   
   let finalBody = body;
