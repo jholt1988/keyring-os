@@ -75,6 +75,10 @@ async function proxyRequest(
   headers.set('accept', request.headers.get('accept') ?? 'application/json');
   if (token) headers.set('authorization', `Bearer ${token}`);
   
+  if (path === 'auth/me' && !token) {
+    return NextResponse.json({ statusMessage: 'Proxy: No auth_token cookie received from browser' }, { status: 401 });
+  }
+  
   let finalBody = body;
   if (refreshToken && path === 'auth/refresh') {
     // The NestJS backend expects { refreshToken: "..." } in the JSON body
