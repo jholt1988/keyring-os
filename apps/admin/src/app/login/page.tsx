@@ -54,7 +54,8 @@ export default function LoginPage() {
         credentials: 'include',
       });
       if (!meResponse.ok) {
-        throw new Error('Session verification failed after login');
+        const errText = await meResponse.text();
+        throw new Error(`Session verification failed after login: ${meResponse.status} ${errText}`);
       }
 
       // Redirect to original destination or home

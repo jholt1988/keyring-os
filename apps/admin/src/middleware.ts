@@ -69,7 +69,7 @@ export function middleware(request: NextRequest) {
         path: '/',
         sameSite: 'lax',
         httpOnly: false,
-        secure: process.env.NODE_ENV === 'production',
+        secure: request.nextUrl.protocol === 'https:',
         maxAge: 60 * 60 * 24 * 365,
       });
       return response;

@@ -110,7 +110,7 @@ async function proxyRequest(
     if (access) {
       nextResponse.cookies.set(AUTH_COOKIE, access, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: request.nextUrl.protocol === 'https:',
         sameSite: 'strict',
         path: '/',
         maxAge: ONE_DAY_SECONDS,
@@ -119,7 +119,7 @@ async function proxyRequest(
     if (refresh) {
       nextResponse.cookies.set(REFRESH_COOKIE, refresh, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: request.nextUrl.protocol === 'https:',
         sameSite: 'strict',
         path: '/',
         maxAge: THIRTY_DAYS_SECONDS,
@@ -130,7 +130,7 @@ async function proxyRequest(
       // Backend guards remain authoritative; this is not a security boundary.
       nextResponse.cookies.set(ROLE_COOKIE, role, {
         httpOnly: false,
-        secure: process.env.NODE_ENV === 'production',
+        secure: request.nextUrl.protocol === 'https:',
         sameSite: 'strict',
         path: '/',
         maxAge: ONE_DAY_SECONDS,
@@ -144,7 +144,7 @@ async function proxyRequest(
     if (role) {
       nextResponse.cookies.set(ROLE_COOKIE, role, {
         httpOnly: false,
-        secure: process.env.NODE_ENV === 'production',
+        secure: request.nextUrl.protocol === 'https:',
         sameSite: 'strict',
         path: '/',
         maxAge: ONE_DAY_SECONDS,
