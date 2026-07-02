@@ -108,15 +108,16 @@ async function proxyRequest(
   });
 
   if ((path === 'auth/login' || path === 'auth/refresh') && backendResponse.ok) {
-    const data = responseText ? JSON.parse(responseText) as { access_token?: string; accessToken?: string; refresh_token?: string; refreshToken?: string } : {};
-    const access = data.access_token ?? data.accessToken;
+    const data = responseText ? JSON.parse(responseText) as any : {};
+    const actualData = data.result ? data.result : data;
+    const access = actualData.access_token ?? actualData.accessToken;
+    const refresh = actualData.refresh_token ?? actualData.refreshToken;
     
     if (!access && path === 'auth/login') {
       return NextResponse.json({ statusMessage: `Proxy: backend login succeeded but returned no accessToken. Body: ${responseText}` }, { status: 500 });
     }
 
-    const refresh = data.refresh_token ?? data.refreshToken;
-    const role = resolveUserRole(data);
+    const role = resolveUserRole(actualData);
     if (access) {
       nextResponse.cookies.set(AUTH_COOKIE, access, {
         httpOnly: true,
@@ -151,8 +152,9 @@ async function proxyRequest(
   }
 
   if (path === 'auth/me' && backendResponse.ok) {
-    const data = responseText ? JSON.parse(responseText) as unknown : undefined;
-    const role = resolveUserRole(data);
+    const data = responseText ? JSON.parse(responseText) as any : undefined;
+    const actualData = data?.result ? data.result : data;
+    const role = resolveUserRole(actualData);
     if (role) {
       nextResponse.cookies.set(ROLE_COOKIE, role, {
         httpOnly: false,
