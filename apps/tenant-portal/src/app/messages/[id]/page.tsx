@@ -12,15 +12,21 @@ import {
   fetchConversations,
   fetchMessages,
   sendMessage,
+  getCurrentUserId,
   type Conversation,
   type Message,
 } from '@/lib/tenant-api';
 import { formatRelative } from '@/lib/utils';
 
-const MOCK_USER_ID = process.env.NEXT_PUBLIC_MOCK_USER_ID ?? 'dev-tenant-uuid-001';
+// SECURITY STOPGAP: ownership ("is this my message?") is derived from the shared auth
+// helper, which returns the dev mock id ONLY when mock auth is explicitly enabled in dev
+// and undefined otherwise. This avoids trusting a build-time mock identity in production.
+// Replace with the real authenticated user id once cookie-based auth is wired (see
+// apps/admin/src/app/api/v2/[...path]/route.ts for the pattern).
+const CURRENT_USER_ID = getCurrentUserId();
 
 function MessageBubble({ msg }: { msg: Message }) {
-  const isMine = msg.senderId === MOCK_USER_ID;
+  const isMine = CURRENT_USER_ID !== undefined && msg.senderId === CURRENT_USER_ID;
   return (
     <div className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
       <div

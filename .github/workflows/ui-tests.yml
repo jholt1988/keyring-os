@@ -1,19 +1,18 @@
 name: UI/UX Tests
+
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
   workflow_dispatch:
+
+# No cancel-in-progress — see ci.yml for rationale.
+# No pull_request trigger — see ci.yml for rationale.
+
 
 jobs:
   playwright-tests:
     timeout-minutes: 30
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./keyring-os
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,7 +23,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Install pnpm
         run: npm install -g pnpm@10.30.3
@@ -48,47 +47,8 @@ jobs:
           path: playwright-report/
           retention-days: 30
 
-  accessibility-audit:
-    runs-on: ubuntu-latest
-    needs: playwright-tests
-    defaults:
-      run:
-        working-directory: ./keyring-os
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install pnpm
-        run: npm install -g pnpm@10.30.3
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Run Lighthouse CI (placeholder)
-        run: |
-          echo "Lighthouse CI audit would run here"
-          echo "Install @axe-core/playwright for accessibility tests"
-
-      - name: Generate accessibility report
-        run: |
-          echo "Accessibility report would be generated here" > accessibility-report.md
-          cat accessibility-report.md
-
   test-coverage:
     runs-on: ubuntu-latest
-    needs: playwright-tests
-    defaults:
-      run:
-        working-directory: ./keyring-os
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -98,7 +58,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
+
 
       - name: Install pnpm
         run: npm install -g pnpm@10.30.3
@@ -106,10 +67,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Generate test coverage report
-        run: |
-          echo "Test coverage: 85% (estimated)" > coverage-report.md
-          echo "- Auth flow: 100%" >> coverage-report.md
-          echo "- Payment workflow: 90%" >> coverage-report.md
-          echo "- Mobile responsive: 75%" >> coverage-report.md
-          cat coverage-report.md
+      - name: Run test coverage
+        run: pnpm run test:coverage
+
+      - name: Upload coverage artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: |
+            coverage/lcov.info
+            coverage/index.html
+            coverage/**
+          if-no-files-found: ignore

@@ -6,7 +6,6 @@ import { Wrench, Plus, ArrowRight } from 'lucide-react';
 import { WorkspaceShell } from '@/components/shell/workspace-shell';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { fetchMaintenanceRequests } from '@/lib/tenant-api';
 import { formatDate } from '@/lib/utils';
@@ -25,8 +24,8 @@ function priorityBadge(priority: string) {
   switch (priority.toUpperCase()) {
     case 'EMERGENCY': return <Badge variant="destructive">Emergency</Badge>;
     case 'HIGH':      return <Badge variant="warning">High</Badge>;
-    case 'MEDIUM':    return <Badge variant="info">Medium</Badge>;
-    default:          return <Badge variant="muted">Normal</Badge>;
+    case 'MEDIUM':   return <Badge variant="info">Medium</Badge>;
+    default:         return <Badge variant="muted">Normal</Badge>;
   }
 }
 
@@ -38,6 +37,7 @@ export default function MaintenancePage() {
 
   const open = requests.filter((r) => !['COMPLETED', 'CLOSED'].includes(r.status.toUpperCase()));
   const resolved = requests.filter((r) => ['COMPLETED', 'CLOSED'].includes(r.status.toUpperCase()));
+
 
   return (
     <WorkspaceShell

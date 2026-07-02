@@ -10,6 +10,7 @@ import {
 import { MetricTile } from '../components/metric-tile';
 import { FilterSelect } from '../components/filter-select';
 import { DecisionEvidencePanel } from '../components/decision-evidence-panel';
+import { CollapsiblePanel } from '@/components/ui/collapsible-panel';
 import { formatCurrency, formatNumber, priorityLabel, decisionPriorityLabel } from '../utils';
 import { AlertTriangle, ArrowUpRight, Banknote, Building2, ClipboardList, ShieldCheck, Wrench } from 'lucide-react';
 
@@ -234,22 +235,24 @@ export function CommandCenterView({
             }}
           />
 
-          <section className="rounded-md border border-[var(--border)] bg-[var(--panel)] p-4" aria-labelledby="approval-panel-title">
-            <h2 id="approval-panel-title" className="text-lg font-semibold">Approval panel</h2>
-            <div className="mt-4 text-3xl font-semibold">{formatNumber(data.commandCenter?.metrics.pendingApprovals ?? data.approvals.length)}</div>
+          <CollapsiblePanel
+            title="Approval Panel"
+            variant="compact"
+            badge={formatNumber(data.commandCenter?.metrics.pendingApprovals ?? data.approvals.length)}
+          >
+            <div className="text-3xl font-semibold">{formatNumber(data.commandCenter?.metrics.pendingApprovals ?? data.approvals.length)}</div>
             <p className="mt-1 text-sm text-[var(--muted)]">pending approval tasks connected to executable workflows</p>
-          </section>
+          </CollapsiblePanel>
 
-          <section className="rounded-md border border-[var(--border)] bg-[var(--panel)] p-4" aria-labelledby="ai-readiness-title">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <h2 id="ai-readiness-title" className="text-lg font-semibold">AI workflow readiness</h2>
-                <p className="mt-1 text-sm text-[var(--muted)]">
-                  {data.aiCapabilities ? `${data.aiCapabilities.mode} / ${data.aiCapabilities.model}` : 'Capability manifest unavailable'}
-                </p>
-              </div>
-              <span className="rounded-sm border border-[var(--border)] px-2 py-1 text-xs font-medium">{formatNumber(aiCapabilities.length)} routes</span>
-            </div>
+          <CollapsiblePanel
+            title="AI Workflow Readiness"
+            badge={formatNumber(aiCapabilities.length)}
+            actions={
+              <span className="text-xs font-medium text-[var(--muted)]">
+                {data.aiCapabilities ? `${data.aiCapabilities.mode} / ${data.aiCapabilities.model}` : 'No manifest'}
+              </span>
+            }
+          >
             <div className="mt-4 grid grid-cols-3 gap-2 text-center">
               <div className="rounded-md border border-[var(--border)] bg-[var(--panel-strong)] p-2">
                 <div className="text-lg font-semibold">{formatNumber(highRiskAiCapabilities)}</div>
@@ -281,7 +284,7 @@ export function CommandCenterView({
                 <div className="text-sm text-[var(--muted)]">No AI capability manifest returned by the backend.</div>
               )}
             </div>
-          </section>
+          </CollapsiblePanel>
 
           <section className="rounded-md border border-[var(--border)] bg-[var(--panel)] p-4" aria-labelledby="briefing-title">
             <h2 id="briefing-title" className="text-lg font-semibold">Today</h2>
