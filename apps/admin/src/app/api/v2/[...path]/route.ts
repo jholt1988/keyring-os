@@ -115,7 +115,7 @@ async function proxyRequest(
       nextResponse.cookies.set(AUTH_COOKIE, access, {
         httpOnly: true,
         secure: request.nextUrl.protocol === 'https:',
-        sameSite: 'strict',
+        sameSite: 'lax',
         path: '/',
         maxAge: ONE_DAY_SECONDS,
       });
@@ -124,7 +124,7 @@ async function proxyRequest(
       nextResponse.cookies.set(REFRESH_COOKIE, refresh, {
         httpOnly: true,
         secure: request.nextUrl.protocol === 'https:',
-        sameSite: 'strict',
+        sameSite: 'lax',
         path: '/',
         maxAge: THIRTY_DAYS_SECONDS,
       });
@@ -135,7 +135,7 @@ async function proxyRequest(
       nextResponse.cookies.set(ROLE_COOKIE, role, {
         httpOnly: false,
         secure: request.nextUrl.protocol === 'https:',
-        sameSite: 'strict',
+        sameSite: 'lax',
         path: '/',
         maxAge: ONE_DAY_SECONDS,
       });
@@ -149,7 +149,7 @@ async function proxyRequest(
       nextResponse.cookies.set(ROLE_COOKIE, role, {
         httpOnly: false,
         secure: request.nextUrl.protocol === 'https:',
-        sameSite: 'strict',
+        sameSite: 'lax',
         path: '/',
         maxAge: ONE_DAY_SECONDS,
       });
