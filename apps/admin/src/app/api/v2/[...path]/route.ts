@@ -110,6 +110,11 @@ async function proxyRequest(
   if ((path === 'auth/login' || path === 'auth/refresh') && backendResponse.ok) {
     const data = responseText ? JSON.parse(responseText) as { access_token?: string; accessToken?: string; refresh_token?: string; refreshToken?: string } : {};
     const access = data.access_token ?? data.accessToken;
+    
+    if (!access && path === 'auth/login') {
+      return NextResponse.json({ statusMessage: `Proxy: backend login succeeded but returned no accessToken. Body: ${responseText}` }, { status: 500 });
+    }
+
     const refresh = data.refresh_token ?? data.refreshToken;
     const role = resolveUserRole(data);
     if (access) {
@@ -120,6 +125,7 @@ async function proxyRequest(
         path: '/',
         maxAge: ONE_DAY_SECONDS,
       });
+      nextResponse.headers.append('Set-Cookie', `${AUTH_COOKIE}=${access}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${ONE_DAY_SECONDS}${request.nextUrl.protocol === 'https:' ? '; Secure' : ''}`);
     }
     if (refresh) {
       nextResponse.cookies.set(REFRESH_COOKIE, refresh, {
@@ -129,6 +135,7 @@ async function proxyRequest(
         path: '/',
         maxAge: THIRTY_DAYS_SECONDS,
       });
+      nextResponse.headers.append('Set-Cookie', `${REFRESH_COOKIE}=${refresh}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${THIRTY_DAYS_SECONDS}${request.nextUrl.protocol === 'https:' ? '; Secure' : ''}`);
     }
     if (role) {
       // Non-httpOnly: middleware reads this for UX-level role guards.
