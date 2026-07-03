@@ -67,9 +67,9 @@ export function UnderwritingRulesCard({ rules, onChange, onSave, editable = fals
         </div>
         <div className="flex items-center gap-2">
           {isExpanded ? (
-            <ChevronUp className="h-4 w-4 text-[#64748B]" />
+            <ChevronUp className="h-4 w-4 text-[#8A99AD]" />
           ) : (
-            <ChevronDown className="h-4 w-4 text-[#64748B]" />
+            <ChevronDown className="h-4 w-4 text-[#8A99AD]" />
           )}
         </div>
       </button>
@@ -81,7 +81,7 @@ export function UnderwritingRulesCard({ rules, onChange, onSave, editable = fals
             key={item.label}
             className="rounded-lg border border-white/5 bg-white/[0.02] px-3 py-2"
           >
-            <div className="text-[10px] uppercase tracking-wider text-[#64748B]">{item.label}</div>
+            <div className="text-[10px] uppercase tracking-wider text-[#8A99AD]">{item.label}</div>
             <div className="mt-0.5 text-sm font-medium text-[#F8FAFC]">{item.value}</div>
           </div>
         ))}
@@ -127,7 +127,7 @@ export function UnderwritingRulesCard({ rules, onChange, onSave, editable = fals
                 disabled={!editable}
                 className="mt-1.5 w-full rounded-lg border border-white/10 bg-[#0F1729] px-3 py-2 text-sm text-[#F8FAFC] focus:border-[#38BDF8] focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
               />
-              <div className="mt-1 text-[10px] text-[#64748B]">Range: 0.00 - 1.00</div>
+              <div className="mt-1 text-[10px] text-[#8A99AD]">Range: 0.00 - 1.00</div>
             </div>
             <div>
               <label className="flex items-center gap-2 text-xs text-[#94A3B8]">
@@ -144,7 +144,7 @@ export function UnderwritingRulesCard({ rules, onChange, onSave, editable = fals
                 disabled={!editable}
                 className="mt-1.5 w-full rounded-lg border border-white/10 bg-[#0F1729] px-3 py-2 text-sm text-[#F8FAFC] focus:border-[#38BDF8] focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
               />
-              <div className="mt-1 text-[10px] text-[#64748B]">Range: 0.00 - 1.00</div>
+              <div className="mt-1 text-[10px] text-[#8A99AD]">Range: 0.00 - 1.00</div>
             </div>
           </div>
 
@@ -164,7 +164,7 @@ export function UnderwritingRulesCard({ rules, onChange, onSave, editable = fals
               disabled={!editable}
               className="mt-1.5 w-full rounded-lg border border-white/10 bg-[#0F1729] px-3 py-2 text-sm text-[#F8FAFC] focus:border-[#38BDF8] focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
             />
-            <div className="mt-1 text-[10px] text-[#64748B]">Maximum years of eviction history allowed</div>
+            <div className="mt-1 text-[10px] text-[#8A99AD]">Maximum years of eviction history allowed</div>
           </div>
 
           {/* Checkboxes */}

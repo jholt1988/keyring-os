@@ -60,7 +60,7 @@ export function TenantProfileForm({ initialData, onSave, onCancel }: TenantProfi
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Preferred Name</label>
           <div className="relative">
-            <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               value={form.preferredName || ''}
               onChange={(e) => handleChange('preferredName', e.target.value)}
@@ -87,7 +87,7 @@ export function TenantProfileForm({ initialData, onSave, onCancel }: TenantProfi
         <div className="space-y-2 md:col-span-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Tags</label>
           <div className="relative">
-            <Tag className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Tag className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               value={tagInput}
               onChange={(e) => setTagInput(e.target.value)}
@@ -95,7 +95,7 @@ export function TenantProfileForm({ initialData, onSave, onCancel }: TenantProfi
               placeholder="vip, sectional, preferred-tenant"
             />
           </div>
-          <p className="text-[11px] text-[#64748B]">Comma-separated tags</p>
+          <p className="text-[11px] text-[#8A99AD]">Comma-separated tags</p>
         </div>
 
         <div className="space-y-2">
@@ -118,7 +118,7 @@ export function TenantProfileForm({ initialData, onSave, onCancel }: TenantProfi
           <textarea
             value={form.notes || ''}
             onChange={(e) => handleChange('notes', e.target.value)}
-            className="flex min-h-[80px] w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#64748B] focus:border-[#3B82F6] focus:outline-none"
+            className="flex min-h-[80px] w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] focus:border-[#3B82F6] focus:outline-none"
             placeholder="Additional notes about this tenant..."
           />
         </div>

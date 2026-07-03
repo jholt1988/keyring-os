@@ -60,7 +60,7 @@ export function LogoutButton({ collapsed }: { collapsed: boolean }) {
           <span className="min-w-0 flex-1">
             <span className="block truncate text-xs font-medium text-[#E2E8F0]">{name}</span>
             {email && email !== name && (
-              <span className="block truncate text-[10px] text-[#64748B]">{email}</span>
+              <span className="block truncate text-[10px] text-[#8A99AD]">{email}</span>
             )}
           </span>
         )}

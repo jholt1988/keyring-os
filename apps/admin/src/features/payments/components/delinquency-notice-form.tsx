@@ -66,7 +66,7 @@ export function DelinquencyNoticeForm({
         <div className="space-y-2 md:col-span-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Lease</label>
           <div className="relative">
-            <Building className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Building className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <select
               value={form.leaseId}
               onChange={(e) => handleChange('leaseId', e.target.value)}
@@ -84,7 +84,7 @@ export function DelinquencyNoticeForm({
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Delivery Method</label>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <select
               value={form.deliveryMethod}
               onChange={(e) => handleChange('deliveryMethod', e.target.value as DelinquencyNoticeFormData['deliveryMethod'])}

@@ -56,7 +56,7 @@ export function AutopayConfigForm({
         <div className="space-y-2 md:col-span-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Lease</label>
           <div className="relative">
-            <Building className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Building className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <select
               value={form.leaseId}
               onChange={(e) => handleChange('leaseId', e.target.value)}
@@ -74,7 +74,7 @@ export function AutopayConfigForm({
         <div className="space-y-2 md:col-span-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Payment Method</label>
           <div className="relative">
-            <CreditCard className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <CreditCard className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <select
               value={form.paymentMethodId || ''}
               onChange={(e) => handleChange('paymentMethodId', Number(e.target.value))}
@@ -94,7 +94,7 @@ export function AutopayConfigForm({
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Max Amount</label>
           <div className="relative">
-            <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="number"
               value={form.maxAmount ?? ''}
@@ -103,7 +103,7 @@ export function AutopayConfigForm({
               placeholder="Optional limit"
             />
           </div>
-          <p className="text-[11px] text-[#64748B]">Leave blank for no limit</p>
+          <p className="text-[11px] text-[#8A99AD]">Leave blank for no limit</p>
         </div>
 
         <div className="space-y-2">
@@ -115,7 +115,7 @@ export function AutopayConfigForm({
             {form.active ? (
               <ToggleRight className="h-6 w-6 text-[#10B981]" />
             ) : (
-              <ToggleLeft className="h-6 w-6 text-[#64748B]" />
+              <ToggleLeft className="h-6 w-6 text-[#8A99AD]" />
             )}
             <span className="text-sm text-[#F8FAFC]">
               {form.active ? 'Autopay Enabled' : 'Autopay Disabled'}

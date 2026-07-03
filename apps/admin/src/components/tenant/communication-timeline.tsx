@@ -35,7 +35,7 @@ interface CommunicationTimelineProps {
 export function CommunicationTimeline({ events, className }: CommunicationTimelineProps) {
   if (events.length === 0) {
     return (
-      <p className="py-6 text-center text-sm text-[#64748B]">No activity recorded</p>
+      <p className="py-6 text-center text-sm text-[#8A99AD]">No activity recorded</p>
     );
   }
 
@@ -64,7 +64,7 @@ export function CommunicationTimeline({ events, className }: CommunicationTimeli
               {event.details && (
                 <p className="mt-0.5 truncate text-xs text-[#94A3B8]">{event.details}</p>
               )}
-              <p className="mt-1 font-mono text-[10px] text-[#64748B]">
+              <p className="mt-1 font-mono text-[10px] text-[#8A99AD]">
                 {dateStr} · {timeStr}
               </p>
             </div>

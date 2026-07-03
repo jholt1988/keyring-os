@@ -74,9 +74,9 @@ export function PaymentPlanSettingsCard({
           </div>
         </div>
         {expanded ? (
-          <ChevronUp className="h-4 w-4 text-[#64748B]" />
+          <ChevronUp className="h-4 w-4 text-[#8A99AD]" />
         ) : (
-          <ChevronDown className="h-4 w-4 text-[#64748B]" />
+          <ChevronDown className="h-4 w-4 text-[#8A99AD]" />
         )}
       </button>
 

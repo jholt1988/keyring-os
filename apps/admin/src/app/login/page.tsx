@@ -109,12 +109,12 @@ export default function LoginPage() {
                   placeholder="admin"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="h-11 border-white/10 bg-[#0F1B31] pl-10 text-[#F8FAFC] placeholder:text-[#64748B] focus:border-[#3B82F6] focus:ring-[#3B82F6]"
+                  className="h-11 border-white/10 bg-[#0F1B31] pl-10 text-[#F8FAFC] placeholder:text-[#8A99AD] focus:border-[#3B82F6] focus:ring-[#3B82F6]"
                   autoComplete="username"
                 />
                 <div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
                   <svg
-                    className="h-4 w-4 text-[#64748B]"
+                    className="h-4 w-4 text-[#8A99AD]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -140,10 +140,10 @@ export default function LoginPage() {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="h-11 border-white/10 bg-[#0F1B31] pl-10 text-[#F8FAFC] placeholder:text-[#64748B] focus:border-[#3B82F6] focus:ring-[#3B82F6]"
+                  className="h-11 border-white/10 bg-[#0F1B31] pl-10 text-[#F8FAFC] placeholder:text-[#8A99AD] focus:border-[#3B82F6] focus:ring-[#3B82F6]"
                   autoComplete="current-password"
                 />
-                <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+                <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
               </div>
             </div>
 
@@ -208,7 +208,7 @@ export default function LoginPage() {
             </Link>
           </div>
 
-          <div className="mt-6 text-center text-xs text-[#64748B]">
+          <div className="mt-6 text-center text-xs text-[#8A99AD]">
             Protected by enterprise-grade security
           </div>
         </CardContent>

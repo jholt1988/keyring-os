@@ -36,7 +36,7 @@ const typeConfig = {
 
 const statusConfig = {
   active: { label: 'Active', color: 'text-[#10B981]' },
-  inactive: { label: 'Inactive', color: 'text-[#64748B]' },
+  inactive: { label: 'Inactive', color: 'text-[#8A99AD]' },
   'pending-onboarding': { label: 'Pending', color: 'text-[#F59E0B]' },
 };
 
@@ -61,26 +61,26 @@ export function PropertyList({ properties, onSelectProperty, onViewUnits }: Prop
       {/* Summary Stats */}
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <div className="rounded-xl border border-white/8 bg-white/[0.02] p-4">
-          <div className="text-xs uppercase tracking-wider text-[#64748B]">Properties</div>
+          <div className="text-xs uppercase tracking-wider text-[#8A99AD]">Properties</div>
           <div className="mt-1 text-2xl font-semibold text-[#F8FAFC]">{stats.totalProperties}</div>
         </div>
         <div className="rounded-xl border border-white/8 bg-white/[0.02] p-4">
-          <div className="text-xs uppercase tracking-wider text-[#64748B]">Total Units</div>
+          <div className="text-xs uppercase tracking-wider text-[#8A99AD]">Total Units</div>
           <div className="mt-1 text-2xl font-semibold text-[#F8FAFC]">{stats.totalUnits}</div>
         </div>
         <div className="rounded-xl border border-white/8 bg-white/[0.02] p-4">
-          <div className="text-xs uppercase tracking-wider text-[#64748B]">Occupied</div>
+          <div className="text-xs uppercase tracking-wider text-[#8A99AD]">Occupied</div>
           <div className="mt-1 text-2xl font-semibold text-[#10B981]">{stats.occupiedUnits}</div>
         </div>
         <div className="rounded-xl border border-white/8 bg-white/[0.02] p-4">
-          <div className="text-xs uppercase tracking-wider text-[#64748B]">Monthly Revenue</div>
+          <div className="text-xs uppercase tracking-wider text-[#8A99AD]">Monthly Revenue</div>
           <div className="mt-1 text-2xl font-semibold text-[#38BDF8]">${stats.monthlyRevenue.toLocaleString()}</div>
         </div>
       </div>
 
       {/* Search */}
       <div className="relative max-w-md">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
         <Input
           placeholder="Search properties..."
           value={search}
@@ -93,7 +93,7 @@ export function PropertyList({ properties, onSelectProperty, onViewUnits }: Prop
       <div className="space-y-2">
         {filteredProperties.length === 0 ? (
           <div className="rounded-xl border border-white/10 bg-white/[0.02] p-8 text-center">
-            <Building className="mx-auto h-8 w-8 text-[#64748B]" />
+            <Building className="mx-auto h-8 w-8 text-[#8A99AD]" />
             <p className="mt-2 text-sm text-[#94A3B8]">No properties found</p>
           </div>
         ) : (
@@ -131,13 +131,13 @@ export function PropertyList({ properties, onSelectProperty, onViewUnits }: Prop
                       <Home size={14} />
                       {property.occupiedUnits}/{property.units}
                     </div>
-                    <div className="text-xs text-[#64748B]">Units</div>
+                    <div className="text-xs text-[#8A99AD]">Units</div>
                   </div>
                   <div className="text-center">
                     <div className="text-sm font-medium text-[#10B981]">
                       {property.occupancyRate}%
                     </div>
-                    <div className="text-xs text-[#64748B]">Occupied</div>
+                    <div className="text-xs text-[#8A99AD]">Occupied</div>
                   </div>
                   <Button 
                     size="sm" 

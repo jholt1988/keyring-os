@@ -88,7 +88,7 @@ export default function NotificationsPage() {
                             {n.type}
                           </span>
                         )}
-                        <span className="text-[10px] text-[#475569]">{new Date(n.createdAt).toLocaleString()}</span>
+                        <span className="text-[10px] text-[#8A99AD]">{new Date(n.createdAt).toLocaleString()}</span>
                       </div>
                     </div>
                     <div className="flex shrink-0 gap-1">
@@ -116,16 +116,16 @@ export default function NotificationsPage() {
                   <div key={n.id} className="flex items-start gap-3 rounded-[14px] border border-[#1E3350] bg-[#07111F] px-4 py-3 opacity-60">
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium text-[#94A3B8]">{n.title ?? n.message}</p>
-                      {n.title && <p className="mt-0.5 text-xs text-[#475569]">{n.message}</p>}
+                      {n.title && <p className="mt-0.5 text-xs text-[#8A99AD]">{n.message}</p>}
                       <div className="mt-1 flex items-center gap-2">
                         {n.type && (
-                          <span className="text-[10px] font-medium uppercase text-[#475569]">{n.type}</span>
+                          <span className="text-[10px] font-medium uppercase text-[#8A99AD]">{n.type}</span>
                         )}
-                        <span className="text-[10px] text-[#475569]">{new Date(n.createdAt).toLocaleString()}</span>
+                        <span className="text-[10px] text-[#8A99AD]">{new Date(n.createdAt).toLocaleString()}</span>
                       </div>
                     </div>
                     <button onClick={() => deleteMutation.mutate(n.id)}
-                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-[#1E3350] bg-[#07111F] text-[#475569] transition-all hover:border-[#F43F5E] hover:text-[#F43F5E]"
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-[#1E3350] bg-[#07111F] text-[#8A99AD] transition-all hover:border-[#F43F5E] hover:text-[#F43F5E]"
                       title="Delete">
                       <Trash2 size={12} />
                     </button>

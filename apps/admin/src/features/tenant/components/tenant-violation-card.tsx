@@ -51,7 +51,7 @@ export function TenantViolationCard({
               <span className={`rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-wider ${config.border} ${config.color}`}>
                 {violation.severity}
               </span>
-              <span className="text-xs uppercase tracking-wider text-[#64748B]">
+              <span className="text-xs uppercase tracking-wider text-[#8A99AD]">
                 {violation.type.replace(/-/g, ' ')}
               </span>
             </div>

@@ -60,7 +60,7 @@ export default function ConversationPage() {
                 <div key={msg.id} className={`flex ${isAdmin ? 'justify-end' : 'justify-start'}`}>
                   <div className={`max-w-[70%] rounded-[14px] px-4 py-2.5 ${isAdmin ? 'bg-[#3B82F6] text-white' : 'border border-[#1E3350] bg-[#07111F] text-[#F8FAFC]'}`}>
                     <p className="text-sm">{msg.content}</p>
-                    <p className={`mt-1 text-[10px] ${isAdmin ? 'text-blue-200' : 'text-[#475569]'}`}>
+                    <p className={`mt-1 text-[10px] ${isAdmin ? 'text-blue-200' : 'text-[#8A99AD]'}`}>
                       {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </p>
                   </div>
@@ -80,7 +80,7 @@ export default function ConversationPage() {
               onKeyDown={handleKeyDown}
               placeholder="Type a message… (Enter to send)"
               rows={2}
-              className="flex-1 resize-none rounded-lg border border-[#1E3350] bg-[#07111F] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]"
+              className="flex-1 resize-none rounded-lg border border-[#1E3350] bg-[#07111F] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]"
             />
             <Button
               size="sm"

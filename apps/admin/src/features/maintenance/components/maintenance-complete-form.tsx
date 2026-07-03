@@ -47,16 +47,16 @@ export function MaintenanceCompleteForm({ onSave, onCancel }: MaintenanceComplet
       <div className="space-y-2">
         <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Completion Note</label>
         <div className="relative">
-          <FileText className="absolute left-3 top-3 h-4 w-4 text-[#64748B]" />
+          <FileText className="absolute left-3 top-3 h-4 w-4 text-[#8A99AD]" />
           <textarea
             value={form.note || ''}
             onChange={(e) => setForm({ note: e.target.value })}
-            className="flex min-h-[100px] w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 pl-10 text-sm text-[#F8FAFC] placeholder:text-[#64748B] focus:border-[#3B82F6] focus:outline-none"
+            className="flex min-h-[100px] w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 pl-10 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] focus:border-[#3B82F6] focus:outline-none"
             placeholder="Optional completion notes..."
             maxLength={500}
           />
         </div>
-        <p className="text-xs text-[#64748B]">{form.note?.length || 0}/500 characters</p>
+        <p className="text-xs text-[#8A99AD]">{form.note?.length || 0}/500 characters</p>
       </div>
 
       <div className="flex justify-end gap-2 pt-4">

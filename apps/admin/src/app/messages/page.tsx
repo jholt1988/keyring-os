@@ -221,21 +221,21 @@ export default function MessagesPage() {
             }
           >
             <div className="relative mb-3">
-              <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B]" />
+              <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8A99AD]" />
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search conversations..."
-                className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] py-2 pl-8 pr-3 text-xs text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]"
+                className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] py-2 pl-8 pr-3 text-xs text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]"
               />
             </div>
 
             {convsLoading ? (
               <div className="flex items-center justify-center py-10">
-                <RefreshCw size={16} className="animate-spin text-[#64748B]" />
+                <RefreshCw size={16} className="animate-spin text-[#8A99AD]" />
               </div>
             ) : filteredConvs.length === 0 ? (
-              <div className="py-10 text-center text-sm text-[#64748B]">No conversations yet</div>
+              <div className="py-10 text-center text-sm text-[#8A99AD]">No conversations yet</div>
             ) : (
               <div className="max-h-[520px] space-y-1.5 overflow-y-auto pr-1">
                 {filteredConvs.map((conv) => (
@@ -250,10 +250,10 @@ export default function MessagesPage() {
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-semibold text-[#F8FAFC]">{participantName(conv)}</span>
-                      <span className="text-[10px] text-[#64748B]">{timeAgo(conv.updatedAt)}</span>
+                      <span className="text-[10px] text-[#8A99AD]">{timeAgo(conv.updatedAt)}</span>
                     </div>
                     {conv.subject && <p className="mt-0.5 text-[10px] font-medium text-[#94A3B8]">{conv.subject}</p>}
-                    <p className="mt-1 truncate text-[10px] text-[#64748B]">{conversationPreview(conv)}</p>
+                    <p className="mt-1 truncate text-[10px] text-[#8A99AD]">{conversationPreview(conv)}</p>
                   </button>
                 ))}
               </div>
@@ -266,8 +266,8 @@ export default function MessagesPage() {
           {activeConvId == null ? (
             <div className="flex min-h-[400px] flex-col items-center justify-center rounded-[24px] border border-[#1E3350] bg-[#0F1B31]">
               <MessageSquare size={32} className="mb-3 text-[#1E3350]" />
-              <p className="text-sm text-[#64748B]">Select a conversation</p>
-              <p className="mt-1 text-xs text-[#475569]">or compose a new message</p>
+              <p className="text-sm text-[#8A99AD]">Select a conversation</p>
+              <p className="mt-1 text-xs text-[#8A99AD]">or compose a new message</p>
               <Button size="sm" className="mt-4" onClick={() => setComposeOpen(true)}>
                 <MessageSquare size={13} /> New Message
               </Button>
@@ -283,9 +283,9 @@ export default function MessagesPage() {
                   <p className="text-sm font-semibold text-[#F8FAFC]">
                     {activeConv ? participantName(activeConv) : '—'}
                   </p>
-                  {activeConv?.subject && <p className="text-xs text-[#64748B]">{activeConv.subject}</p>}
+                  {activeConv?.subject && <p className="text-xs text-[#8A99AD]">{activeConv.subject}</p>}
                 </div>
-                <button onClick={() => setActiveConvId(null)} className="text-[#64748B] hover:text-[#F8FAFC]">
+                <button onClick={() => setActiveConvId(null)} className="text-[#8A99AD] hover:text-[#F8FAFC]">
                   <X size={15} />
                 </button>
               </div>
@@ -294,10 +294,10 @@ export default function MessagesPage() {
               <div className="flex-1 space-y-3 overflow-y-auto p-5">
                 {msgsLoading ? (
                   <div className="flex justify-center py-10">
-                    <RefreshCw size={16} className="animate-spin text-[#64748B]" />
+                    <RefreshCw size={16} className="animate-spin text-[#8A99AD]" />
                   </div>
                 ) : messages.length === 0 ? (
-                  <p className="py-10 text-center text-xs text-[#64748B]">No messages in this thread</p>
+                  <p className="py-10 text-center text-xs text-[#8A99AD]">No messages in this thread</p>
                 ) : (
                   messages.map((msg) => (
                     <div key={msg.id} className="flex gap-3">
@@ -309,7 +309,7 @@ export default function MessagesPage() {
                           <span className="text-xs font-medium text-[#94A3B8]">
                             {msg.sender?.username ?? 'Unknown'}
                           </span>
-                          <span className="text-[10px] text-[#475569]">{timeAgo(msg.createdAt)}</span>
+                          <span className="text-[10px] text-[#8A99AD]">{timeAgo(msg.createdAt)}</span>
                         </div>
                         <p className="mt-1 rounded-[10px] border border-[#1E3350] bg-[#13233C] px-3 py-2 text-sm text-[#E2E8F0]">
                           {msg.content}
@@ -334,7 +334,7 @@ export default function MessagesPage() {
                     }}
                     rows={2}
                     placeholder="Type a reply… (Ctrl+Enter to send)"
-                    className="flex-1 resize-none rounded-lg border border-[#1E3350] bg-[#13233C] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]"
+                    className="flex-1 resize-none rounded-lg border border-[#1E3350] bg-[#13233C] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]"
                   />
                   <Button
                     size="sm"
@@ -378,7 +378,7 @@ export default function MessagesPage() {
               Recipient <span className="text-[#F43F5E]">*</span>
             </label>
             <div className="relative">
-              <Users size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B]" />
+              <Users size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8A99AD]" />
               <input
                 value={tenantSearch}
                 onChange={(e) => {
@@ -386,7 +386,7 @@ export default function MessagesPage() {
                   setComposeTenantId('');
                 }}
                 placeholder="Search tenants..."
-                className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] py-2 pl-8 pr-3 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]"
+                className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] py-2 pl-8 pr-3 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]"
               />
             </div>
             {tenantSearch && !composeTenantId && filteredTenants.length > 0 && (
@@ -417,7 +417,7 @@ export default function MessagesPage() {
               value={composeSubject}
               onChange={(e) => setComposeSubject(e.target.value)}
               placeholder="Lease renewal, maintenance update..."
-              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]"
+              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]"
             />
           </div>
 
@@ -431,7 +431,7 @@ export default function MessagesPage() {
               onChange={(e) => setComposeBody(e.target.value)}
               rows={5}
               placeholder="Type your message..."
-              className="w-full resize-none rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]"
+              className="w-full resize-none rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]"
             />
           </div>
         </div>

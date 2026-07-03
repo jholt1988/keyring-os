@@ -28,7 +28,7 @@ interface TenantListProps {
 const statusConfig = {
   active: { label: 'Active', color: 'text-[#10B981]', bg: 'bg-[#10B981]/10', border: 'border-[#10B981]/30' },
   pending: { label: 'Pending', color: 'text-[#F59E0B]', bg: 'bg-[#F59E0B]/10', border: 'border-[#F59E0B]/30' },
-  past: { label: 'Past', color: 'text-[#64748B]', bg: 'bg-white/[0.02]', border: 'border-white/10' },
+  past: { label: 'Past', color: 'text-[#8A99AD]', bg: 'bg-white/[0.02]', border: 'border-white/10' },
   'in-arrears': { label: 'In Arrears', color: 'text-[#F43F5E]', bg: 'bg-[#F43F5E]/10', border: 'border-[#F43F5E]/30' },
 };
 
@@ -50,7 +50,7 @@ export function TenantList({ tenants, onSelectTenant, onFilterChange }: TenantLi
       {/* Search and Filter */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
           <Input
             placeholder="Search tenants..."
             value={search}
@@ -79,7 +79,7 @@ export function TenantList({ tenants, onSelectTenant, onFilterChange }: TenantLi
       <div className="space-y-2">
         {filteredTenants.length === 0 ? (
           <div className="rounded-xl border border-white/10 bg-white/[0.02] p-8 text-center">
-            <User className="mx-auto h-8 w-8 text-[#64748B]" />
+            <User className="mx-auto h-8 w-8 text-[#8A99AD]" />
             <p className="mt-2 text-sm text-[#94A3B8]">No tenants found</p>
           </div>
         ) : (
@@ -121,9 +121,9 @@ export function TenantList({ tenants, onSelectTenant, onFilterChange }: TenantLi
                     <div className="text-sm font-medium text-[#F8FAFC]">
                       ${tenant.monthlyRent.toLocaleString()}/mo
                     </div>
-                    <div className="text-xs text-[#64748B]">Monthly rent</div>
+                    <div className="text-xs text-[#8A99AD]">Monthly rent</div>
                   </div>
-                  <ChevronRight className="h-5 w-5 text-[#64748B]" />
+                  <ChevronRight className="h-5 w-5 text-[#8A99AD]" />
                 </div>
               </div>
             );

@@ -61,7 +61,7 @@ export default function TenantInsurancePage() {
                     value={leaseId} 
                     onChange={(e) => setLeaseId(e.target.value)} 
                     placeholder="Search by Lease ID..." 
-                    className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] py-2 pl-9 pr-3 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]" 
+                    className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] py-2 pl-9 pr-3 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]" 
                   />
                 </div>
                 <Button variant="outline" onClick={() => refetch()} disabled={!leaseId || isLoading}>
@@ -101,7 +101,7 @@ export default function TenantInsurancePage() {
                           <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-medium uppercase ${isExpired ? 'bg-red-500/10 text-red-500 border border-red-500/20' : 'bg-green-500/10 text-green-500 border border-green-500/20'}`}>
                             {isExpired ? 'Expired' : 'Active'}
                           </span>
-                          <p className="mt-1 text-xs text-[#475569]">
+                          <p className="mt-1 text-xs text-[#8A99AD]">
                             Exp: {new Date(policy.expiry ?? policy.expiryDate).toLocaleDateString()}
                           </p>
                         </div>
@@ -169,7 +169,7 @@ export default function TenantInsurancePage() {
                   value={(form as any)[key]} 
                   onChange={(e) => setForm((current) => ({ ...current, [key]: e.target.value }))} 
                   placeholder={placeholder}
-                  className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]" 
+                  className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]" 
                 />
               </label>
             ))}
