@@ -729,11 +729,37 @@ async function loadArea<T>(
 }
 
 function unwrapEnvelope<T>(payload: T): T {
+  // Standard API envelope: { data, meta, errors }.
   if (payload && typeof payload === 'object' && 'data' in payload && 'meta' in payload && 'errors' in payload) {
     return (payload as { data: T }).data;
   }
+  // AI-gateway decision envelope: { result, confidence, rationale, ... }.
+  if (payload && typeof payload === 'object' && 'result' in payload && 'confidence' in payload) {
+    return (payload as { result: T }).result;
+  }
 
   return payload;
+}
+
+/**
+ * Coerce the portfolio area into a stable { data: [], meta } shape regardless of
+ * whether the upstream envelope was unwrapped to a bare array, arrived as a
+ * PortfolioResponse, or is missing entirely. Prevents `.reduce` on undefined in
+ * consumers that read portfolio.data.
+ */
+function normalizePortfolio(value: unknown): PortfolioResponse {
+  // Unwrap an AI-gateway envelope ({ result: {...}, confidence, ... }) if present.
+  const v0 = value && typeof value === 'object' && 'result' in value
+    ? (value as { result: unknown }).result
+    : value;
+  if (Array.isArray(v0)) {
+    return { data: v0 as PortfolioResponse['data'], meta: emptyReadOnlyOperatorData.portfolio.meta };
+  }
+  if (v0 && typeof v0 === 'object' && Array.isArray((v0 as PortfolioResponse).data)) {
+    const v = v0 as PortfolioResponse;
+    return { data: v.data, meta: v.meta ?? emptyReadOnlyOperatorData.portfolio.meta };
+  }
+  return emptyReadOnlyOperatorData.portfolio;
 }
 
 export async function decideApprovalTask(
@@ -1088,7 +1114,7 @@ export async function loadReadOnlyOperatorData(options: ApiClientOptions): Promi
     metrics: metrics.data,
     briefing: commandCenter.data?.dailyBriefing ?? briefing.data,
     feed: feed.data?.items ?? [],
-    portfolio: portfolio.data ?? emptyReadOnlyOperatorData.portfolio,
+    portfolio: normalizePortfolio(portfolio.data),
     approvals: commandCenter.data?.approvals ?? approvalData,
     errors: [commandCenter.error, aiCapabilities.error, workflows.error, paymentWorkbench.error, setup.error, applications.error, leaseSigning.error, maintenanceDispatch.error, renewals.error, ownerStatements.error, metrics.error, briefing.error, feed.error, portfolio.error, approvals.error].filter((error) => error !== null),
   };
