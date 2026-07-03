@@ -10,8 +10,7 @@ describe('vendors api', () => {
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
-  it('builds export url from env', () => {
-    vi.stubEnv('NEXT_PUBLIC_API_URL', 'https://api.example.com');
-    expect(getVendors1099ExportUrl()).toBe('https://api.example.com/vendors/1099-export');
+  it('builds export url through the /api/v2 proxy', () => {
+    expect(getVendors1099ExportUrl()).toBe('/api/v2/vendors/1099-export');
   });
 });

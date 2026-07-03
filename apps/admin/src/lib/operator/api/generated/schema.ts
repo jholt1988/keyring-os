@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    "/api/api": {
+    "/api": {
         parameters: {
             query?: never;
             header?: never;
@@ -20,7 +20,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/api/property-os/v16/validate-confidence": {
+    "/api/property-os/v16/validate-confidence": {
         parameters: {
             query?: never;
             header?: never;
@@ -36,7 +36,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/api/property-os/v16/validate-response": {
+    "/api/property-os/v16/validate-response": {
         parameters: {
             query?: never;
             header?: never;
@@ -52,14 +52,14 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/api/health": {
+    "/api/health": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["AppController_getHealth"];
+        get: operations["HealthController_check"];
         put?: never;
         post?: never;
         delete?: never;
@@ -68,14 +68,14 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/api/health/readiness": {
+    "/api/health/readiness": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["AppController_getReadiness"];
+        get: operations["HealthController_readiness"];
         put?: never;
         post?: never;
         delete?: never;
@@ -84,14 +84,14 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/api/health/liveness": {
+    "/api/health/liveness": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["AppController_getLiveness"];
+        get: operations["HealthController_liveness"];
         put?: never;
         post?: never;
         delete?: never;
@@ -718,6 +718,54 @@ export interface paths {
         get: operations["MaintenanceController_getSlaPolicies"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/maintenance/predictive/assets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["PredictiveMaintenanceController_getPredictiveAssets"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/maintenance/predictive/scan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PredictiveMaintenanceController_triggerScan"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/maintenance/predictive/assets/{id}/trigger-preventive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PredictiveMaintenanceController_triggerPreventive"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2628,6 +2676,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/screening/applications/{id}/request": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ScreeningController_requestScreening"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/screening/applications/{id}/report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ScreeningController_getReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/screening/webhook/{provider}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ScreeningController_providerWebhook"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/properties": {
         parameters: {
             query?: never;
@@ -3908,6 +4004,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/reports/accounting-sync-status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ReportingController_getAccountingSyncStatus[0]"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reporting/accounting-sync-status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ReportingController_getAccountingSyncStatus[1]"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/reports/analytics/opex-anomalies": {
         parameters: {
             query?: never;
@@ -3996,6 +4124,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["ReportingController_getFinancialSummary[1]"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reporting/owner-portfolio-analytics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["OwnerAnalyticsController_getOwnerPortfolioAnalytics"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4196,6 +4340,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/inspections-legacy/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["InspectionsController_sync[0]"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/inspections/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["InspectionsController_sync[1]"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/inspections/requests": {
         parameters: {
             query?: never;
@@ -4292,55 +4468,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/health": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["HealthController_check"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/health/readiness": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["HealthController_readiness"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/health/liveness": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["HealthController_liveness"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/esignature/risk-queue": {
+    "/esignature/risk-queue": {
         parameters: {
             query?: never;
             header?: never;
@@ -4356,7 +4484,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/api/esignature/risk-queue": {
+    "/api/esignature/risk-queue": {
         parameters: {
             query?: never;
             header?: never;
@@ -4372,7 +4500,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/esignature/leases/{leaseId}/envelopes": {
+    "/esignature/leases/{leaseId}/envelopes": {
         parameters: {
             query?: never;
             header?: never;
@@ -4388,7 +4516,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/api/esignature/leases/{leaseId}/envelopes": {
+    "/api/esignature/leases/{leaseId}/envelopes": {
         parameters: {
             query?: never;
             header?: never;
@@ -4404,7 +4532,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/esignature/envelopes/{envelopeId}/recipient-view": {
+    "/esignature/envelopes/{envelopeId}/recipient-view": {
         parameters: {
             query?: never;
             header?: never;
@@ -4420,7 +4548,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/api/esignature/envelopes/{envelopeId}/recipient-view": {
+    "/api/esignature/envelopes/{envelopeId}/recipient-view": {
         parameters: {
             query?: never;
             header?: never;
@@ -4436,7 +4564,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/esignature/envelopes/{envelopeId}": {
+    "/esignature/envelopes/{envelopeId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -4452,7 +4580,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/api/esignature/envelopes/{envelopeId}": {
+    "/api/esignature/envelopes/{envelopeId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -4468,7 +4596,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/esignature/envelopes/{envelopeId}/void": {
+    "/esignature/envelopes/{envelopeId}/void": {
         parameters: {
             query?: never;
             header?: never;
@@ -4484,7 +4612,7 @@ export interface paths {
         patch: operations["EsignatureController_voidEnvelope[0]"];
         trace?: never;
     };
-    "/api/api/esignature/envelopes/{envelopeId}/void": {
+    "/api/esignature/envelopes/{envelopeId}/void": {
         parameters: {
             query?: never;
             header?: never;
@@ -4500,7 +4628,7 @@ export interface paths {
         patch: operations["EsignatureController_voidEnvelope[1]"];
         trace?: never;
     };
-    "/api/esignature/envelopes/{envelopeId}/refresh": {
+    "/esignature/envelopes/{envelopeId}/refresh": {
         parameters: {
             query?: never;
             header?: never;
@@ -4516,7 +4644,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/api/esignature/envelopes/{envelopeId}/refresh": {
+    "/api/esignature/envelopes/{envelopeId}/refresh": {
         parameters: {
             query?: never;
             header?: never;
@@ -4532,7 +4660,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/esignature/envelopes/{envelopeId}/resend": {
+    "/esignature/envelopes/{envelopeId}/resend": {
         parameters: {
             query?: never;
             header?: never;
@@ -4548,7 +4676,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/api/esignature/envelopes/{envelopeId}/resend": {
+    "/api/esignature/envelopes/{envelopeId}/resend": {
         parameters: {
             query?: never;
             header?: never;
@@ -4564,7 +4692,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/esignature/envelopes/{envelopeId}/retry-send": {
+    "/esignature/envelopes/{envelopeId}/retry-send": {
         parameters: {
             query?: never;
             header?: never;
@@ -4580,7 +4708,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/api/esignature/envelopes/{envelopeId}/retry-send": {
+    "/api/esignature/envelopes/{envelopeId}/retry-send": {
         parameters: {
             query?: never;
             header?: never;
@@ -4596,7 +4724,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/esignature/envelopes/{envelopeId}/documents/signed": {
+    "/esignature/envelopes/{envelopeId}/documents/signed": {
         parameters: {
             query?: never;
             header?: never;
@@ -4612,7 +4740,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/api/esignature/envelopes/{envelopeId}/documents/signed": {
+    "/api/esignature/envelopes/{envelopeId}/documents/signed": {
         parameters: {
             query?: never;
             header?: never;
@@ -4628,7 +4756,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/esignature/envelopes/{envelopeId}/documents/certificate": {
+    "/esignature/envelopes/{envelopeId}/documents/certificate": {
         parameters: {
             query?: never;
             header?: never;
@@ -4644,7 +4772,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/api/esignature/envelopes/{envelopeId}/documents/certificate": {
+    "/api/esignature/envelopes/{envelopeId}/documents/certificate": {
         parameters: {
             query?: never;
             header?: never;
@@ -5515,7 +5643,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/api/leasing/leads": {
+    "/api/leasing/leads": {
         parameters: {
             query?: never;
             header?: never;
@@ -5531,7 +5659,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/leasing/leads": {
+    "/leasing/leads": {
         parameters: {
             query?: never;
             header?: never;
@@ -5547,7 +5675,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/api/leasing/leads/session/{sessionId}": {
+    "/api/leasing/leads/session/{sessionId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -5563,7 +5691,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/leasing/leads/session/{sessionId}": {
+    "/leasing/leads/session/{sessionId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -5579,7 +5707,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/api/leasing/leads/{id}": {
+    "/api/leasing/leads/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -5595,7 +5723,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/leasing/leads/{id}": {
+    "/leasing/leads/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -5611,7 +5739,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/api/leasing/leads/{id}/messages": {
+    "/api/leasing/leads/{id}/messages": {
         parameters: {
             query?: never;
             header?: never;
@@ -5627,7 +5755,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/leasing/leads/{id}/messages": {
+    "/leasing/leads/{id}/messages": {
         parameters: {
             query?: never;
             header?: never;
@@ -5643,7 +5771,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/api/leasing/leads/{id}/properties/search": {
+    "/api/leasing/leads/{id}/properties/search": {
         parameters: {
             query?: never;
             header?: never;
@@ -5659,7 +5787,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/leasing/leads/{id}/properties/search": {
+    "/leasing/leads/{id}/properties/search": {
         parameters: {
             query?: never;
             header?: never;
@@ -5675,7 +5803,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/api/leasing/leads/{id}/inquiries": {
+    "/api/leasing/leads/{id}/inquiries": {
         parameters: {
             query?: never;
             header?: never;
@@ -5691,7 +5819,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/leasing/leads/{id}/inquiries": {
+    "/leasing/leads/{id}/inquiries": {
         parameters: {
             query?: never;
             header?: never;
@@ -5707,7 +5835,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/api/leasing/leads/{id}/status": {
+    "/api/leasing/leads/{id}/status": {
         parameters: {
             query?: never;
             header?: never;
@@ -5723,7 +5851,7 @@ export interface paths {
         patch: operations["LeasingController_updateStatus[0]"];
         trace?: never;
     };
-    "/api/leasing/leads/{id}/status": {
+    "/leasing/leads/{id}/status": {
         parameters: {
             query?: never;
             header?: never;
@@ -5739,7 +5867,7 @@ export interface paths {
         patch: operations["LeasingController_updateStatus[1]"];
         trace?: never;
     };
-    "/api/api/leasing/ops-summary/bulk-action": {
+    "/api/leasing/ops-summary/bulk-action": {
         parameters: {
             query?: never;
             header?: never;
@@ -5755,7 +5883,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/leasing/ops-summary/bulk-action": {
+    "/leasing/ops-summary/bulk-action": {
         parameters: {
             query?: never;
             header?: never;
@@ -5771,7 +5899,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/api/leasing/ops-summary": {
+    "/api/leasing/ops-summary": {
         parameters: {
             query?: never;
             header?: never;
@@ -5787,7 +5915,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/leasing/ops-summary": {
+    "/leasing/ops-summary": {
         parameters: {
             query?: never;
             header?: never;
@@ -5803,7 +5931,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/api/leasing/statistics": {
+    "/api/leasing/statistics": {
         parameters: {
             query?: never;
             header?: never;
@@ -5819,7 +5947,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/leasing/statistics": {
+    "/leasing/statistics": {
         parameters: {
             query?: never;
             header?: never;
@@ -5835,22 +5963,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/api/tours/schedule": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["ToursController_scheduleTour[0]"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/tours/schedule": {
         parameters: {
             query?: never;
@@ -5860,23 +5972,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["ToursController_scheduleTour[1]"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/api/tours/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["ToursController_getTourById[0]"];
-        put?: never;
-        post?: never;
+        post: operations["ToursController_scheduleTour"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5890,23 +5986,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["ToursController_getTourById[1]"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/api/tours/lead/{leadId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["ToursController_getToursForLead[0]"];
+        get: operations["ToursController_getTourById"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5922,23 +6002,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["ToursController_getToursForLead[1]"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/api/tours": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["ToursController_getTours[0]"];
+        get: operations["ToursController_getToursForLead"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5954,29 +6018,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["ToursController_getTours[1]"];
+        get: operations["ToursController_getTours"];
         put?: never;
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
-        trace?: never;
-    };
-    "/api/api/tours/{id}/status": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["ToursController_updateStatus[0]"];
         trace?: never;
     };
     "/api/tours/{id}/status": {
@@ -5992,23 +6040,7 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch: operations["ToursController_updateStatus[1]"];
-        trace?: never;
-    };
-    "/api/api/tours/{id}/assign": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["ToursController_assignTour[0]"];
+        patch: operations["ToursController_updateStatus"];
         trace?: never;
     };
     "/api/tours/{id}/assign": {
@@ -6024,23 +6056,7 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch: operations["ToursController_assignTour[1]"];
-        trace?: never;
-    };
-    "/api/api/tours/{id}/reschedule": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["ToursController_rescheduleTour[0]"];
+        patch: operations["ToursController_assignTour"];
         trace?: never;
     };
     "/api/tours/{id}/reschedule": {
@@ -6056,7 +6072,7 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch: operations["ToursController_rescheduleTour[1]"];
+        patch: operations["ToursController_rescheduleTour"];
         trace?: never;
     };
     "/api/applications/submit": {
@@ -7067,7 +7083,7 @@ export interface paths {
         patch: operations["FeedController_dismissItem"];
         trace?: never;
     };
-    "/api/api/dev/seed/payment-delinquent": {
+    "/api/dev/seed/payment-delinquent": {
         parameters: {
             query?: never;
             header?: never;
@@ -8226,6 +8242,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/ai-gateway/usage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AiUsageController_getUsage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -8286,6 +8318,7 @@ export interface components {
         CreateInspectionDto: Record<string, never>;
         UpdateInspectionDto: Record<string, never>;
         CompleteInspectionDto: Record<string, never>;
+        AnalyzeV16RequestDto: Record<string, never>;
         CreateEnvelopeDto: Record<string, never>;
         RecipientViewDto: Record<string, never>;
         VoidEnvelopeDto: Record<string, never>;
@@ -8359,7 +8392,7 @@ export interface operations {
             };
         };
     };
-    AppController_getHealth: {
+    HealthController_check: {
         parameters: {
             query?: never;
             header?: never;
@@ -8368,15 +8401,116 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
+            /** @description The Health Check is successful */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        /** @example ok */
+                        status?: string;
+                        /**
+                         * @example {
+                         *       "database": {
+                         *         "status": "up"
+                         *       }
+                         *     }
+                         */
+                        info?: {
+                            [key: string]: {
+                                status: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        } | null;
+                        /** @example {} */
+                        error?: {
+                            [key: string]: {
+                                status: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        } | null;
+                        /**
+                         * @example {
+                         *       "database": {
+                         *         "status": "up"
+                         *       }
+                         *     }
+                         */
+                        details?: {
+                            [key: string]: {
+                                status: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        };
+                    };
+                };
+            };
+            /** @description The Health Check is not successful */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example error */
+                        status?: string;
+                        /**
+                         * @example {
+                         *       "database": {
+                         *         "status": "up"
+                         *       }
+                         *     }
+                         */
+                        info?: {
+                            [key: string]: {
+                                status: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        } | null;
+                        /**
+                         * @example {
+                         *       "redis": {
+                         *         "status": "down",
+                         *         "message": "Could not connect"
+                         *       }
+                         *     }
+                         */
+                        error?: {
+                            [key: string]: {
+                                status: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        } | null;
+                        /**
+                         * @example {
+                         *       "database": {
+                         *         "status": "up"
+                         *       },
+                         *       "redis": {
+                         *         "status": "down",
+                         *         "message": "Could not connect"
+                         *       }
+                         *     }
+                         */
+                        details?: {
+                            [key: string]: {
+                                status: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        };
+                    };
+                };
             };
         };
     };
-    AppController_getReadiness: {
+    HealthController_readiness: {
         parameters: {
             query?: never;
             header?: never;
@@ -8385,15 +8519,116 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
+            /** @description The Health Check is successful */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        /** @example ok */
+                        status?: string;
+                        /**
+                         * @example {
+                         *       "database": {
+                         *         "status": "up"
+                         *       }
+                         *     }
+                         */
+                        info?: {
+                            [key: string]: {
+                                status: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        } | null;
+                        /** @example {} */
+                        error?: {
+                            [key: string]: {
+                                status: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        } | null;
+                        /**
+                         * @example {
+                         *       "database": {
+                         *         "status": "up"
+                         *       }
+                         *     }
+                         */
+                        details?: {
+                            [key: string]: {
+                                status: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        };
+                    };
+                };
+            };
+            /** @description The Health Check is not successful */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example error */
+                        status?: string;
+                        /**
+                         * @example {
+                         *       "database": {
+                         *         "status": "up"
+                         *       }
+                         *     }
+                         */
+                        info?: {
+                            [key: string]: {
+                                status: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        } | null;
+                        /**
+                         * @example {
+                         *       "redis": {
+                         *         "status": "down",
+                         *         "message": "Could not connect"
+                         *       }
+                         *     }
+                         */
+                        error?: {
+                            [key: string]: {
+                                status: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        } | null;
+                        /**
+                         * @example {
+                         *       "database": {
+                         *         "status": "up"
+                         *       },
+                         *       "redis": {
+                         *         "status": "down",
+                         *         "message": "Could not connect"
+                         *       }
+                         *     }
+                         */
+                        details?: {
+                            [key: string]: {
+                                status: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        };
+                    };
+                };
             };
         };
     };
-    AppController_getLiveness: {
+    HealthController_liveness: {
         parameters: {
             query?: never;
             header?: never;
@@ -8402,11 +8637,112 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
+            /** @description The Health Check is successful */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        /** @example ok */
+                        status?: string;
+                        /**
+                         * @example {
+                         *       "database": {
+                         *         "status": "up"
+                         *       }
+                         *     }
+                         */
+                        info?: {
+                            [key: string]: {
+                                status: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        } | null;
+                        /** @example {} */
+                        error?: {
+                            [key: string]: {
+                                status: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        } | null;
+                        /**
+                         * @example {
+                         *       "database": {
+                         *         "status": "up"
+                         *       }
+                         *     }
+                         */
+                        details?: {
+                            [key: string]: {
+                                status: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        };
+                    };
+                };
+            };
+            /** @description The Health Check is not successful */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example error */
+                        status?: string;
+                        /**
+                         * @example {
+                         *       "database": {
+                         *         "status": "up"
+                         *       }
+                         *     }
+                         */
+                        info?: {
+                            [key: string]: {
+                                status: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        } | null;
+                        /**
+                         * @example {
+                         *       "redis": {
+                         *         "status": "down",
+                         *         "message": "Could not connect"
+                         *       }
+                         *     }
+                         */
+                        error?: {
+                            [key: string]: {
+                                status: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        } | null;
+                        /**
+                         * @example {
+                         *       "database": {
+                         *         "status": "up"
+                         *       },
+                         *       "redis": {
+                         *         "status": "down",
+                         *         "message": "Could not connect"
+                         *       }
+                         *     }
+                         */
+                        details?: {
+                            [key: string]: {
+                                status: string;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                        };
+                    };
+                };
             };
         };
     };
@@ -9380,6 +9716,59 @@ export interface operations {
         requestBody?: never;
         responses: {
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PredictiveMaintenanceController_getPredictiveAssets: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PredictiveMaintenanceController_triggerScan: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PredictiveMaintenanceController_triggerPreventive: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -11921,6 +12310,63 @@ export interface operations {
             };
         };
     };
+    ScreeningController_requestScreening: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ScreeningController_getReport: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ScreeningController_providerWebhook: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                provider: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     "PropertyController_getAllProperties[0]": {
         parameters: {
             query: {
@@ -13785,6 +14231,40 @@ export interface operations {
             };
         };
     };
+    "ReportingController_getAccountingSyncStatus[0]": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "ReportingController_getAccountingSyncStatus[1]": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     "ReportingController_getOpexAnomalies[0]": {
         parameters: {
             query?: never;
@@ -13889,6 +14369,23 @@ export interface operations {
                 endDate: string;
                 propertyId: string;
             };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    OwnerAnalyticsController_getOwnerPortfolioAnalytics: {
+        parameters: {
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -14271,6 +14768,40 @@ export interface operations {
             };
         };
     };
+    "InspectionsController_sync[0]": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "InspectionsController_sync[1]": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     InspectionRequestsController_list: {
         parameters: {
             query: {
@@ -14389,367 +14920,17 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AnalyzeV16RequestDto"];
+            };
+        };
         responses: {
             201: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
-            };
-        };
-    };
-    HealthController_check: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The Health Check is successful */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @example ok */
-                        status?: string;
-                        /**
-                         * @example {
-                         *       "database": {
-                         *         "status": "up"
-                         *       }
-                         *     }
-                         */
-                        info?: {
-                            [key: string]: {
-                                status: string;
-                            } & {
-                                [key: string]: unknown;
-                            };
-                        } | null;
-                        /** @example {} */
-                        error?: {
-                            [key: string]: {
-                                status: string;
-                            } & {
-                                [key: string]: unknown;
-                            };
-                        } | null;
-                        /**
-                         * @example {
-                         *       "database": {
-                         *         "status": "up"
-                         *       }
-                         *     }
-                         */
-                        details?: {
-                            [key: string]: {
-                                status: string;
-                            } & {
-                                [key: string]: unknown;
-                            };
-                        };
-                    };
-                };
-            };
-            /** @description The Health Check is not successful */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @example error */
-                        status?: string;
-                        /**
-                         * @example {
-                         *       "database": {
-                         *         "status": "up"
-                         *       }
-                         *     }
-                         */
-                        info?: {
-                            [key: string]: {
-                                status: string;
-                            } & {
-                                [key: string]: unknown;
-                            };
-                        } | null;
-                        /**
-                         * @example {
-                         *       "redis": {
-                         *         "status": "down",
-                         *         "message": "Could not connect"
-                         *       }
-                         *     }
-                         */
-                        error?: {
-                            [key: string]: {
-                                status: string;
-                            } & {
-                                [key: string]: unknown;
-                            };
-                        } | null;
-                        /**
-                         * @example {
-                         *       "database": {
-                         *         "status": "up"
-                         *       },
-                         *       "redis": {
-                         *         "status": "down",
-                         *         "message": "Could not connect"
-                         *       }
-                         *     }
-                         */
-                        details?: {
-                            [key: string]: {
-                                status: string;
-                            } & {
-                                [key: string]: unknown;
-                            };
-                        };
-                    };
-                };
-            };
-        };
-    };
-    HealthController_readiness: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The Health Check is successful */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @example ok */
-                        status?: string;
-                        /**
-                         * @example {
-                         *       "database": {
-                         *         "status": "up"
-                         *       }
-                         *     }
-                         */
-                        info?: {
-                            [key: string]: {
-                                status: string;
-                            } & {
-                                [key: string]: unknown;
-                            };
-                        } | null;
-                        /** @example {} */
-                        error?: {
-                            [key: string]: {
-                                status: string;
-                            } & {
-                                [key: string]: unknown;
-                            };
-                        } | null;
-                        /**
-                         * @example {
-                         *       "database": {
-                         *         "status": "up"
-                         *       }
-                         *     }
-                         */
-                        details?: {
-                            [key: string]: {
-                                status: string;
-                            } & {
-                                [key: string]: unknown;
-                            };
-                        };
-                    };
-                };
-            };
-            /** @description The Health Check is not successful */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @example error */
-                        status?: string;
-                        /**
-                         * @example {
-                         *       "database": {
-                         *         "status": "up"
-                         *       }
-                         *     }
-                         */
-                        info?: {
-                            [key: string]: {
-                                status: string;
-                            } & {
-                                [key: string]: unknown;
-                            };
-                        } | null;
-                        /**
-                         * @example {
-                         *       "redis": {
-                         *         "status": "down",
-                         *         "message": "Could not connect"
-                         *       }
-                         *     }
-                         */
-                        error?: {
-                            [key: string]: {
-                                status: string;
-                            } & {
-                                [key: string]: unknown;
-                            };
-                        } | null;
-                        /**
-                         * @example {
-                         *       "database": {
-                         *         "status": "up"
-                         *       },
-                         *       "redis": {
-                         *         "status": "down",
-                         *         "message": "Could not connect"
-                         *       }
-                         *     }
-                         */
-                        details?: {
-                            [key: string]: {
-                                status: string;
-                            } & {
-                                [key: string]: unknown;
-                            };
-                        };
-                    };
-                };
-            };
-        };
-    };
-    HealthController_liveness: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The Health Check is successful */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @example ok */
-                        status?: string;
-                        /**
-                         * @example {
-                         *       "database": {
-                         *         "status": "up"
-                         *       }
-                         *     }
-                         */
-                        info?: {
-                            [key: string]: {
-                                status: string;
-                            } & {
-                                [key: string]: unknown;
-                            };
-                        } | null;
-                        /** @example {} */
-                        error?: {
-                            [key: string]: {
-                                status: string;
-                            } & {
-                                [key: string]: unknown;
-                            };
-                        } | null;
-                        /**
-                         * @example {
-                         *       "database": {
-                         *         "status": "up"
-                         *       }
-                         *     }
-                         */
-                        details?: {
-                            [key: string]: {
-                                status: string;
-                            } & {
-                                [key: string]: unknown;
-                            };
-                        };
-                    };
-                };
-            };
-            /** @description The Health Check is not successful */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @example error */
-                        status?: string;
-                        /**
-                         * @example {
-                         *       "database": {
-                         *         "status": "up"
-                         *       }
-                         *     }
-                         */
-                        info?: {
-                            [key: string]: {
-                                status: string;
-                            } & {
-                                [key: string]: unknown;
-                            };
-                        } | null;
-                        /**
-                         * @example {
-                         *       "redis": {
-                         *         "status": "down",
-                         *         "message": "Could not connect"
-                         *       }
-                         *     }
-                         */
-                        error?: {
-                            [key: string]: {
-                                status: string;
-                            } & {
-                                [key: string]: unknown;
-                            };
-                        } | null;
-                        /**
-                         * @example {
-                         *       "database": {
-                         *         "status": "up"
-                         *       },
-                         *       "redis": {
-                         *         "status": "down",
-                         *         "message": "Could not connect"
-                         *       }
-                         *     }
-                         */
-                        details?: {
-                            [key: string]: {
-                                status: string;
-                            } & {
-                                [key: string]: unknown;
-                            };
-                        };
-                    };
-                };
             };
         };
     };
@@ -16703,7 +16884,7 @@ export interface operations {
             };
         };
     };
-    "ToursController_scheduleTour[0]": {
+    ToursController_scheduleTour: {
         parameters: {
             query?: never;
             header?: never;
@@ -16720,24 +16901,7 @@ export interface operations {
             };
         };
     };
-    "ToursController_scheduleTour[1]": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    "ToursController_getTourById[0]": {
+    ToursController_getTourById: {
         parameters: {
             query?: never;
             header?: never;
@@ -16756,26 +16920,7 @@ export interface operations {
             };
         };
     };
-    "ToursController_getTourById[1]": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    "ToursController_getToursForLead[0]": {
+    ToursController_getToursForLead: {
         parameters: {
             query?: never;
             header?: never;
@@ -16794,26 +16939,7 @@ export interface operations {
             };
         };
     };
-    "ToursController_getToursForLead[1]": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                leadId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    "ToursController_getTours[0]": {
+    ToursController_getTours: {
         parameters: {
             query: {
                 propertyId: string;
@@ -16837,31 +16963,7 @@ export interface operations {
             };
         };
     };
-    "ToursController_getTours[1]": {
-        parameters: {
-            query: {
-                propertyId: string;
-                status: string;
-                dateFrom: string;
-                dateTo: string;
-                limit: string;
-                offset: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    "ToursController_updateStatus[0]": {
+    ToursController_updateStatus: {
         parameters: {
             query?: never;
             header?: never;
@@ -16880,7 +16982,7 @@ export interface operations {
             };
         };
     };
-    "ToursController_updateStatus[1]": {
+    ToursController_assignTour: {
         parameters: {
             query?: never;
             header?: never;
@@ -16899,64 +17001,7 @@ export interface operations {
             };
         };
     };
-    "ToursController_assignTour[0]": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    "ToursController_assignTour[1]": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    "ToursController_rescheduleTour[0]": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    "ToursController_rescheduleTour[1]": {
+    ToursController_rescheduleTour: {
         parameters: {
             query?: never;
             header?: never;
@@ -20102,7 +20147,9 @@ export interface operations {
     AiGatewayController_generate: {
         parameters: {
             query?: never;
-            header?: never;
+            header: {
+                "x-ai-api-key": string;
+            };
             path?: never;
             cookie?: never;
         };
@@ -20357,6 +20404,25 @@ export interface operations {
                         }[];
                     };
                 };
+            };
+        };
+    };
+    AiUsageController_getUsage: {
+        parameters: {
+            query: {
+                days: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

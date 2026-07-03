@@ -4,13 +4,11 @@ import type {
   DenialCompliance,
   PolicyBundle 
 } from '@keyring/types';
+import { apiClient } from '../../../lib/api-client';
 
-// Backend API base URL - adjust as needed
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
-const headers = (): HeadersInit => ({
-  'Content-Type': 'application/json',
-  // Auth headers are typically added by Next.js middleware or session
-});
+// All calls route through the shared client (/api/v2 proxy), which forwards the
+// httpOnly auth cookie as a Bearer token. Previously this called
+// NEXT_PUBLIC_API_URL directly from the browser, bypassing auth entirely.
 
 export type PolicySection = 
   | 'underwriting'
@@ -23,16 +21,7 @@ export type PolicySection =
  * Fetch the active policy bundle for a property
  */
 export async function fetchPropertyPolicy(propertyId: string): Promise<PolicyBundle> {
-  const res = await fetch(`${API_BASE}/policy/${propertyId}`, {
-    method: 'GET',
-    headers: headers(),
-  });
-  
-  if (!res.ok) {
-    throw new Error(`Failed to fetch policy: ${res.status}`);
-  }
-  
-  return res.json();
+  return apiClient.get<PolicyBundle>(`/policy/${propertyId}`);
 }
 
 /**
@@ -47,17 +36,7 @@ export async function updatePropertyPolicySection(
   section: PolicySection,
   data: unknown
 ): Promise<PolicyBundle> {
-  const res = await fetch(`${API_BASE}/policy/${propertyId}`, {
-    method: 'PATCH',
-    headers: headers(),
-    body: JSON.stringify({ section, data }),
-  });
-  
-  if (!res.ok) {
-    throw new Error(`Failed to update policy: ${res.status}`);
-  }
-  
-  return res.json();
+  return apiClient.patch<PolicyBundle>(`/policy/${propertyId}`, { section, data });
 }
 
 /**

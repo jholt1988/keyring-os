@@ -5,6 +5,13 @@ const REFRESH_COOKIE = 'refresh_token';
 const ROLE_COOKIE = 'user_role'; // non-httpOnly: readable by middleware for UX-layer role guards
 const ONE_DAY_SECONDS = 60 * 60 * 24;
 const THIRTY_DAYS_SECONDS = ONE_DAY_SECONDS * 30;
+const BACKEND_TIMEOUT_MS = 10_000;
+
+// Evaluated at call time (not module load) so error verbosity always reflects
+// the current NODE_ENV. Production must never leak upstream error details.
+function isDev(): boolean {
+  return process.env.NODE_ENV !== 'production';
+}
 
 function getBackendBase(): string {
   const configured = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -28,22 +35,56 @@ function copyResponseHeaders(response: Response): Headers {
   return headers;
 }
 
+/**
+ * Parse a JSON string without throwing. Returns undefined when the body is
+ * empty or not valid JSON, so a malformed backend response can never crash
+ * the proxy with an unhandled exception.
+ */
+function safeJsonParse(text: string): unknown {
+  if (!text) return undefined;
+  try {
+    return JSON.parse(text);
+  } catch {
+    return undefined;
+  }
+}
+
+interface AuthTokenPayload {
+  access_token?: unknown;
+  accessToken?: unknown;
+  refresh_token?: unknown;
+  refreshToken?: unknown;
+  result?: unknown;
+}
+
+/** Unwrap an optional `{ result: {...} }` envelope used by some backend routes. */
+function unwrapResult(payload: unknown): Record<string, unknown> {
+  if (!payload || typeof payload !== 'object') return {};
+  const obj = payload as { result?: unknown };
+  if (obj.result && typeof obj.result === 'object') return obj.result as Record<string, unknown>;
+  return obj as Record<string, unknown>;
+}
+
+function asToken(value: unknown): string | undefined {
+  return typeof value === 'string' && value.length > 0 ? value : undefined;
+}
+
 function resolveUserRole(payload: unknown): string | undefined {
   if (!payload || typeof payload !== 'object') return undefined;
-  
+
   const obj = payload as { role?: unknown; roles?: unknown; user?: { role?: unknown; roles?: unknown } };
-  
+
   // 1. Check direct role at root
   if (typeof obj.role === 'string' && obj.role.trim()) {
     return obj.role;
   }
-  
+
   // 2. Check direct roles at root
   if (Array.isArray(obj.roles)) {
     const firstRole = obj.roles.find((value) => typeof value === 'string' && value.trim());
     if (typeof firstRole === 'string') return firstRole;
   }
-  
+
   // 3. Check nested user role
   const user = obj.user;
   if (user && typeof user === 'object') {
@@ -59,6 +100,22 @@ function resolveUserRole(payload: unknown): string | undefined {
   return undefined;
 }
 
+function setSessionCookie(
+  response: NextResponse,
+  name: string,
+  value: string,
+  maxAge: number,
+  secure: boolean,
+) {
+  response.cookies.set(name, value, {
+    httpOnly: true,
+    secure,
+    sameSite: 'lax',
+    path: '/',
+    maxAge,
+  });
+}
+
 async function proxyRequest(
   request: NextRequest,
   { params }: { params: Promise<{ path: string[] }> }
@@ -68,21 +125,23 @@ async function proxyRequest(
   const body = method === 'GET' || method === 'HEAD' ? undefined : await request.text();
   const token = request.cookies.get(AUTH_COOKIE)?.value;
   const refreshToken = request.cookies.get(REFRESH_COOKIE)?.value;
+  const secure = request.nextUrl.protocol === 'https:';
 
   const headers = new Headers();
   const contentType = request.headers.get('content-type');
   if (contentType) headers.set('content-type', contentType);
   headers.set('accept', request.headers.get('accept') ?? 'application/json');
   if (token) headers.set('authorization', `Bearer ${token}`);
-  
+
+  // Short-circuit unauthenticated session probes. Return a generic 401 — do not
+  // echo cookie names or any request internals back to the client.
   if (path === 'auth/me' && !token) {
-    const allCookies = request.cookies.getAll().map(c => c.name).join(', ');
-    return NextResponse.json({ statusMessage: `Proxy: No auth_token cookie received from browser. Received cookies: ${allCookies || 'none'}` }, { status: 401 });
+    return NextResponse.json({ statusMessage: 'Not authenticated' }, { status: 401 });
   }
-  
+
   let finalBody = body;
   if (refreshToken && path === 'auth/refresh') {
-    // The NestJS backend expects { refreshToken: "..." } in the JSON body
+    // The NestJS backend expects { refreshToken: "..." } in the JSON body.
     headers.set('content-type', 'application/json');
     finalBody = JSON.stringify({ refreshToken });
   }
@@ -94,10 +153,11 @@ async function proxyRequest(
       headers,
       body: finalBody,
       cache: 'no-store',
-      signal: AbortSignal.timeout(10_000),
+      signal: AbortSignal.timeout(BACKEND_TIMEOUT_MS),
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Backend unreachable';
+    // Surface the upstream failure reason only in development.
+    const message = isDev() && error instanceof Error ? error.message : 'Backend unreachable';
     return NextResponse.json({ statusMessage: message }, { status: 502 });
   }
 
@@ -108,42 +168,33 @@ async function proxyRequest(
   });
 
   if ((path === 'auth/login' || path === 'auth/refresh') && backendResponse.ok) {
-    const data = responseText ? JSON.parse(responseText) as any : {};
-    const actualData = data.result ? data.result : data;
-    const access = actualData.access_token ?? actualData.accessToken;
-    const refresh = actualData.refresh_token ?? actualData.refreshToken;
-    
+    const data = unwrapResult(safeJsonParse(responseText)) as AuthTokenPayload;
+    const access = asToken(data.access_token) ?? asToken(data.accessToken);
+    const refresh = asToken(data.refresh_token) ?? asToken(data.refreshToken);
+
     if (!access && path === 'auth/login') {
-      return NextResponse.json({ statusMessage: `Proxy: backend login succeeded but returned no accessToken. Body: ${responseText}` }, { status: 500 });
+      // Backend accepted the login but returned no token — a real
+      // misconfiguration. Keep the message generic in production.
+      const detail = isDev() ? ` Body: ${responseText}` : '';
+      return NextResponse.json(
+        { statusMessage: `Login succeeded but no access token was returned.${detail}` },
+        { status: 502 },
+      );
     }
 
-    const role = resolveUserRole(actualData);
+    const role = resolveUserRole(data);
     if (access) {
-      nextResponse.cookies.set(AUTH_COOKIE, access, {
-        httpOnly: true,
-        secure: request.nextUrl.protocol === 'https:',
-        sameSite: 'lax',
-        path: '/',
-        maxAge: ONE_DAY_SECONDS,
-      });
-      nextResponse.headers.append('Set-Cookie', `${AUTH_COOKIE}=${access}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${ONE_DAY_SECONDS}${request.nextUrl.protocol === 'https:' ? '; Secure' : ''}`);
+      setSessionCookie(nextResponse, AUTH_COOKIE, access, ONE_DAY_SECONDS, secure);
     }
     if (refresh) {
-      nextResponse.cookies.set(REFRESH_COOKIE, refresh, {
-        httpOnly: true,
-        secure: request.nextUrl.protocol === 'https:',
-        sameSite: 'lax',
-        path: '/',
-        maxAge: THIRTY_DAYS_SECONDS,
-      });
-      nextResponse.headers.append('Set-Cookie', `${REFRESH_COOKIE}=${refresh}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${THIRTY_DAYS_SECONDS}${request.nextUrl.protocol === 'https:' ? '; Secure' : ''}`);
+      setSessionCookie(nextResponse, REFRESH_COOKIE, refresh, THIRTY_DAYS_SECONDS, secure);
     }
     if (role) {
       // Non-httpOnly: middleware reads this for UX-level role guards.
       // Backend guards remain authoritative; this is not a security boundary.
       nextResponse.cookies.set(ROLE_COOKIE, role, {
         httpOnly: false,
-        secure: request.nextUrl.protocol === 'https:',
+        secure,
         sameSite: 'lax',
         path: '/',
         maxAge: ONE_DAY_SECONDS,
@@ -152,13 +203,12 @@ async function proxyRequest(
   }
 
   if (path === 'auth/me' && backendResponse.ok) {
-    const data = responseText ? JSON.parse(responseText) as any : undefined;
-    const actualData = data?.result ? data.result : data;
-    const role = resolveUserRole(actualData);
+    const data = unwrapResult(safeJsonParse(responseText));
+    const role = resolveUserRole(data);
     if (role) {
       nextResponse.cookies.set(ROLE_COOKIE, role, {
         httpOnly: false,
-        secure: request.nextUrl.protocol === 'https:',
+        secure,
         sameSite: 'lax',
         path: '/',
         maxAge: ONE_DAY_SECONDS,
