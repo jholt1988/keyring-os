@@ -48,12 +48,21 @@ export interface OperatorDataContextValue {
 const OperatorDataContext = createContext<OperatorDataContextValue | null>(null);
 
 function computeTotals(data: ReadOnlyOperatorData): OperatorTotals {
-  const properties = data.portfolio.data;
+  // Be tolerant of shape drift: portfolio may arrive as { data, meta } or, if an
+  // envelope was unwrapped upstream, as a bare properties array.
+  const portfolio = data.portfolio as unknown;
+  const properties: Array<{ units?: unknown[] }> = Array.isArray(portfolio)
+    ? (portfolio as Array<{ units?: unknown[] }>)
+    : (Array.isArray((portfolio as { data?: unknown })?.data)
+        ? ((portfolio as { data: Array<{ units?: unknown[] }> }).data)
+        : []);
+  const meta = (portfolio as { meta?: { totalItems?: number } })?.meta;
+
   const unitCount = properties.reduce((sum, property) => sum + (property.units?.length ?? 0), 0);
-  const vacantUnits = properties.reduce((sum, property) => sum + countUnitsByStatus(property, 'VACANT'), 0);
+  const vacantUnits = properties.reduce((sum, property) => sum + countUnitsByStatus(property as never, 'VACANT'), 0);
 
   return {
-    properties: data.portfolio.meta?.totalItems ?? properties.length,
+    properties: meta?.totalItems ?? properties.length,
     units: data.metrics?.occupancy?.total ?? unitCount,
     occupied: data.metrics?.occupancy?.occupied ?? unitCount - vacantUnits,
     vacant: data.metrics?.occupancy?.vacant ?? vacantUnits,
