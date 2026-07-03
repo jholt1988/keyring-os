@@ -4,8 +4,9 @@ import { useQuery } from '@tanstack/react-query';
 import { mockFeed } from '@keyring/types';
 import type { FeedResponse } from '@keyring/types';
 import { useExecuteFeedAction } from './useExecuteAction';
+import { API_V2_BASE } from '@/lib/api-client';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? '/api/v2';
+const API_BASE = API_V2_BASE;
 
 export function useCoPilotFeed() {
   const performAction = useExecuteFeedAction();

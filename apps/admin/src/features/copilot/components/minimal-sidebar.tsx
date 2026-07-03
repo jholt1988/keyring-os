@@ -28,6 +28,7 @@ import {
   Search,
 } from 'lucide-react';
 import { useOperatorData } from '@/features/operator/context/operator-data-context';
+import { LogoutButton } from '@/components/shell/logout-button';
 
 interface NavItem {
   icon: React.ElementType;
@@ -129,6 +130,7 @@ export function MinimalSidebar() {
           {bottomNav.map((item) => (
             <SidebarLink key={item.href} item={item} pathname={pathname} collapsed={collapsed} />
           ))}
+          <LogoutButton collapsed={collapsed} />
         </div>
       </div>
     </aside>

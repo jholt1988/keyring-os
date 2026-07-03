@@ -1,6 +1,10 @@
 import type { BriefingData,Decision,PolicyEvaluation,Signal } from '@keyring/types';
+import { API_V2_BASE } from '../api-client';
 
-const BASE = process.env.NEXT_PUBLIC_API_URL ?? '/api/v2';
+// All client-side calls go through the /api/v2 proxy (which forwards the
+// httpOnly auth cookie as a Bearer token). Do not read NEXT_PUBLIC_API_URL
+// directly here — that bypasses the proxy and its auth.
+const BASE = API_V2_BASE;
 const headers = (): HeadersInit => ({
   'Content-Type': 'application/json',
 });
@@ -749,9 +753,10 @@ export async function fetchDocuments(params?: { propertyId?: string; leaseId?: s
 
 /** @deprecated Use Operator API instead */
 export async function uploadDocument(formData: FormData) {
-  const BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
+  // FormData sets its own multipart Content-Type; go through the /api/v2 proxy.
   const res = await fetch(`${BASE}/documents/upload`, {
     method: 'POST',
+    credentials: 'include',
     body: formData,
   });
   if (!res.ok) throw new Error('Upload failed');
@@ -759,7 +764,6 @@ export async function uploadDocument(formData: FormData) {
 }
 
 export function getDocumentDownloadUrl(id: number) {
-  const BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
   return `${BASE}/documents/${id}/download`;
 }
 
@@ -785,7 +789,6 @@ export async function resendEnvelope(id: string) {
 }
 
 export function getSignedDocUrl(id: string) {
-  const BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
   return `${BASE}/esignature/envelopes/${id}/documents/signed`;
 }
 
@@ -1240,8 +1243,7 @@ async function createVendor(data: Record<string, unknown>) {
 }
 
 function getVendors1099ExportUrl() {
-  const base = process.env.NEXT_PUBLIC_API_URL ?? '';
-  return `${base}/vendors/1099-export`;
+  return `${BASE}/vendors/1099-export`;
 }
 
 /** @deprecated Use Operator API instead */
