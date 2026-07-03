@@ -36,7 +36,11 @@ function getSessionToken(): string | undefined {
 
 function buildUrl(path: string, query?: Record<string, string | number | boolean | undefined>, baseUrl = defaultBaseUrl) {
   const normalizedBase = baseUrl.replace(/\/$/, '');
-  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  // The /api/backend proxy already prepends `/api` when forwarding upstream, so
+  // strip a leading `/api` from the path to avoid a /api/api double-prefix
+  // (the backend now serves single-prefixed routes — see pms-master #50).
+  const deApiPath = path.replace(/^\/api(?=\/|$)/, '');
+  const normalizedPath = deApiPath.startsWith('/') ? deApiPath : `/${deApiPath}`;
   const url = new URL(`${normalizedBase}${normalizedPath}`, 'http://operator.local');
 
   Object.entries(query ?? {}).forEach(([key, value]) => {

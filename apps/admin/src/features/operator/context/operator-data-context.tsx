@@ -18,6 +18,7 @@ import {
   type ReadOnlyOperatorData,
 } from '@/lib/operator/read-only-data';
 import { countUnitsByStatus } from '@/features/operator/utils';
+import { useAuth } from '@/hooks/use-auth';
 
 export interface OperatorTotals {
   properties: number;
@@ -68,16 +69,18 @@ export function OperatorDataProvider({
   initialToken?: string;
 }) {
   const queryClient = useQueryClient();
+  const { isAuthenticated } = useAuth();
 
-  // Persist token in localStorage
+  // Optional bearer override; the /api/backend proxy forwards the httpOnly
+  // session cookie server-side, so auth no longer depends on a client token.
   const token = typeof window !== 'undefined'
     ? window.localStorage.getItem('operator_api_token') ?? initialToken
     : initialToken;
 
   const { data: rawData, isLoading, isFetched } = useQuery({
     queryKey: ['operator-data', token],
-    queryFn: () => loadReadOnlyOperatorData({ token }),
-    enabled: Boolean(token),
+    queryFn: () => loadReadOnlyOperatorData({ token: token || undefined }),
+    enabled: isAuthenticated,
     refetchInterval: 30_000,
     staleTime: 15_000,
   });
@@ -102,12 +105,12 @@ export function OperatorDataProvider({
   const value: OperatorDataContextValue = useMemo(() => ({
     data,
     totals,
-    loaded: isFetched && Boolean(token),
+    loaded: isFetched && isAuthenticated,
     loading: isLoading,
     token,
     refresh,
     setToken,
-  }), [data, totals, isFetched, token, isLoading, refresh, setToken]);
+  }), [data, totals, isFetched, isAuthenticated, token, isLoading, refresh, setToken]);
 
   return (
     <OperatorDataContext.Provider value={value}>
