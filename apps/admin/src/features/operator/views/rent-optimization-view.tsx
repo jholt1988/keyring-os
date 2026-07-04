@@ -5,6 +5,22 @@ import { Loader2 } from 'lucide-react';
 import type { ReadOnlyOperatorData } from '@/lib/operator/read-only-data';
 import { formatCurrency } from '../utils';
 
+interface PricingOption {
+  termMonths?: number;
+  targetStartMonthLabel?: string;
+  monthlyRent?: number;
+  seasonalAdjustmentPercent?: number;
+  reason?: string;
+  recommended?: boolean;
+}
+
+interface PricingMatrix {
+  unitName?: string;
+  baseRent?: number;
+  generatedAt?: string;
+  options?: PricingOption[];
+}
+
 export function RentOptimizationView({
   data,
   token,
@@ -15,7 +31,7 @@ export function RentOptimizationView({
   initialUnitId?: string;
 }) {
   const [selectedUnitId, setSelectedUnitId] = useState<string | null>(initialUnitId || null);
-  const [pricingMatrix, setPricingMatrix] = useState<any>(null);
+  const [pricingMatrix, setPricingMatrix] = useState<PricingMatrix | null>(null);
   const [loadingPricing, setLoadingPricing] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -31,7 +47,7 @@ export function RentOptimizationView({
       });
       if (res.ok) {
         const body = await res.json();
-        setPricingMatrix(body.data || body);
+        setPricingMatrix((body.data ?? body) as PricingMatrix);
       } else {
         setMessage('Failed to load seasonal pricing matrix.');
       }
@@ -113,7 +129,7 @@ export function RentOptimizationView({
                 </div>
                 <div className="rounded-md border border-[var(--border)] p-3">
                   <span className="text-xs text-[var(--muted)]">Generated At</span>
-                  <div className="text-sm font-semibold">{new Date(pricingMatrix.generatedAt).toLocaleDateString()}</div>
+                  <div className="text-sm font-semibold">{pricingMatrix.generatedAt ? new Date(pricingMatrix.generatedAt).toLocaleDateString() : '—'}</div>
                 </div>
               </div>
 
@@ -129,19 +145,22 @@ export function RentOptimizationView({
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[var(--border)]">
-                    {pricingMatrix.options?.map((option: any, idx: number) => (
+                    {pricingMatrix.options?.map((option, idx) => {
+                      const adj = option.seasonalAdjustmentPercent ?? 0;
+                      return (
                       <tr key={idx} className={`hover:bg-[var(--panel-strong)] ${option.recommended ? 'bg-[var(--accent)]/5 font-medium' : ''}`}>
                         <td className="py-3 px-3">{option.termMonths}m</td>
                         <td className="py-3 px-3">{option.targetStartMonthLabel}</td>
                         <td className="py-3 px-3 text-right font-semibold">{formatCurrency(option.monthlyRent)}</td>
                         <td className="py-3 px-3 text-right text-xs">
-                          <span className={option.seasonalAdjustmentPercent > 0 ? 'text-green-600 font-medium' : option.seasonalAdjustmentPercent < 0 ? 'text-red-600 font-medium' : ''}>
-                            {option.seasonalAdjustmentPercent > 0 ? '+' : ''}{option.seasonalAdjustmentPercent}%
+                          <span className={adj > 0 ? 'text-green-600 font-medium' : adj < 0 ? 'text-red-600 font-medium' : ''}>
+                            {adj > 0 ? '+' : ''}{adj}%
                           </span>
                         </td>
                         <td className="py-3 px-3 text-xs text-[var(--muted)] max-w-xs">{option.reason}</td>
                       </tr>
-                    ))}
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
