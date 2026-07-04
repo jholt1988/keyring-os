@@ -23,7 +23,10 @@ export function useCoPilotFeed() {
           generatedAt: new Date().toISOString(),
         } satisfies FeedResponse;
       }
-      return res.json();
+      // The backend wraps the payload in an AI-gateway envelope
+      // ({ result: {...}, confidence, ... }); unwrap it to the FeedResponse.
+      const body = await res.json();
+      return (body?.result ?? body) as FeedResponse;
     },
     refetchInterval: 30000, // Poll every 30 seconds to keep feed fresh
   });
