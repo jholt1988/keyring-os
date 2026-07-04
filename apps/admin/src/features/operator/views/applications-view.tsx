@@ -77,7 +77,7 @@ export function ApplicationsView({
     };
   }, [selectedId, token]);
 
-  const selected = detail?.application ?? workbench?.applications.find((item) => item.id === selectedId) ?? null;
+  const selected = detail?.application ?? workbench?.applications?.find((item) => item.id === selectedId) ?? null;
 
   async function runScreen(applicationId: number) {
     setPending(`screen-${applicationId}`);
@@ -141,15 +141,15 @@ export function ApplicationsView({
     <section aria-labelledby="applications-title">
       <WorkflowFocusBanner
         item={workflowFocus}
-        matched={workflowFocus ? workbench?.applications.some((item) => workflowFocusMatchesEntity(workflowFocus, 'RentalApplication', item.id)) ?? false : undefined}
+        matched={workflowFocus ? workbench?.applications?.some((item) => workflowFocusMatchesEntity(workflowFocus, 'RentalApplication', item.id)) ?? false : undefined}
         onClear={onClearWorkflowFocus}
       />
 
       <div className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricTile label="Applications" value={formatNumber(workbench?.metrics.totalApplications)} detail="current workbench" icon={Users} />
-        <MetricTile label="Need screening" value={formatNumber(workbench?.metrics.needsScreening)} detail="ready for policy review" icon={ClipboardList} />
-        <MetricTile label="Ready for lease" value={formatNumber(workbench?.metrics.approvedReadyForLease)} detail="approved handoffs" icon={KeyRound} />
-        <MetricTile label="Converted" value={formatNumber(workbench?.metrics.convertedToLease)} detail="draft leases created" icon={ShieldCheck} />
+        <MetricTile label="Applications" value={formatNumber(workbench?.metrics?.totalApplications)} detail="current workbench" icon={Users} />
+        <MetricTile label="Need screening" value={formatNumber(workbench?.metrics?.needsScreening)} detail="ready for policy review" icon={ClipboardList} />
+        <MetricTile label="Ready for lease" value={formatNumber(workbench?.metrics?.approvedReadyForLease)} detail="approved handoffs" icon={KeyRound} />
+        <MetricTile label="Converted" value={formatNumber(workbench?.metrics?.convertedToLease)} detail="draft leases created" icon={ShieldCheck} />
       </div>
 
       <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">

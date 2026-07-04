@@ -72,16 +72,16 @@ export function LeaseSigningView({
     <section aria-labelledby="lease-signing-title">
       <WorkflowFocusBanner
         item={workflowFocus}
-        matched={workflowFocus ? workbench?.items.some((item) => workflowFocusMatchesEntity(workflowFocus, 'Lease', item.leaseId)) ?? false : undefined}
+        matched={workflowFocus ? workbench?.items?.some((item) => workflowFocusMatchesEntity(workflowFocus, 'Lease', item.leaseId)) ?? false : undefined}
         onClear={onClearWorkflowFocus}
       />
 
       <div className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
-        <MetricTile label="Draft leases" value={formatNumber(workbench?.metrics.draftLeases)} detail="signing candidates" icon={ClipboardList} />
-        <MetricTile label="Packets ready" value={formatNumber(workbench?.metrics.packetsReady)} detail="ready to send" icon={ShieldCheck} />
-        <MetricTile label="Sent envelopes" value={formatNumber(workbench?.metrics.envelopesSent)} detail="waiting on signatures" icon={PenLine} />
-        <MetricTile label="Completed" value={formatNumber(workbench?.metrics.signaturesCompleted)} detail="signed packets" icon={KeyRound} />
-        <MetricTile label="At risk" value={formatNumber(workbench?.metrics.riskItems)} detail="signature follow-up" icon={AlertTriangle} />
+        <MetricTile label="Draft leases" value={formatNumber(workbench?.metrics?.draftLeases)} detail="signing candidates" icon={ClipboardList} />
+        <MetricTile label="Packets ready" value={formatNumber(workbench?.metrics?.packetsReady)} detail="ready to send" icon={ShieldCheck} />
+        <MetricTile label="Sent envelopes" value={formatNumber(workbench?.metrics?.envelopesSent)} detail="waiting on signatures" icon={PenLine} />
+        <MetricTile label="Completed" value={formatNumber(workbench?.metrics?.signaturesCompleted)} detail="signed packets" icon={KeyRound} />
+        <MetricTile label="At risk" value={formatNumber(workbench?.metrics?.riskItems)} detail="signature follow-up" icon={AlertTriangle} />
       </div>
 
       <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
