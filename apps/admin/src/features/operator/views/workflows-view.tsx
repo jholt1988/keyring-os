@@ -21,7 +21,7 @@ export function WorkflowsView({
   onOpenWorkflow: (item: OperatorWorkflowItem) => void;
 }) {
   const groups = useMemo(() => data.workflows?.groups ?? [], [data.workflows?.groups]);
-  const totalItems = data.workflows?.totals.items ?? 0;
+  const totalItems = data.workflows?.totals?.items ?? 0;
   const paymentWorkbench = data.paymentWorkbench;
   const allItems = useMemo(() => groups.flatMap((group) => group.items), [groups]);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
@@ -46,10 +46,10 @@ export function WorkflowsView({
   return (
     <div>
       <div className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricTile label="Workflow groups" value={formatNumber(data.workflows?.totals.workflows ?? groups.length)} detail="Phase 3 operational areas" icon={Layers3} />
+        <MetricTile label="Workflow groups" value={formatNumber(data.workflows?.totals?.workflows ?? groups.length)} detail="Phase 3 operational areas" icon={Layers3} />
         <MetricTile label="Open items" value={formatNumber(totalItems)} detail="work ready or blocked" icon={ClipboardList} />
-        <MetricTile label="High priority" value={formatNumber(data.workflows?.totals.highPriority)} detail="needs same-day review" icon={AlertTriangle} />
-        <MetricTile label="Blocked" value={formatNumber(data.workflows?.totals.blocked)} detail="requires resolution before progress" icon={ShieldCheck} />
+        <MetricTile label="High priority" value={formatNumber(data.workflows?.totals?.highPriority)} detail="needs same-day review" icon={AlertTriangle} />
+        <MetricTile label="Blocked" value={formatNumber(data.workflows?.totals?.blocked)} detail="requires resolution before progress" icon={ShieldCheck} />
       </div>
 
       <section aria-labelledby="workflow-title">
