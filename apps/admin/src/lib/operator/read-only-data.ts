@@ -738,7 +738,25 @@ function unwrapEnvelope<T>(payload: T): T {
     return (payload as { result: T }).result;
   }
 
-  return payload;
+/**
+ * Coerce the portfolio area into a stable { data: [], meta } shape regardless of
+ * whether the upstream envelope was unwrapped to a bare array, arrived as a
+ * PortfolioResponse, or is missing entirely. Prevents `.reduce` on undefined in
+ * consumers that read portfolio.data.
+ */
+function normalizePortfolio(value: unknown): PortfolioResponse {
+  // Unwrap an AI-gateway envelope ({ result: {...}, confidence, ... }) if present.
+  const v0 = value && typeof value === 'object' && 'result' in value
+    ? (value as { result: unknown }).result
+    : value;
+  if (Array.isArray(v0)) {
+    return { data: v0 as PortfolioResponse['data'], meta: emptyReadOnlyOperatorData.portfolio.meta };
+  }
+  if (v0 && typeof v0 === 'object' && Array.isArray((v0 as PortfolioResponse).data)) {
+    const v = v0 as PortfolioResponse;
+    return { data: v.data, meta: v.meta ?? emptyReadOnlyOperatorData.portfolio.meta };
+  }
+  return emptyReadOnlyOperatorData.portfolio;
 }
 
 /**
