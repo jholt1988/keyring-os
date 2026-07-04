@@ -66,7 +66,7 @@ export function TenantForm({ initialData, propertyOptions = [], onSave, onCancel
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">First Name</label>
           <div className="relative">
-            <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               value={form.firstName}
               onChange={(e) => handleChange('firstName', e.target.value)}
@@ -88,7 +88,7 @@ export function TenantForm({ initialData, propertyOptions = [], onSave, onCancel
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Email</label>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="email"
               value={form.email}
@@ -102,7 +102,7 @@ export function TenantForm({ initialData, propertyOptions = [], onSave, onCancel
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Phone</label>
           <div className="relative">
-            <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="tel"
               value={form.phone}
@@ -138,7 +138,7 @@ export function TenantForm({ initialData, propertyOptions = [], onSave, onCancel
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Lease Start</label>
           <div className="relative">
-            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="date"
               value={form.leaseStart}
@@ -152,7 +152,7 @@ export function TenantForm({ initialData, propertyOptions = [], onSave, onCancel
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Lease End</label>
           <div className="relative">
-            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="date"
               value={form.leaseEnd}
@@ -166,7 +166,7 @@ export function TenantForm({ initialData, propertyOptions = [], onSave, onCancel
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Monthly Rent</label>
           <div className="relative">
-            <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="number"
               value={form.monthlyRent}

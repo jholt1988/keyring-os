@@ -63,7 +63,7 @@ export function PaymentForm({
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Lease</label>
           <div className="relative">
-            <Building className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Building className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <select
               value={form.leaseId}
               onChange={(e) => handleChange('leaseId', e.target.value)}
@@ -81,7 +81,7 @@ export function PaymentForm({
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Amount</label>
           <div className="relative">
-            <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="number"
               step="0.01"
@@ -96,7 +96,7 @@ export function PaymentForm({
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Invoice ID</label>
           <div className="relative">
-            <Hash className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Hash className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="number"
               value={form.invoiceId ?? ''}
@@ -110,7 +110,7 @@ export function PaymentForm({
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Payment Date</label>
           <div className="relative">
-            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="date"
               value={form.paymentDate || ''}
@@ -137,7 +137,7 @@ export function PaymentForm({
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Payment Method ID</label>
           <div className="relative">
-            <CreditCard className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <CreditCard className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="number"
               value={form.paymentMethodId ?? ''}

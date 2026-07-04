@@ -68,7 +68,7 @@ export function ManualChargeForm({
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Property</label>
           <div className="relative">
-            <Building className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Building className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <select
               value={form.propertyId}
               onChange={(e) => handleChange('propertyId', e.target.value)}
@@ -86,7 +86,7 @@ export function ManualChargeForm({
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Lease</label>
           <div className="relative">
-            <Hash className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Hash className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <select
               value={form.leaseId}
               onChange={(e) => handleChange('leaseId', e.target.value)}
@@ -104,7 +104,7 @@ export function ManualChargeForm({
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Tenant</label>
           <div className="relative">
-            <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <select
               value={form.tenantId}
               onChange={(e) => handleChange('tenantId', e.target.value)}
@@ -139,7 +139,7 @@ export function ManualChargeForm({
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Amount (cents)</label>
           <div className="relative">
-            <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="number"
               value={form.amountCents}
@@ -153,7 +153,7 @@ export function ManualChargeForm({
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Charge Date</label>
           <div className="relative">
-            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="date"
               value={form.chargeDate || ''}
@@ -166,7 +166,7 @@ export function ManualChargeForm({
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Due Date</label>
           <div className="relative">
-            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="date"
               value={form.dueDate || ''}
@@ -179,11 +179,11 @@ export function ManualChargeForm({
         <div className="space-y-2 md:col-span-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Description</label>
           <div className="relative">
-            <FileText className="absolute left-3 top-3 h-4 w-4 text-[#64748B]" />
+            <FileText className="absolute left-3 top-3 h-4 w-4 text-[#8A99AD]" />
             <textarea
               value={form.description}
               onChange={(e) => handleChange('description', e.target.value)}
-              className="flex min-h-[80px] w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 pl-10 text-sm text-[#F8FAFC] placeholder:text-[#64748B] focus:border-[#3B82F6] focus:outline-none"
+              className="flex min-h-[80px] w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 pl-10 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] focus:border-[#3B82F6] focus:outline-none"
               placeholder="Charge description..."
               required
             />

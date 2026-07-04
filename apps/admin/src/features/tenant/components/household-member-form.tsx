@@ -59,7 +59,7 @@ export function HouseholdMemberForm({ initialData, onSave, onCancel }: Household
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Name</label>
           <div className="relative">
-            <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               value={form.name}
               onChange={(e) => handleChange('name', e.target.value)}
@@ -73,7 +73,7 @@ export function HouseholdMemberForm({ initialData, onSave, onCancel }: Household
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Relationship</label>
           <div className="relative">
-            <Heart className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Heart className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <select
               value={form.relationship}
               onChange={(e) => handleChange('relationship', e.target.value)}
@@ -94,7 +94,7 @@ export function HouseholdMemberForm({ initialData, onSave, onCancel }: Household
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Phone</label>
           <div className="relative">
-            <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="tel"
               value={form.phone || ''}
@@ -108,7 +108,7 @@ export function HouseholdMemberForm({ initialData, onSave, onCancel }: Household
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Email</label>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="email"
               value={form.email || ''}
@@ -122,7 +122,7 @@ export function HouseholdMemberForm({ initialData, onSave, onCancel }: Household
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Date of Birth</label>
           <div className="relative">
-            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="date"
               value={form.dateOfBirth || ''}
@@ -167,7 +167,7 @@ export function HouseholdMemberForm({ initialData, onSave, onCancel }: Household
           <textarea
             value={form.notes || ''}
             onChange={(e) => handleChange('notes', e.target.value)}
-            className="flex min-h-[80px] w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#64748B] focus:border-[#3B82F6] focus:outline-none"
+            className="flex min-h-[80px] w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] focus:border-[#3B82F6] focus:outline-none"
             placeholder="Additional notes..."
           />
         </div>

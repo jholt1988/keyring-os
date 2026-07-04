@@ -34,7 +34,7 @@ export function UpdateUserForm({ onSave, onCancel }: UpdateUserFormProps) {
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Email</label>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input type="email" value={form.email || ''} onChange={(e) => handleChange('email', e.target.value)} placeholder="New email (optional)" className="pl-10" />
           </div>
         </div>
@@ -53,10 +53,10 @@ export function UpdateUserForm({ onSave, onCancel }: UpdateUserFormProps) {
         <div className="space-y-2 md:col-span-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">New Password</label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input type="password" value={form.password || ''} onChange={(e) => handleChange('password', e.target.value)} placeholder="Min 8 characters (optional)" className="pl-10" minLength={8} />
           </div>
-          <p className="text-xs text-[#64748B]">Leave empty to keep current password</p>
+          <p className="text-xs text-[#8A99AD]">Leave empty to keep current password</p>
         </div>
       </div>
 

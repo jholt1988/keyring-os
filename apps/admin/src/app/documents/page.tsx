@@ -105,7 +105,7 @@ export default function DocumentsPage() {
                       >
                         <FolderOpen className="mb-2 h-10 w-10 text-[#94A3B8] transition-colors group-hover:text-[#3B82F6]" />
                         <span className="text-sm font-medium text-[#F8FAFC]">{CATEGORY_LABELS[cat] ?? cat}</span>
-                        <span className="mt-1 text-[10px] text-[#475569]">{count} files</span>
+                        <span className="mt-1 text-[10px] text-[#8A99AD]">{count} files</span>
                       </button>
                     );
                   })}

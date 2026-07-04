@@ -70,7 +70,7 @@ export function UnitList({ units, propertyId, propertyName, onSelectUnit, onBack
           )}
           <div>
             <h2 className="text-lg font-semibold text-[#F8FAFC]">{propertyName || 'All Units'}</h2>
-            {propertyId && <p className="text-xs text-[#64748B]">Property ID: {propertyId}</p>}
+            {propertyId && <p className="text-xs text-[#8A99AD]">Property ID: {propertyId}</p>}
           </div>
         </div>
       )}
@@ -78,7 +78,7 @@ export function UnitList({ units, propertyId, propertyName, onSelectUnit, onBack
       {/* Summary Stats */}
       <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
         <div className="rounded-xl border border-white/8 bg-white/[0.02] p-4">
-          <div className="text-xs uppercase tracking-wider text-[#64748B]">Total Units</div>
+          <div className="text-xs uppercase tracking-wider text-[#8A99AD]">Total Units</div>
           <div className="mt-1 text-2xl font-semibold text-[#F8FAFC]">{stats.total}</div>
         </div>
         <div className="rounded-xl border border-[#10B981]/30 bg-[#10B981]/8 p-4">
@@ -94,7 +94,7 @@ export function UnitList({ units, propertyId, propertyName, onSelectUnit, onBack
           <div className="mt-1 text-2xl font-semibold text-[#F59E0B]">{stats.maintenance}</div>
         </div>
         <div className="rounded-xl border border-white/8 bg-white/[0.02] p-4">
-          <div className="text-xs uppercase tracking-wider text-[#64748B]">Potential Rent</div>
+          <div className="text-xs uppercase tracking-wider text-[#8A99AD]">Potential Rent</div>
           <div className="mt-1 text-xl font-semibold text-[#F8FAFC]">${totalRent.toLocaleString()}</div>
         </div>
       </div>
@@ -102,7 +102,7 @@ export function UnitList({ units, propertyId, propertyName, onSelectUnit, onBack
       {/* Search and Filter */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative flex-1 max-w-xs">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
           <Input
             placeholder="Search units..."
             value={search}
@@ -128,7 +128,7 @@ export function UnitList({ units, propertyId, propertyName, onSelectUnit, onBack
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
         {filteredUnits.length === 0 ? (
           <div className="col-span-full rounded-xl border border-white/10 bg-white/[0.02] p-8 text-center">
-            <Home className="mx-auto h-8 w-8 text-[#64748B]" />
+            <Home className="mx-auto h-8 w-8 text-[#8A99AD]" />
             <p className="mt-2 text-sm text-[#94A3B8]">No units found</p>
           </div>
         ) : (
@@ -156,7 +156,7 @@ export function UnitList({ units, propertyId, propertyName, onSelectUnit, onBack
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="text-lg font-semibold text-[#10B981]">${unit.rent.toLocaleString()}</div>
-                    <div className="text-xs text-[#64748B]">/month</div>
+                    <div className="text-xs text-[#8A99AD]">/month</div>
                   </div>
                   {unit.tenant && (
                     <div className="text-right">
@@ -164,7 +164,7 @@ export function UnitList({ units, propertyId, propertyName, onSelectUnit, onBack
                         <User size={12} />
                         {unit.tenant.name}
                       </div>
-                      <div className="text-xs text-[#64748B]">
+                      <div className="text-xs text-[#8A99AD]">
                         Lease ends {new Date(unit.tenant.leaseEnd).toLocaleDateString()}
                       </div>
                     </div>

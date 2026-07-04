@@ -95,7 +95,7 @@ export function RoleDescription({ role, className = '' }: RoleDescriptionProps) 
             <div className="text-xs text-[#94A3B8]">Click for details</div>
           </div>
         </div>
-        <Info className="h-4 w-4 text-[#64748B]" />
+        <Info className="h-4 w-4 text-[#8A99AD]" />
       </button>
 
       {showDetails && (

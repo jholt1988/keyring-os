@@ -27,10 +27,10 @@ export function RecipientViewForm({ onSave, onCancel }: RecipientViewFormProps) 
       <div className="space-y-2">
         <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Return URL</label>
         <div className="relative">
-          <Link className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+          <Link className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
           <Input value={form.returnUrl} onChange={(e) => setForm({ returnUrl: e.target.value })} placeholder="https://..." className="pl-10" required />
         </div>
-        <p className="text-xs text-[#64748B]">URL to redirect after signing</p>
+        <p className="text-xs text-[#8A99AD]">URL to redirect after signing</p>
       </div>
 
       <div className="flex justify-end gap-2 pt-4">

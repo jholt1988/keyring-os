@@ -32,7 +32,7 @@ export function ReversePaymentForm({ onSave, onCancel }: ReversePaymentFormProps
         <textarea
           value={form.reason}
           onChange={(e) => setForm({ reason: e.target.value })}
-          className="flex min-h-[100px] w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#64748B] focus:border-[#3B82F6] focus:outline-none"
+          className="flex min-h-[100px] w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] focus:border-[#3B82F6] focus:outline-none"
           placeholder="Enter reason for reversal (min 2 characters)..."
           required
         />

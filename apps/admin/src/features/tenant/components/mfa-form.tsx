@@ -222,7 +222,7 @@ export function MFAForm({
       <div className="space-y-2">
         <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Verification Code</label>
         <div className="relative">
-          <Key className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+          <Key className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
           <Input
             value={form.code || ''}
             onChange={(e) => handleChange('code', e.target.value)}
@@ -240,7 +240,7 @@ export function MFAForm({
             <AlertTriangle className="h-3 w-3" /> {formErrors.code}
           </p>
         )}
-        <p className="text-[11px] text-[#64748B]">
+        <p className="text-[11px] text-[#8A99AD]">
           Open your authenticator app and enter the current 6-digit code
         </p>
       </div>
@@ -279,7 +279,7 @@ export function MFAForm({
       <div className="space-y-2">
         <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Confirm with Recovery Code (Optional)</label>
         <div className="relative">
-          <Key className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+          <Key className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
           <Input
             value={form.confirmCode || ''}
             onChange={(e) => handleChange('confirmCode', e.target.value)}
@@ -294,7 +294,7 @@ export function MFAForm({
             <AlertTriangle className="h-3 w-3" /> {formErrors.confirmCode}
           </p>
         )}
-        <p className="text-[11px] text-[#64748B]">
+        <p className="text-[11px] text-[#8A99AD]">
           Enter one of your recovery codes to confirm you've saved them
         </p>
       </div>
@@ -338,7 +338,7 @@ export function MFAForm({
       <div className="space-y-2">
         <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Confirmation Code</label>
         <div className="relative">
-          <Key className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+          <Key className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
           <Input
             value={form.code || ''}
             onChange={(e) => handleChange('code', e.target.value)}
@@ -355,7 +355,7 @@ export function MFAForm({
             <AlertTriangle className="h-3 w-3" /> {formErrors.code}
           </p>
         )}
-        <p className="text-[11px] text-[#64748B]">
+        <p className="text-[11px] text-[#8A99AD]">
           Enter the current 6-digit code from your authenticator app to confirm
         </p>
       </div>

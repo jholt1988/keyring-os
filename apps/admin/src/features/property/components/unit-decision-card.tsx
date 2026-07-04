@@ -34,7 +34,7 @@ const statusConfig = {
   occupied: { label: 'Occupied', color: 'text-[#38BDF8]', bg: 'bg-[#38BDF8]/10', icon: Home },
   maintenance: { label: 'Maintenance', color: 'text-[#F59E0B]', bg: 'bg-[#F59E0B]/10', icon: Home },
   reserved: { label: 'Reserved', color: 'text-[#8B5CF6]', bg: 'bg-[#8B5CF6]/10', icon: Home },
-  'off-market': { label: 'Off Market', color: 'text-[#64748B]', bg: 'bg-[#64748B]/10', icon: Home },
+  'off-market': { label: 'Off Market', color: 'text-[#8A99AD]', bg: 'bg-[#8A99AD]/10', icon: Home },
 };
 
 const priorityConfig = {
@@ -79,7 +79,7 @@ export function UnitDecisionCard({
                 {status.label}
               </span>
               {unit.daysVacant && (
-                <span className="flex items-center gap-1 text-xs text-[#64748B]">
+                <span className="flex items-center gap-1 text-xs text-[#8A99AD]">
                   <Clock size={12} />
                   {unit.daysVacant} days vacant
                 </span>

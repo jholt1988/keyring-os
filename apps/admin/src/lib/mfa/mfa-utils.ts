@@ -76,7 +76,7 @@ function generateMockQRCodeDataUrl(data: string): string {
       <text x="100" y="100" text-anchor="middle" fill="#94A3B8" font-family="monospace" font-size="12">
         QR Code Placeholder
       </text>
-      <text x="100" y="120" text-anchor="middle" fill="#64748B" font-family="monospace" font-size="10">
+      <text x="100" y="120" text-anchor="middle" fill="#8A99AD" font-family="monospace" font-size="10">
         (In production: actual QR)
       </text>
     </svg>

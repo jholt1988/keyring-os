@@ -63,7 +63,7 @@ export function PropertyOnboardingCard({
               <span className={`rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-wider ${priority.border} ${priority.color}`}>
                 {priority.badge}
               </span>
-              <span className="text-xs uppercase tracking-wider text-[#64748B]">
+              <span className="text-xs uppercase tracking-wider text-[#8A99AD]">
                 {type.label}
               </span>
             </div>
@@ -81,7 +81,7 @@ export function PropertyOnboardingCard({
                 <DollarSign size={12} />
                 ${property.proposedRent.toLocaleString()}/mo target
               </span>
-              <span className="flex items-center gap-1 text-[#64748B]">
+              <span className="flex items-center gap-1 text-[#8A99AD]">
                 <Calendar size={12} />
                 Submitted {new Date(property.submittedAt).toLocaleDateString()}
               </span>

@@ -122,7 +122,7 @@ export default function InspectionDetailPage() {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-xs text-[#475569]">No checklist items.</p>
+                    <p className="text-xs text-[#8A99AD]">No checklist items.</p>
                   )}
                 </div>
               );
