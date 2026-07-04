@@ -97,17 +97,17 @@ export function RenewalsView({
     <section aria-labelledby="renewals-title">
       <WorkflowFocusBanner
         item={workflowFocus}
-        matched={workflowFocus ? workbench?.leases.some((item) => workflowFocusMatchesEntity(workflowFocus, 'Lease', item.leaseId)) ?? false : undefined}
+        matched={workflowFocus ? workbench?.leases?.some((item) => workflowFocusMatchesEntity(workflowFocus, 'Lease', item.leaseId)) ?? false : undefined}
         onClear={onClearWorkflowFocus}
       />
 
       <div className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
-        <MetricTile label="Expiring" value={formatNumber(workbench?.metrics.expiringLeases)} detail="leases in window" icon={CalendarClock} />
-        <MetricTile label="Need offer" value={formatNumber(workbench?.metrics.needsOffer)} detail="no active offer" icon={ClipboardList} />
-        <MetricTile label="Pending" value={formatNumber(workbench?.metrics.offersPending)} detail="awaiting response" icon={Inbox} />
-        <MetricTile label="Accepted" value={formatNumber(workbench?.metrics.offersAccepted)} detail="ready to sign" icon={ShieldCheck} />
-        <MetricTile label="Signatures" value={formatNumber(workbench?.metrics.signaturesPending)} detail="pending envelopes" icon={PenLine} />
-        <MetricTile label="Move-outs" value={formatNumber(workbench?.metrics.moveOutNotices)} detail="notice given" icon={KeyRound} />
+        <MetricTile label="Expiring" value={formatNumber(workbench?.metrics?.expiringLeases)} detail="leases in window" icon={CalendarClock} />
+        <MetricTile label="Need offer" value={formatNumber(workbench?.metrics?.needsOffer)} detail="no active offer" icon={ClipboardList} />
+        <MetricTile label="Pending" value={formatNumber(workbench?.metrics?.offersPending)} detail="awaiting response" icon={Inbox} />
+        <MetricTile label="Accepted" value={formatNumber(workbench?.metrics?.offersAccepted)} detail="ready to sign" icon={ShieldCheck} />
+        <MetricTile label="Signatures" value={formatNumber(workbench?.metrics?.signaturesPending)} detail="pending envelopes" icon={PenLine} />
+        <MetricTile label="Move-outs" value={formatNumber(workbench?.metrics?.moveOutNotices)} detail="notice given" icon={KeyRound} />
       </div>
 
       <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">

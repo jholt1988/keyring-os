@@ -143,18 +143,18 @@ export function MaintenanceDispatchView({
     <section aria-labelledby="maintenance-dispatch-title">
       <WorkflowFocusBanner
         item={workflowFocus}
-        matched={workflowFocus ? workbench?.requests.some((item) => workflowFocusMatchesEntity(workflowFocus, 'MaintenanceRequest', item.requestId)) ?? false : undefined}
+        matched={workflowFocus ? workbench?.requests?.some((item) => workflowFocusMatchesEntity(workflowFocus, 'MaintenanceRequest', item.requestId)) ?? false : undefined}
         onClear={onClearWorkflowFocus}
       />
 
       <div className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
-        <MetricTile label="Open" value={formatNumber(workbench?.metrics.openRequests)} detail="active requests" icon={Wrench} />
-        <MetricTile label="Emergency" value={formatNumber(workbench?.metrics.emergencyRequests)} detail="high priority" icon={AlertTriangle} />
-        <MetricTile label="Unassigned" value={formatNumber(workbench?.metrics.unassignedRequests)} detail="needs owner" icon={Users} />
-        <MetricTile label="Vendor ready" value={formatNumber(workbench?.metrics.vendorReadyRequests)} detail="dispatch candidates" icon={ArrowUpRight} />
-        <MetricTile label="Open bids" value={formatNumber(workbench?.metrics.bidsOpen)} detail="vendor responses" icon={ClipboardList} />
-        <MetricTile label="Dispatched" value={formatNumber(workbench?.metrics.dispatchedRequests)} detail="vendors active" icon={Wrench} />
-        <MetricTile label="Complete" value={formatNumber(workbench?.metrics.completedDispatches)} detail="vendor finished" icon={ShieldCheck} />
+        <MetricTile label="Open" value={formatNumber(workbench?.metrics?.openRequests)} detail="active requests" icon={Wrench} />
+        <MetricTile label="Emergency" value={formatNumber(workbench?.metrics?.emergencyRequests)} detail="high priority" icon={AlertTriangle} />
+        <MetricTile label="Unassigned" value={formatNumber(workbench?.metrics?.unassignedRequests)} detail="needs owner" icon={Users} />
+        <MetricTile label="Vendor ready" value={formatNumber(workbench?.metrics?.vendorReadyRequests)} detail="dispatch candidates" icon={ArrowUpRight} />
+        <MetricTile label="Open bids" value={formatNumber(workbench?.metrics?.bidsOpen)} detail="vendor responses" icon={ClipboardList} />
+        <MetricTile label="Dispatched" value={formatNumber(workbench?.metrics?.dispatchedRequests)} detail="vendors active" icon={Wrench} />
+        <MetricTile label="Complete" value={formatNumber(workbench?.metrics?.completedDispatches)} detail="vendor finished" icon={ShieldCheck} />
       </div>
 
 

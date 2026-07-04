@@ -73,17 +73,17 @@ export function OwnerStatementsView({
     <section aria-labelledby="owner-statements-title">
       <WorkflowFocusBanner
         item={workflowFocus}
-        matched={workflowFocus ? workbench?.statements.some((item) => workflowFocusMatchesEntity(workflowFocus, 'OwnerStatement', item.id)) ?? false : undefined}
+        matched={workflowFocus ? workbench?.statements?.some((item) => workflowFocusMatchesEntity(workflowFocus, 'OwnerStatement', item.id)) ?? false : undefined}
         onClear={onClearWorkflowFocus}
       />
 
       <div className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
-        <MetricTile label="Statements" value={formatNumber(workbench?.metrics.statements)} detail={workbench?.month ?? month} icon={ClipboardList} />
-        <MetricTile label="Draft" value={formatNumber(workbench?.metrics.draftStatements)} detail="needs review" icon={Inbox} />
-        <MetricTile label="Approved" value={formatNumber(workbench?.metrics.approvedStatements)} detail="ready to send" icon={ShieldCheck} />
-        <MetricTile label="Sent" value={formatNumber(workbench?.metrics.sentStatements)} detail="delivered" icon={ArrowUpRight} />
-        <MetricTile label="Distribution" value={cents(workbench?.metrics.netDistributionCents) ?? '$0'} detail="net owner amount" icon={Banknote} />
-        <MetricTile label="Close locks" value={`${formatNumber(workbench?.metrics.closeLockedProperties)}/${formatNumber((workbench?.metrics.closeLockedProperties ?? 0) + (workbench?.metrics.closeUnlockedProperties ?? 0))}`} detail="locked properties" icon={KeyRound} />
+        <MetricTile label="Statements" value={formatNumber(workbench?.metrics?.statements)} detail={workbench?.month ?? month} icon={ClipboardList} />
+        <MetricTile label="Draft" value={formatNumber(workbench?.metrics?.draftStatements)} detail="needs review" icon={Inbox} />
+        <MetricTile label="Approved" value={formatNumber(workbench?.metrics?.approvedStatements)} detail="ready to send" icon={ShieldCheck} />
+        <MetricTile label="Sent" value={formatNumber(workbench?.metrics?.sentStatements)} detail="delivered" icon={ArrowUpRight} />
+        <MetricTile label="Distribution" value={cents(workbench?.metrics?.netDistributionCents) ?? '$0'} detail="net owner amount" icon={Banknote} />
+        <MetricTile label="Close locks" value={`${formatNumber(workbench?.metrics?.closeLockedProperties)}/${formatNumber((workbench?.metrics?.closeLockedProperties ?? 0) + (workbench?.metrics?.closeUnlockedProperties ?? 0))}`} detail="locked properties" icon={KeyRound} />
       </div>
 
       <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
