@@ -50,9 +50,9 @@ export function MinimalSidebar() {
   try {
     const { data } = useOperatorData();
     pendingApprovals = data.approvals?.length ?? 0;
-    openMaintenance = data.metrics?.maintenance?.open ?? data.maintenanceDispatch?.metrics.openRequests ?? 0;
-    pendingApplications = data.applications?.metrics.needsScreening ?? 0;
-    activeWorkflows = data.workflows?.groups.reduce((sum, g) => sum + g.items.length, 0) ?? 0;
+    openMaintenance = data.metrics?.maintenance?.open ?? data.maintenanceDispatch?.metrics?.openRequests ?? 0;
+    pendingApplications = data.applications?.metrics?.needsScreening ?? 0;
+    activeWorkflows = data.workflows?.groups?.reduce((sum, g) => sum + g.items.length, 0) ?? 0;
   } catch {
     // Context not available yet — use static badges
   }

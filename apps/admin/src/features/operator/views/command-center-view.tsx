@@ -34,7 +34,7 @@ export function CommandCenterView({
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [actionPending, setActionPending] = useState(false);
   const [filters, setFilters] = useState({ type: 'ALL', priority: 'ALL', status: 'ALL', due: 'ALL', propertyId: '' });
-  const briefingDecisionItems: FeedItem[] = data.briefing?.signals.slice(0, 6).map((signal) => ({
+  const briefingDecisionItems: FeedItem[] = (data.briefing?.signals ?? []).slice(0, 6).map((signal) => ({
     id: signal.id,
     kind: 'critical_signal',
     domain: signal.domain ?? 'operations',
@@ -61,7 +61,7 @@ export function CommandCenterView({
     if (filters.due === 'upcoming' && (!decision.dueAt || new Date(decision.dueAt) < new Date())) return false;
     return true;
   });
-  const openDecisionCount = data.commandCenter?.metrics.totalDecisions ?? data.briefing?.metrics?.pendingDecisions ?? decisionItems.length;
+  const openDecisionCount = data.commandCenter?.metrics?.totalDecisions ?? data.briefing?.metrics?.pendingDecisions ?? decisionItems.length;
   const atRiskAmount = data.briefing?.metrics?.atRiskAmount ?? data.metrics?.financials?.outstanding;
 
   async function selectDecision(decisionId: string) {
@@ -238,9 +238,9 @@ export function CommandCenterView({
           <CollapsiblePanel
             title="Approval Panel"
             variant="compact"
-            badge={formatNumber(data.commandCenter?.metrics.pendingApprovals ?? data.approvals.length)}
+            badge={formatNumber(data.commandCenter?.metrics?.pendingApprovals ?? data.approvals.length)}
           >
-            <div className="text-3xl font-semibold">{formatNumber(data.commandCenter?.metrics.pendingApprovals ?? data.approvals.length)}</div>
+            <div className="text-3xl font-semibold">{formatNumber(data.commandCenter?.metrics?.pendingApprovals ?? data.approvals.length)}</div>
             <p className="mt-1 text-sm text-[var(--muted)]">pending approval tasks connected to executable workflows</p>
           </CollapsiblePanel>
 
@@ -291,7 +291,7 @@ export function CommandCenterView({
             <dl className="mt-4 space-y-3 text-sm">
               <div className="flex justify-between gap-4">
                 <dt className="text-[var(--muted)]">Events</dt>
-                <dd className="font-medium">{formatNumber(data.briefing?.metrics?.todayEvents ?? data.briefing?.events.length)}</dd>
+                <dd className="font-medium">{formatNumber(data.briefing?.metrics?.todayEvents ?? data.briefing?.events?.length ?? 0)}</dd>
               </div>
               <div className="flex justify-between gap-4">
                 <dt className="text-[var(--muted)]">Vacant units</dt>
