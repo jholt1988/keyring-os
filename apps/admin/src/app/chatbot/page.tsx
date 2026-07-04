@@ -58,7 +58,7 @@ export default function ChatbotPage() {
               value={sessionId} 
               onChange={(e) => setSessionId(e.target.value)} 
               placeholder="Session ID (optional)" 
-              className="w-48 rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-1.5 text-xs text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]" 
+              className="w-48 rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-1.5 text-xs text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]" 
             />
             {sessionId && (
               <Button size="sm" variant="outline" onClick={() => { setSessionId(''); }}>
@@ -123,7 +123,7 @@ export default function ChatbotPage() {
               value={message} 
               onChange={(e) => setMessage(e.target.value)} 
               placeholder="Message Copilot..." 
-              className="max-h-32 min-h-[44px] flex-1 resize-none rounded-[12px] border border-[#1E3350] bg-[#0F1B31] px-4 py-3 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6] focus:ring-1 focus:ring-[#3B82F6]/50"
+              className="max-h-32 min-h-[44px] flex-1 resize-none rounded-[12px] border border-[#1E3350] bg-[#0F1B31] px-4 py-3 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6] focus:ring-1 focus:ring-[#3B82F6]/50"
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
@@ -139,7 +139,7 @@ export default function ChatbotPage() {
               <Send size={16} />
             </Button>
           </form>
-          <div className="mt-2 text-center text-[10px] text-[#475569]">
+          <div className="mt-2 text-center text-[10px] text-[#8A99AD]">
             AI can make mistakes. Verify important information.
           </div>
         </div>

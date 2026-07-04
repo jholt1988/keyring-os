@@ -141,13 +141,13 @@ export default function TenantsPage() {
         {/* Tenant List */}
         <div className="space-y-4">
           <div className="relative">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B]" />
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8A99AD]" />
             <input
               type="text"
               placeholder="Search tenants by name, email, unit..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-[14px] border border-[#1E3350] bg-[#0F1B31] py-2.5 pl-9 pr-4 text-sm text-[#F8FAFC] placeholder-[#64748B] transition-all duration-[180ms] focus:border-[#3B82F6]/40 focus:outline-none focus:ring-1 focus:ring-[#3B82F6]/20"
+              className="w-full rounded-[14px] border border-[#1E3350] bg-[#0F1B31] py-2.5 pl-9 pr-4 text-sm text-[#F8FAFC] placeholder-[#8A99AD] transition-all duration-[180ms] focus:border-[#3B82F6]/40 focus:outline-none focus:ring-1 focus:ring-[#3B82F6]/20"
             />
           </div>
 
@@ -159,9 +159,9 @@ export default function TenantsPage() {
             </div>
           ) : tenants.length === 0 ? (
             <div className="flex flex-col items-center justify-center rounded-[24px] border border-[#1E3350] bg-[#0F1B31] py-16">
-              <Users size={32} className="mb-3 text-[#64748B]" />
+              <Users size={32} className="mb-3 text-[#8A99AD]" />
               <p className="text-sm font-medium text-[#94A3B8]">No tenants found</p>
-              <p className="mt-1 text-xs text-[#64748B]">Try adjusting your filters or search</p>
+              <p className="mt-1 text-xs text-[#8A99AD]">Try adjusting your filters or search</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -190,7 +190,7 @@ export default function TenantsPage() {
                 </p>
                 <div className="mt-2 flex items-center gap-2">
                   <TenantHealthBadge classification={selectedTenant.healthClass} />
-                  <span className="text-xs text-[#64748B]">{selectedTenant.status.replace(/_/g, ' ')}</span>
+                  <span className="text-xs text-[#8A99AD]">{selectedTenant.status.replace(/_/g, ' ')}</span>
                 </div>
               </div>
 
@@ -244,9 +244,9 @@ export default function TenantsPage() {
             </div>
           ) : (
             <div className="sticky top-8 flex flex-col items-center justify-center rounded-[24px] border border-[#1E3350] bg-[#0F1B31] py-20">
-              <UserCheck size={28} className="mb-3 text-[#64748B]" />
+              <UserCheck size={28} className="mb-3 text-[#8A99AD]" />
               <p className="text-sm text-[#94A3B8]">Select a tenant</p>
-              <p className="mt-1 text-xs text-[#64748B]">Click any row to preview</p>
+              <p className="mt-1 text-xs text-[#8A99AD]">Click any row to preview</p>
             </div>
           )}
         </div>
@@ -278,7 +278,7 @@ export default function TenantsPage() {
               value={msgSubject}
               onChange={(e) => setMsgSubject(e.target.value)}
               placeholder="Lease renewal, maintenance update..."
-              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]"
+              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]"
             />
           </div>
           <div>
@@ -288,7 +288,7 @@ export default function TenantsPage() {
               onChange={(e) => setMsgBody(e.target.value)}
               rows={4}
               placeholder="Type your message..."
-              className="w-full resize-none rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]"
+              className="w-full resize-none rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]"
             />
           </div>
         </div>
@@ -344,7 +344,7 @@ export default function TenantsPage() {
               onChange={(e) => setNoticeMessage(e.target.value)}
               rows={3}
               placeholder="Additional context for this notice..."
-              className="w-full resize-none rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]"
+              className="w-full resize-none rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]"
             />
           </div>
         </div>

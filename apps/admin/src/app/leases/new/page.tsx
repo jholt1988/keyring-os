@@ -58,13 +58,13 @@ export default function NewLeasePage() {
               <label className="mb-1.5 block text-sm font-medium text-[#94A3B8]">Tenant ID</label>
               <input value={form.tenantId} onChange={e => set('tenantId', e.target.value)}
                 placeholder="UUID of the tenant"
-                className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]" />
+                className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]" />
             </div>
             <div>
               <label className="mb-1.5 block text-sm font-medium text-[#94A3B8]">Unit ID</label>
               <input value={form.unitId} onChange={e => set('unitId', e.target.value)}
                 placeholder="UUID of the unit"
-                className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]" />
+                className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]" />
             </div>
           </div>
         </SectionCard>
@@ -82,7 +82,7 @@ export default function NewLeasePage() {
                 className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] outline-none focus:border-[#3B82F6] [color-scheme:dark]" />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-[#94A3B8]">Move-In Date <span className="text-[#475569]">(optional)</span></label>
+              <label className="mb-1.5 block text-sm font-medium text-[#94A3B8]">Move-In Date <span className="text-[#8A99AD]">(optional)</span></label>
               <input type="date" value={form.moveInAt} onChange={e => set('moveInAt', e.target.value)}
                 className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] outline-none focus:border-[#3B82F6] [color-scheme:dark]" />
             </div>
@@ -100,13 +100,13 @@ export default function NewLeasePage() {
               <label className="mb-1.5 block text-sm font-medium text-[#94A3B8]">Monthly Rent ($)</label>
               <input type="number" min="0" step="0.01" value={form.rentAmount} onChange={e => set('rentAmount', e.target.value)}
                 placeholder="0.00"
-                className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]" />
+                className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]" />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-[#94A3B8]">Security Deposit ($) <span className="text-[#475569]">(optional)</span></label>
+              <label className="mb-1.5 block text-sm font-medium text-[#94A3B8]">Security Deposit ($) <span className="text-[#8A99AD]">(optional)</span></label>
               <input type="number" min="0" step="0.01" value={form.depositAmount} onChange={e => set('depositAmount', e.target.value)}
                 placeholder="0.00"
-                className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]" />
+                className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]" />
             </div>
           </div>
           <div className="mt-4 flex items-center gap-3">

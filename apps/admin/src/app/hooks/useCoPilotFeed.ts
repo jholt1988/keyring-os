@@ -23,15 +23,10 @@ export function useCoPilotFeed() {
           generatedAt: new Date().toISOString(),
         } satisfies FeedResponse;
       }
-      // The backend may wrap the payload in one or both envelopes
-      // ({ data: { result: {...} } }); peel recognised layers to the FeedResponse.
-      let body: unknown = await res.json();
-      for (let i = 0; i < 5 && body && typeof body === 'object'; i++) {
-        if ('data' in body && 'meta' in body && 'errors' in body) { body = (body as { data: unknown }).data; continue; }
-        if ('result' in body && 'confidence' in body) { body = (body as { result: unknown }).result; continue; }
-        break;
-      }
-      return body as FeedResponse;
+      // The backend wraps the payload in an AI-gateway envelope
+      // ({ result: {...}, confidence, ... }); unwrap it to the FeedResponse.
+      const body = await res.json();
+      return (body?.result ?? body) as FeedResponse;
     },
     refetchInterval: 30000, // Poll every 30 seconds to keep feed fresh
   });

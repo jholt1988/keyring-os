@@ -54,7 +54,7 @@ export function PaymentPlanForm({
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Invoice</label>
           <div className="relative">
-            <FileText className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <FileText className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <select
               value={form.invoiceId || ''}
               onChange={(e) => handleChange('invoiceId', Number(e.target.value))}
@@ -74,7 +74,7 @@ export function PaymentPlanForm({
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Installments</label>
           <div className="relative">
-            <Calculator className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Calculator className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="number"
               min={1}
@@ -85,13 +85,13 @@ export function PaymentPlanForm({
               required
             />
           </div>
-          <p className="text-[11px] text-[#64748B]">1-60 installments allowed</p>
+          <p className="text-[11px] text-[#8A99AD]">1-60 installments allowed</p>
         </div>
 
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Amount per Installment</label>
           <div className="relative">
-            <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="number"
               step="0.01"
@@ -106,7 +106,7 @@ export function PaymentPlanForm({
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Total Amount</label>
           <div className="relative">
-            <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="number"
               step="0.01"

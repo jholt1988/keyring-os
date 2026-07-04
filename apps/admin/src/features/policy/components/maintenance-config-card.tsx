@@ -188,9 +188,9 @@ export function MaintenanceConfigCard({ config, onConfigChange, onSave }: Mainte
           </div>
         </div>
         {isExpanded ? (
-          <ChevronDown className="h-5 w-5 text-[#64748B]" />
+          <ChevronDown className="h-5 w-5 text-[#8A99AD]" />
         ) : (
-          <ChevronRight className="h-5 w-5 text-[#64748B]" />
+          <ChevronRight className="h-5 w-5 text-[#8A99AD]" />
         )}
       </button>
 
@@ -218,7 +218,7 @@ export function MaintenanceConfigCard({ config, onConfigChange, onSave }: Mainte
               <select
                 value={newCategory.priority}
                 onChange={(e) => setNewCategory({ ...newCategory, priority: e.target.value as MaintenanceCategoryPriority })}
-                className="flex h-11 w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#64748B] focus:border-[#3B82F6] focus:outline-none focus:ring-1 focus:ring-[#3B82F6]"
+                className="flex h-11 w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] focus:border-[#3B82F6] focus:outline-none focus:ring-1 focus:ring-[#3B82F6]"
               >
                 {priorityOptions.map(opt => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -299,7 +299,7 @@ export function MaintenanceConfigCard({ config, onConfigChange, onSave }: Mainte
                           <span className="text-sm font-medium text-[#F8FAFC]">
                             {category.code} - {category.name}
                           </span>
-                          <span className="text-xs text-[#64748B]">
+                          <span className="text-xs text-[#8A99AD]">
                             {category.slaHours}h SLA
                           </span>
                         </div>

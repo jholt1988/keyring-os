@@ -13,7 +13,7 @@ const statusColors: Record<string, string> = {
   ONBOARDING: 'text-[#22D3EE]',
   NOTICE_SENT: 'text-[#F59E0B]',
   MOVING_OUT: 'text-[#94A3B8]',
-  FORMER: 'text-[#64748B]',
+  FORMER: 'text-[#8A99AD]',
   BLOCKED: 'text-[#F43F5E]',
 };
 
@@ -60,7 +60,7 @@ export function TenantCard({ tenant, isSelected, onClick }: TenantCardProps) {
               {tenant.status.replace(/_/g, ' ')}
             </span>
             {tenant.unit && (
-              <span className="text-[#64748B]"> · {tenant.unit}</span>
+              <span className="text-[#8A99AD]"> · {tenant.unit}</span>
             )}
           </p>
         </div>
@@ -75,7 +75,7 @@ export function TenantCard({ tenant, isSelected, onClick }: TenantCardProps) {
       )}
 
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3 text-[10px] text-[#64748B]">
+        <div className="flex items-center gap-3 text-[10px] text-[#8A99AD]">
           {(tenant.openMaintenanceCount ?? 0) > 0 && (
             <span className="flex items-center gap-0.5 text-[#F59E0B]">
               <Wrench size={10} /> {tenant.openMaintenanceCount} open

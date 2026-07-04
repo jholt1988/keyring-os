@@ -90,7 +90,7 @@ export default function AuditLogPage() {
               <tbody>
                 {logs.map((log: any) => (
                   <tr key={log.id} className="border-b border-[#1E3350] last:border-0 hover:bg-[#0F1B31] transition-colors">
-                    <td className="whitespace-nowrap px-3 py-2.5 text-[#475569]">
+                    <td className="whitespace-nowrap px-3 py-2.5 text-[#8A99AD]">
                       {new Date(log.createdAt ?? log.date).toLocaleString()}
                     </td>
                     <td className="px-3 py-2.5">
@@ -105,7 +105,7 @@ export default function AuditLogPage() {
                     <td className="px-3 py-2.5 text-[#94A3B8]">
                       {log.actor?.name ?? log.actorId ?? '—'}
                     </td>
-                    <td className="max-w-[200px] truncate px-3 py-2.5 text-[#475569]">
+                    <td className="max-w-[200px] truncate px-3 py-2.5 text-[#8A99AD]">
                       {log.details ? JSON.stringify(log.details).slice(0, 60) : '—'}
                     </td>
                   </tr>

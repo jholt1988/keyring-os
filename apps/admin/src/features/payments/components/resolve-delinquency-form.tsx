@@ -69,7 +69,7 @@ export function ResolveDelinquencyForm({ onSave, onCancel }: ResolveDelinquencyF
         <textarea
           value={form.reason || ''}
           onChange={(e) => setForm((prev) => ({ ...prev, reason: e.target.value }))}
-          className="flex min-h-[80px] w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#64748B] focus:border-[#3B82F6] focus:outline-none"
+          className="flex min-h-[80px] w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] focus:border-[#3B82F6] focus:outline-none"
           placeholder="Optional reason..."
         />
       </div>

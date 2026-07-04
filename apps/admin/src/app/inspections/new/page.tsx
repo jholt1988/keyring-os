@@ -55,24 +55,24 @@ export default function NewInspectionPage() {
             <label className="mb-1.5 block text-sm font-medium text-[#94A3B8]">Property ID</label>
             <input value={form.propertyId} onChange={e => set('propertyId', e.target.value)}
               placeholder="UUID of the property"
-              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]" />
+              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]" />
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-[#94A3B8]">Unit ID <span className="text-[#475569]">(optional)</span></label>
+            <label className="mb-1.5 block text-sm font-medium text-[#94A3B8]">Unit ID <span className="text-[#8A99AD]">(optional)</span></label>
             <input value={form.unitId} onChange={e => set('unitId', e.target.value)}
               placeholder="UUID of the unit"
-              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]" />
+              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]" />
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-[#94A3B8]">Scheduled Date <span className="text-[#475569]">(optional)</span></label>
+            <label className="mb-1.5 block text-sm font-medium text-[#94A3B8]">Scheduled Date <span className="text-[#8A99AD]">(optional)</span></label>
             <input type="date" value={form.scheduledDate} onChange={e => set('scheduledDate', e.target.value)}
               className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] outline-none focus:border-[#3B82F6] [color-scheme:dark]" />
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-[#94A3B8]">Notes <span className="text-[#475569]">(optional)</span></label>
+            <label className="mb-1.5 block text-sm font-medium text-[#94A3B8]">Notes <span className="text-[#8A99AD]">(optional)</span></label>
             <textarea value={form.notes} onChange={e => set('notes', e.target.value)} rows={3}
               placeholder="Any notes for the inspector…"
-              className="w-full resize-none rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]" />
+              className="w-full resize-none rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]" />
           </div>
           <div className="flex justify-end gap-2">
             <Button variant="outline" size="sm" onClick={() => router.back()}>Cancel</Button>

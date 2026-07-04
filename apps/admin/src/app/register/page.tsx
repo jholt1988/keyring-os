@@ -182,7 +182,7 @@ export default function RegisterPage() {
             <div className="space-y-2">
               <label className="text-xs font-medium uppercase tracking-wider text-[#94A3B8]">Password</label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+                <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
                 <Input
                   type="password"
                   value={form.password}
@@ -198,7 +198,7 @@ export default function RegisterPage() {
             <div className="space-y-2">
               <label className="text-xs font-medium uppercase tracking-wider text-[#94A3B8]">Confirm Password</label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+                <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
                 <Input
                   type="password"
                   value={form.confirmPassword}

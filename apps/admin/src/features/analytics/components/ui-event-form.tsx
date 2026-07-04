@@ -50,7 +50,7 @@ export function UiEventForm({ onSave, onCancel }: UiEventFormProps) {
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Element ID</label>
           <div className="relative">
-            <MousePointer className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <MousePointer className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input value={form.elementId || ''} onChange={(e) => handleChange('elementId', e.target.value)} placeholder="Optional element ID" className="pl-10" />
           </div>
         </div>
@@ -58,7 +58,7 @@ export function UiEventForm({ onSave, onCancel }: UiEventFormProps) {
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Session Duration (ms)</label>
           <div className="relative">
-            <Activity className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Activity className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input type="number" value={form.sessionDurationMs || ''} onChange={(e) => handleChange('sessionDurationMs', Number(e.target.value))} placeholder="Optional" className="pl-10" />
           </div>
         </div>

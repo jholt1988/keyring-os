@@ -40,7 +40,7 @@ export function DecisionEventForm({ onSave, onCancel }: DecisionEventFormProps) 
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Decision ID</label>
           <div className="relative">
-            <Target className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Target className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input value={form.decisionId} onChange={(e) => handleChange('decisionId', e.target.value)} placeholder="Decision UUID" className="pl-10" required />
           </div>
         </div>
@@ -64,7 +64,7 @@ export function DecisionEventForm({ onSave, onCancel }: DecisionEventFormProps) 
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Time to Decision (ms)</label>
           <div className="relative">
-            <Clock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Clock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input type="number" value={form.timeToDecisionMs} onChange={(e) => handleChange('timeToDecisionMs', Number(e.target.value))} className="pl-10" required />
           </div>
         </div>

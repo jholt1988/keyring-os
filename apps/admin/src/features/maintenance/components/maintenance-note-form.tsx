@@ -35,17 +35,17 @@ export function MaintenanceNoteForm({ onSave, onCancel }: MaintenanceNoteFormPro
       <div className="space-y-2">
         <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Note</label>
         <div className="relative">
-          <MessageSquare className="absolute left-3 top-3 h-4 w-4 text-[#64748B]" />
+          <MessageSquare className="absolute left-3 top-3 h-4 w-4 text-[#8A99AD]" />
           <textarea
             value={form.body}
             onChange={(e) => setForm({ body: e.target.value })}
-            className="flex min-h-[120px] w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 pl-10 text-sm text-[#F8FAFC] placeholder:text-[#64748B] focus:border-[#3B82F6] focus:outline-none"
+            className="flex min-h-[120px] w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 pl-10 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] focus:border-[#3B82F6] focus:outline-none"
             placeholder="Enter note details (max 1000 characters)..."
             maxLength={1000}
             required
           />
         </div>
-        <p className="text-xs text-[#64748B]">{form.body.length}/1000 characters</p>
+        <p className="text-xs text-[#8A99AD]">{form.body.length}/1000 characters</p>
       </div>
 
       <div className="flex justify-end gap-2 pt-4">

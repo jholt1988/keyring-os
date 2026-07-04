@@ -41,10 +41,10 @@ export function MaintenancePhotoForm({ onSave, onCancel }: MaintenancePhotoFormP
 
       <div className="rounded-lg border border-dashed border-white/20 p-8 text-center">
         <div className="flex flex-col items-center gap-3">
-          <Camera className="h-10 w-10 text-[#64748B]" />
+          <Camera className="h-10 w-10 text-[#8A99AD]" />
           <div>
             <p className="text-sm text-[#F8FAFC]">Upload photo</p>
-            <p className="text-xs text-[#64748B]">Drag and drop or click to select</p>
+            <p className="text-xs text-[#8A99AD]">Drag and drop or click to select</p>
           </div>
           <Input
             type="file"
@@ -88,7 +88,7 @@ export function MaintenancePhotoForm({ onSave, onCancel }: MaintenancePhotoFormP
           placeholder="Describe what's in the photo (optional)"
           maxLength={240}
         />
-        <p className="text-xs text-[#64748B]">{form.caption?.length || 0}/240 characters</p>
+        <p className="text-xs text-[#8A99AD]">{form.caption?.length || 0}/240 characters</p>
       </div>
 
       <div className="flex justify-end gap-2 pt-4">

@@ -42,7 +42,7 @@ export function CourtDateForm({ onSave, onCancel }: CourtDateFormProps) {
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Court Date</label>
           <div className="relative">
-            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input type="datetime-local" value={form.courtDate} onChange={(e) => handleChange('courtDate', e.target.value)} className="pl-10" required />
           </div>
         </div>
@@ -55,7 +55,7 @@ export function CourtDateForm({ onSave, onCancel }: CourtDateFormProps) {
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Courtroom</label>
           <div className="relative">
-            <MapPin className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <MapPin className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input value={form.courtroom || ''} onChange={(e) => handleChange('courtroom', e.target.value)} placeholder="e.g., Courtroom 3A" className="pl-10" />
           </div>
         </div>
@@ -63,8 +63,8 @@ export function CourtDateForm({ onSave, onCancel }: CourtDateFormProps) {
         <div className="space-y-2 md:col-span-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Notes</label>
           <div className="relative">
-            <FileText className="absolute left-3 top-3 h-4 w-4 text-[#64748B]" />
-            <textarea value={form.notes || ''} onChange={(e) => handleChange('notes', e.target.value)} className="flex min-h-[80px] w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 pl-10 text-sm text-[#F8FAFC] placeholder:text-[#64748B] focus:border-[#3B82F6] focus:outline-none" placeholder="Additional notes..." />
+            <FileText className="absolute left-3 top-3 h-4 w-4 text-[#8A99AD]" />
+            <textarea value={form.notes || ''} onChange={(e) => handleChange('notes', e.target.value)} className="flex min-h-[80px] w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 pl-10 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] focus:border-[#3B82F6] focus:outline-none" placeholder="Additional notes..." />
           </div>
         </div>
       </div>
