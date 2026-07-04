@@ -123,11 +123,11 @@ export function WorkflowsView({
         ) : (
           <div className="space-y-4">
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
-              <MetricTile label="Ledger balance" value={cents(paymentWorkbench.metrics.totalBalanceCents) ?? '$0'} detail={`${formatNumber(paymentWorkbench.metrics.ledgerAccounts)} accounts`} icon={Banknote} />
-              <MetricTile label="Delinquent" value={cents(paymentWorkbench.metrics.delinquentAmountCents) ?? '$0'} detail={`${formatNumber(paymentWorkbench.metrics.delinquentLeases)} leases`} icon={AlertTriangle} />
-              <MetricTile label="Exceptions" value={formatNumber(paymentWorkbench.metrics.paymentExceptions)} detail="bookkeeping exceptions" icon={ClipboardList} />
-              <MetricTile label="Unreconciled" value={formatNumber(paymentWorkbench.metrics.unreconciledItems)} detail="bank/recon items" icon={RefreshCcw} />
-              <MetricTile label="Payment gates" value={paymentWorkbench.metrics.paymentExpansionBlocked ? 'Blocked' : 'Ready'} detail="write expansion status" icon={ShieldCheck} />
+              <MetricTile label="Ledger balance" value={cents(paymentWorkbench.metrics?.totalBalanceCents) ?? '$0'} detail={`${formatNumber(paymentWorkbench.metrics?.ledgerAccounts)} accounts`} icon={Banknote} />
+              <MetricTile label="Delinquent" value={cents(paymentWorkbench.metrics?.delinquentAmountCents) ?? '$0'} detail={`${formatNumber(paymentWorkbench.metrics?.delinquentLeases)} leases`} icon={AlertTriangle} />
+              <MetricTile label="Exceptions" value={formatNumber(paymentWorkbench.metrics?.paymentExceptions)} detail="bookkeeping exceptions" icon={ClipboardList} />
+              <MetricTile label="Unreconciled" value={formatNumber(paymentWorkbench.metrics?.unreconciledItems)} detail="bank/recon items" icon={RefreshCcw} />
+              <MetricTile label="Payment gates" value={paymentWorkbench.metrics?.paymentExpansionBlocked ? 'Blocked' : 'Ready'} detail="write expansion status" icon={ShieldCheck} />
             </div>
 
             <div className="grid gap-5 xl:grid-cols-[1fr_420px]">
