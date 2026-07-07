@@ -153,9 +153,9 @@ export function LeaseSigningRow({
           <span>{new Date(item.startDate).toLocaleDateString()} to {new Date(item.endDate).toLocaleDateString()}</span>
           <span>{item.documentCount} packet docs</span>
         </div>
-        {item.blockers.length > 0 ? (
+        {(item.blockers?.length ?? 0) > 0 ? (
           <div className="mt-3 rounded-md border border-[var(--border)] bg-[var(--panel-strong)] p-2 text-xs text-[var(--muted)]">
-            {item.blockers.join(' ')}
+            {item.blockers?.join(' ')}
           </div>
         ) : null}
       </div>
@@ -166,7 +166,7 @@ export function LeaseSigningRow({
           <div className="mt-2 space-y-1 text-xs text-[var(--muted)]">
             <div>Status: {item.latestEnvelope.status}</div>
             <div>Provider: {item.latestEnvelope.providerStatus ?? item.latestEnvelope.providerEnvelopeId}</div>
-            <div>Participants: {item.latestEnvelope.participants.map((p) => `${p.name} ${p.status}`).join(', ')}</div>
+            <div>Participants: {item.latestEnvelope.participants?.map((p) => `${p.name} ${p.status}`).join(', ')}</div>
           </div>
         ) : (
           <div className="mt-2 text-xs text-[var(--muted)]">No envelope created.</div>

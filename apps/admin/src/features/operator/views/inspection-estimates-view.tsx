@@ -165,7 +165,7 @@ export function InspectionEstimateRow({
           <span>Scheduled {new Date(item.scheduledDate).toLocaleDateString()}</span>
           {item.completedDate ? <span>Completed {new Date(item.completedDate).toLocaleDateString()}</span> : null}
         </div>
-        {item.blockers.length > 0 ? <div className="mt-3 text-xs text-[var(--danger)]">{item.blockers.join(' ')}</div> : null}
+        {(item.blockers?.length ?? 0) > 0 ? <div className="mt-3 text-xs text-[var(--danger)]">{item.blockers?.join(' ')}</div> : null}
       </div>
 
       <div className="text-sm">

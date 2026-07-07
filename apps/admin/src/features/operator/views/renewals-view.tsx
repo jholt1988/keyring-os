@@ -77,7 +77,7 @@ export function RenewalsView({
         setMessage('Renewal signature status refreshed.');
       }
       if (action === 'moveout') {
-        const moveOutAt = moveOutByLease[item.leaseId] || item.endDate.slice(0, 10);
+        const moveOutAt = moveOutByLease[item.leaseId] || item.endDate?.slice(0, 10);
         await recordOperatorRenewalMoveOut(item.leaseId, {
           moveOutAt,
           message: note.trim() || undefined,
@@ -202,7 +202,7 @@ export function RenewalRow({
           {item.latestEnvelope ? <span>Envelope {item.latestEnvelope.status}</span> : null}
           {item.latestNotice ? <span>Notice {item.latestNotice.type}</span> : null}
         </div>
-        {item.blockers.length > 0 ? <div className="mt-3 text-xs text-[var(--danger)]">{item.blockers.join(' ')}</div> : null}
+        {(item.blockers?.length ?? 0) > 0 ? <div className="mt-3 text-xs text-[var(--danger)]">{item.blockers?.join(' ')}</div> : null}
       </div>
 
       <div className="space-y-2">
