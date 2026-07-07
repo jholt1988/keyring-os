@@ -728,18 +728,24 @@ async function loadArea<T>(
   }
 }
 
-function unwrapEnvelope<T>(payload: unknown):T{
-  // Standard API envelope: { data, meta, errors }.
-  if (payload && typeof payload === 'object' && 'data' in payload && 'meta' in payload && 'errors' in payload) {
-    return (payload as { data: T }).data;
+export function unwrapEnvelope<T>(payload: T): T {
+  // Endpoints may be wrapped in one or BOTH envelopes — the standard API
+  // envelope { data, meta, errors } and the AI-gateway envelope
+  // { result, confidence, ... } — sometimes nested ({ data: { result: ... } }).
+  // Peel every recognised layer so consumers get the bare payload.
+  let current: unknown = payload;
+  for (let i = 0; i < 5 && current && typeof current === 'object'; i++) {
+    if ('data' in current && 'meta' in current && 'errors' in current) {
+      current = (current as { data: unknown }).data;
+      continue;
+    }
+    if ('result' in current && 'confidence' in current) {
+      current = (current as { result: unknown }).result;
+      continue;
+    }
+    break;
   }
-  // AI-gateway decision envelope: { result, confidence, rationale, ... }.
-  if (payload && typeof payload === 'object' && 'result' in payload && 'confidence' in payload) {
-    return (payload as { result: T }).result;
-  }
-
-  // Fallback: return the payload as data
-  return payload as T;
+  return current as T;
 }
 
 

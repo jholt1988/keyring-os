@@ -277,12 +277,12 @@ export function MaintenanceDispatchRow({
             {item.latestDispatch.responseNotes ? <div className="mt-1">{item.latestDispatch.responseNotes}</div> : null}
           </div>
         ) : null}
-        {item.dispatchHistory.length > 1 ? (
+        {(item.dispatchHistory?.length ?? 0) > 1 ? (
           <div className="mt-2 text-xs text-[var(--muted)]">
-            Dispatch history: {item.dispatchHistory.map((dispatch) => `${dispatch.vendorName ?? 'Vendor'} ${dispatch.status}`).join(' · ')}
+            Dispatch history: {item.dispatchHistory?.map((dispatch) => `${dispatch.vendorName ?? 'Vendor'} ${dispatch.status}`).join(' · ')}
           </div>
         ) : null}
-        {item.blockers.length > 0 ? <div className="mt-3 text-xs text-[var(--danger)]">{item.blockers.join(' ')}</div> : null}
+        {(item.blockers?.length ?? 0) > 0 ? <div className="mt-3 text-xs text-[var(--danger)]">{item.blockers?.join(' ')}</div> : null}
       </div>
 
       <div className="space-y-2">

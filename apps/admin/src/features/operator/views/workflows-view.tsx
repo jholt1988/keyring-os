@@ -76,11 +76,11 @@ export function WorkflowsView({
                   <span className="text-sm text-[var(--muted)]">{group.count} open</span>
                 </div>
 
-                {group.items.length === 0 ? (
+                {(group.items?.length ?? 0) === 0 ? (
                   <div className="px-4 py-4 text-sm text-[var(--muted)]">No active items in this workflow.</div>
                 ) : (
                   <div className="divide-y divide-[var(--border)]">
-                    {group.items.map((item) => (
+                    {(group.items ?? []).map((item) => (
                       <WorkflowRow
                         key={item.id}
                         item={item}
@@ -312,7 +312,7 @@ export function WorkflowInspector({
                   <span className="font-medium">{capability.task}</span>
                   <span className="rounded-sm border border-[var(--border)] px-2 py-0.5 text-xs">{capability.riskLevel.toLowerCase()}</span>
                 </div>
-                <p className="mt-1 text-xs leading-5 text-[var(--muted)]">{capability.primaryGuardrails[0] ?? capability.description}</p>
+                <p className="mt-1 text-xs leading-5 text-[var(--muted)]">{capability.primaryGuardrails?.[0] ?? capability.description}</p>
               </div>
             ))}
             {capabilities.length === 0 && (

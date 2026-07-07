@@ -161,7 +161,7 @@ export function OwnerStatementRow({
           <span>Expenses {cents(statement.totalExpensesCents)}</span>
           <span>Mgmt fee {cents(statement.managementFeeCents)}</span>
         </div>
-        {statement.blockers.length > 0 ? <div className="mt-3 text-xs text-[var(--danger)]">{statement.blockers.join(' ')}</div> : null}
+        {(statement.blockers?.length ?? 0) > 0 ? <div className="mt-3 text-xs text-[var(--danger)]">{statement.blockers?.join(' ')}</div> : null}
       </div>
 
       <div className="text-sm">

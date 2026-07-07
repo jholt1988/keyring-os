@@ -83,11 +83,11 @@ export function RentOptimizationView({
           <div className="border-b border-[var(--border)] px-4 py-3">
             <h3 className="font-semibold">Select a Unit</h3>
           </div>
-          {!workbench || workbench.leases.length === 0 ? (
+          {!workbench || (workbench.leases?.length ?? 0) === 0 ? (
             <div className="px-4 py-4 text-sm text-[var(--muted)]">No expiring leases available.</div>
           ) : (
             <div className="divide-y divide-[var(--border)] max-h-[80vh] overflow-y-auto">
-              {workbench.leases.map((item) => (
+              {(workbench.leases ?? []).map((item) => (
                 <button
                   key={item.unitId}
                   onClick={() => setSelectedUnitId(item.unitId)}
