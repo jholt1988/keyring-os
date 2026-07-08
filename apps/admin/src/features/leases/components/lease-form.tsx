@@ -12,8 +12,8 @@ export interface LeaseFormData {
   unitId: string;
   leaseStart: string;
   leaseEnd: string;
-  monthlyRent: number;
-  securityDeposit: number;
+  rentAmount: number;
+  depositAmount: number;
   leaseType: 'fixed-term' | 'month-to-month';
   status: 'draft' | 'pending' | 'active' | 'expired' | 'terminated';
   moveInAt?: string;
@@ -38,8 +38,8 @@ export function LeaseForm({ initialData, tenantOptions = [], propertyOptions = [
     unitId: '',
     leaseStart: new Date().toISOString().split('T')[0],
     leaseEnd: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    monthlyRent: 0,
-    securityDeposit: 0,
+    rentAmount: 0,
+    depositAmount: 0,
     leaseType: 'fixed-term',
     status: 'draft',
   });
@@ -157,8 +157,8 @@ export function LeaseForm({ initialData, tenantOptions = [], propertyOptions = [
             <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="number"
-              value={form.monthlyRent}
-              onChange={(e) => handleChange('monthlyRent', Number(e.target.value))}
+              value={form.rentAmount}
+              onChange={(e) => handleChange('rentAmount', Number(e.target.value))}
               className="pl-10"
               required
             />
@@ -171,8 +171,8 @@ export function LeaseForm({ initialData, tenantOptions = [], propertyOptions = [
             <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="number"
-              value={form.securityDeposit}
-              onChange={(e) => handleChange('securityDeposit', Number(e.target.value))}
+              value={form.depositAmount}
+              onChange={(e) => handleChange('depositAmount', Number(e.target.value))}
               className="pl-10"
               required
             />
