@@ -48,7 +48,7 @@ export function TechnicianAssignmentForm({
       <div className="space-y-2">
         <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Technician</label>
         <div className="relative">
-          <Wrench className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+          <Wrench className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
           <select
             value={form.technicianId ?? ''}
             onChange={(e) => handleChange('technicianId', e.target.value ? Number(e.target.value) : undefined)}

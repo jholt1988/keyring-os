@@ -18,6 +18,7 @@ import {
   type ReadOnlyOperatorData,
 } from '@/lib/operator/read-only-data';
 import { countUnitsByStatus } from '@/features/operator/utils';
+import { useAuth } from '@/hooks/use-auth';
 
 export interface OperatorTotals {
   properties: number;
@@ -47,12 +48,21 @@ export interface OperatorDataContextValue {
 const OperatorDataContext = createContext<OperatorDataContextValue | null>(null);
 
 function computeTotals(data: ReadOnlyOperatorData): OperatorTotals {
-  const properties = data.portfolio.data;
+  // Be tolerant of shape drift: portfolio may arrive as { data, meta } or, if an
+  // envelope was unwrapped upstream, as a bare properties array.
+  const portfolio = data.portfolio as unknown;
+  const properties: Array<{ units?: unknown[] }> = Array.isArray(portfolio)
+    ? (portfolio as Array<{ units?: unknown[] }>)
+    : (Array.isArray((portfolio as { data?: unknown })?.data)
+        ? ((portfolio as { data: Array<{ units?: unknown[] }> }).data)
+        : []);
+  const meta = (portfolio as { meta?: { totalItems?: number } })?.meta;
+
   const unitCount = properties.reduce((sum, property) => sum + (property.units?.length ?? 0), 0);
-  const vacantUnits = properties.reduce((sum, property) => sum + countUnitsByStatus(property, 'VACANT'), 0);
+  const vacantUnits = properties.reduce((sum, property) => sum + countUnitsByStatus(property as never, 'VACANT'), 0);
 
   return {
-    properties: data.portfolio.meta?.totalItems ?? properties.length,
+    properties: meta?.totalItems ?? properties.length,
     units: data.metrics?.occupancy?.total ?? unitCount,
     occupied: data.metrics?.occupancy?.occupied ?? unitCount - vacantUnits,
     vacant: data.metrics?.occupancy?.vacant ?? vacantUnits,
@@ -68,16 +78,18 @@ export function OperatorDataProvider({
   initialToken?: string;
 }) {
   const queryClient = useQueryClient();
+  const { isAuthenticated } = useAuth();
 
-  // Persist token in localStorage
+  // Optional bearer override; the /api/backend proxy forwards the httpOnly
+  // session cookie server-side, so auth no longer depends on a client token.
   const token = typeof window !== 'undefined'
     ? window.localStorage.getItem('operator_api_token') ?? initialToken
     : initialToken;
 
   const { data: rawData, isLoading, isFetched } = useQuery({
     queryKey: ['operator-data', token],
-    queryFn: () => loadReadOnlyOperatorData({ token }),
-    enabled: Boolean(token),
+    queryFn: () => loadReadOnlyOperatorData({ token: token || undefined }),
+    enabled: isAuthenticated,
     refetchInterval: 30_000,
     staleTime: 15_000,
   });
@@ -102,12 +114,12 @@ export function OperatorDataProvider({
   const value: OperatorDataContextValue = useMemo(() => ({
     data,
     totals,
-    loaded: isFetched && Boolean(token),
+    loaded: isFetched && isAuthenticated,
     loading: isLoading,
     token,
     refresh,
     setToken,
-  }), [data, totals, isFetched, token, isLoading, refresh, setToken]);
+  }), [data, totals, isFetched, isAuthenticated, token, isLoading, refresh, setToken]);
 
   return (
     <OperatorDataContext.Provider value={value}>

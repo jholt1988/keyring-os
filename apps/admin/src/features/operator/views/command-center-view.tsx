@@ -34,7 +34,7 @@ export function CommandCenterView({
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [actionPending, setActionPending] = useState(false);
   const [filters, setFilters] = useState({ type: 'ALL', priority: 'ALL', status: 'ALL', due: 'ALL', propertyId: '' });
-  const briefingDecisionItems: FeedItem[] = data.briefing?.signals.slice(0, 6).map((signal) => ({
+  const briefingDecisionItems: FeedItem[] = (data.briefing?.signals ?? []).slice(0, 6).map((signal) => ({
     id: signal.id,
     kind: 'critical_signal',
     domain: signal.domain ?? 'operations',
@@ -61,7 +61,7 @@ export function CommandCenterView({
     if (filters.due === 'upcoming' && (!decision.dueAt || new Date(decision.dueAt) < new Date())) return false;
     return true;
   });
-  const openDecisionCount = data.commandCenter?.metrics.totalDecisions ?? data.briefing?.metrics?.pendingDecisions ?? decisionItems.length;
+  const openDecisionCount = data.commandCenter?.metrics?.totalDecisions ?? data.briefing?.metrics?.pendingDecisions ?? decisionItems.length;
   const atRiskAmount = data.briefing?.metrics?.atRiskAmount ?? data.metrics?.financials?.outstanding;
 
   async function selectDecision(decisionId: string) {
@@ -180,7 +180,7 @@ export function CommandCenterView({
                 </div>
               </div>
               <div className="mt-4 grid gap-2 md:grid-cols-3">
-                {item.evidence.slice(0, 3).map((evidence) => (
+                {(item.evidence ?? []).slice(0, 3).map((evidence) => (
                   <div key={`${item.id}-${evidence.label}`} className="rounded-md border border-[var(--border)] bg-[var(--panel-strong)] p-3">
                     <div className="text-xs text-[var(--muted)]">{evidence.label}</div>
                     <div className="mt-1 truncate text-sm font-medium">{String(evidence.value ?? 'Not set')}</div>
@@ -188,7 +188,7 @@ export function CommandCenterView({
                 ))}
               </div>
               <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-                <span className="text-xs text-[var(--muted)]">Evidence from {item.entity.type} {item.entity.label ? `- ${item.entity.label}` : ''}</span>
+                <span className="text-xs text-[var(--muted)]">Evidence from {item.entity?.type} {item.entity?.label ? `- ${item.entity.label}` : ''}</span>
                 <button onClick={() => void selectDecision(item.id)} className="inline-flex items-center gap-2 rounded-md border border-[var(--border)] px-3 py-2 text-sm font-medium">
                   Open evidence
                   <ArrowUpRight size={15} aria-hidden="true" />
@@ -238,9 +238,9 @@ export function CommandCenterView({
           <CollapsiblePanel
             title="Approval Panel"
             variant="compact"
-            badge={formatNumber(data.commandCenter?.metrics.pendingApprovals ?? data.approvals.length)}
+            badge={formatNumber(data.commandCenter?.metrics?.pendingApprovals ?? data.approvals.length)}
           >
-            <div className="text-3xl font-semibold">{formatNumber(data.commandCenter?.metrics.pendingApprovals ?? data.approvals.length)}</div>
+            <div className="text-3xl font-semibold">{formatNumber(data.commandCenter?.metrics?.pendingApprovals ?? data.approvals.length)}</div>
             <p className="mt-1 text-sm text-[var(--muted)]">pending approval tasks connected to executable workflows</p>
           </CollapsiblePanel>
 
@@ -273,11 +273,11 @@ export function CommandCenterView({
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <div className="text-sm font-medium">{capability.id.replace(/-/g, ' ')}</div>
-                      <div className="mt-1 text-xs text-[var(--muted)]">{capability.workflowIds.slice(0, 3).join(' / ')}</div>
+                      <div className="mt-1 text-xs text-[var(--muted)]">{capability.workflowIds?.slice(0, 3).join(' / ')}</div>
                     </div>
                     <span className="rounded-sm border border-[var(--border)] px-2 py-0.5 text-[11px] font-medium">{capability.riskLevel.toLowerCase()}</span>
                   </div>
-                  <div className="mt-2 text-xs leading-5 text-[var(--muted)]">{capability.primaryGuardrails[0] ?? capability.description}</div>
+                  <div className="mt-2 text-xs leading-5 text-[var(--muted)]">{capability.primaryGuardrails?.[0] ?? capability.description}</div>
                 </div>
               ))}
               {aiCapabilities.length === 0 && (
@@ -291,7 +291,7 @@ export function CommandCenterView({
             <dl className="mt-4 space-y-3 text-sm">
               <div className="flex justify-between gap-4">
                 <dt className="text-[var(--muted)]">Events</dt>
-                <dd className="font-medium">{formatNumber(data.briefing?.metrics?.todayEvents ?? data.briefing?.events.length)}</dd>
+                <dd className="font-medium">{formatNumber(data.briefing?.metrics?.todayEvents ?? data.briefing?.events?.length ?? 0)}</dd>
               </div>
               <div className="flex justify-between gap-4">
                 <dt className="text-[var(--muted)]">Vacant units</dt>

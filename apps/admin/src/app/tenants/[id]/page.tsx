@@ -229,25 +229,25 @@ export default function TenantWorkspacePage() {
       {/* Summary Strip */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
         <div className="rounded-[14px] border border-[#1E3350] bg-[#0F1B31] p-3">
-          <p className="text-[10px] uppercase tracking-wider text-[#64748B]">Status</p>
+          <p className="text-[10px] uppercase tracking-wider text-[#8A99AD]">Status</p>
           <p className="mt-1 text-sm font-semibold text-[#F8FAFC]">{summary.status.replace(/_/g, ' ')}</p>
         </div>
         <div className="rounded-[14px] border border-[#1E3350] bg-[#0F1B31] p-3">
-          <p className="text-[10px] uppercase tracking-wider text-[#64748B]">Payment Health</p>
+          <p className="text-[10px] uppercase tracking-wider text-[#8A99AD]">Payment Health</p>
           <p className={cn('mt-1 text-sm font-semibold', summary.paymentHealth === 'Stable' ? 'text-[#10B981]' : summary.paymentHealth === 'Watch' ? 'text-[#F59E0B]' : 'text-[#F43F5E]')}>
             {summary.paymentHealth}
           </p>
         </div>
         <div className="rounded-[14px] border border-[#1E3350] bg-[#0F1B31] p-3">
-          <p className="text-[10px] uppercase tracking-wider text-[#64748B]">Lease</p>
+          <p className="text-[10px] uppercase tracking-wider text-[#8A99AD]">Lease</p>
           <p className="mt-1 text-sm font-semibold text-[#F8FAFC]">Ends {summary.leaseEndsIn}</p>
         </div>
         <div className="rounded-[14px] border border-[#1E3350] bg-[#0F1B31] p-3">
-          <p className="text-[10px] uppercase tracking-wider text-[#64748B]">Open Issues</p>
+          <p className="text-[10px] uppercase tracking-wider text-[#8A99AD]">Open Issues</p>
           <p className="mt-1 text-sm font-semibold text-[#F8FAFC]">{summary.openIssues}</p>
         </div>
         <div className="rounded-[14px] border border-[#1E3350] bg-[#0F1B31] p-3">
-          <p className="text-[10px] uppercase tracking-wider text-[#64748B]">Last Contact</p>
+          <p className="text-[10px] uppercase tracking-wider text-[#8A99AD]">Last Contact</p>
           <p className="mt-1 text-sm font-semibold text-[#F8FAFC]">{summary.lastContact}</p>
         </div>
       </div>
@@ -334,7 +334,7 @@ export default function TenantWorkspacePage() {
         <div>
           <label className="mb-1 block text-xs font-medium text-[#94A3B8]">Message <span className="text-[#F43F5E]">*</span></label>
           <textarea value={msgBody} onChange={(e) => setMsgBody(e.target.value)} rows={4}
-            className="w-full resize-none rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]" />
+            className="w-full resize-none rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]" />
         </div>
       </div>
     </Modal>
@@ -391,7 +391,7 @@ export default function TenantWorkspacePage() {
             <label className="mb-1 block text-xs font-medium text-[#94A3B8]">{label}</label>
             <input type={type} value={(payForm as any)[key]} placeholder={placeholder}
               onChange={(e) => setPayForm((p) => ({ ...p, [key]: e.target.value }))}
-              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6] [color-scheme:dark]" />
+              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6] [color-scheme:dark]" />
           </div>
         ))}
         <div className="grid grid-cols-2 gap-3">
@@ -471,7 +471,7 @@ export default function TenantWorkspacePage() {
             <label className="mb-1 block text-xs font-medium text-[#94A3B8]">{label}</label>
             <input value={(householdForm as any)[key]} placeholder={placeholder}
               onChange={(e) => setHouseholdForm((p) => ({ ...p, [key]: e.target.value }))}
-              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#475569] outline-none focus:border-[#3B82F6]" />
+              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]" />
           </div>
         ))}
         <div className="flex gap-4">
@@ -591,14 +591,14 @@ function ProfileSection({ profile, editingProfile, profileForm, onEditStart, onE
         actions={<Button size="sm" variant="outline" onClick={onAddHousehold}><Users size={11} /> Add Member</Button>}
       >
         {(profile.householdMembers ?? []).length === 0 ? (
-          <p className="py-4 text-center text-xs text-[#64748B]">No household members recorded</p>
+          <p className="py-4 text-center text-xs text-[#8A99AD]">No household members recorded</p>
         ) : (
           <div className="space-y-2">
             {(profile.householdMembers ?? []).map((m: any) => (
               <div key={m.id} className="flex items-center justify-between rounded-[10px] border border-[#1E3350]/50 bg-[#0B1628] px-3 py-2">
                 <div>
                   <p className="text-xs font-medium text-[#F8FAFC]">{m.name}</p>
-                  <p className="text-[10px] text-[#64748B]">{m.relationship}</p>
+                  <p className="text-[10px] text-[#8A99AD]">{m.relationship}</p>
                 </div>
                 <div className="flex items-center gap-1.5">
                   {m.isEmergency && (
@@ -642,7 +642,7 @@ function LeaseSection({ lease }: { lease: any }) {
   if (!lease) {
     return (
       <div className="flex flex-col items-center justify-center py-16">
-        <FileText size={28} className="mb-3 text-[#64748B]" />
+        <FileText size={28} className="mb-3 text-[#8A99AD]" />
         <p className="text-sm text-[#94A3B8]">No active lease</p>
       </div>
     );
@@ -698,21 +698,21 @@ function PaymentsSection({ payments }: { payments: any; lease: any }) {
       <SectionCard title="Payment Summary" subtitle="Ledger overview">
         <div className="mb-4 grid grid-cols-2 gap-3">
           <div className="rounded-[10px] border border-[#1E3350]/50 bg-[#0B1628] p-3 text-center">
-            <p className="text-[10px] uppercase text-[#64748B]">On-Time Rate</p>
+            <p className="text-[10px] uppercase text-[#8A99AD]">On-Time Rate</p>
             <p className="mt-1 font-mono text-lg font-bold text-[#10B981]">{payments?.onTimeRate ?? 100}%</p>
           </div>
           <div className="rounded-[10px] border border-[#1E3350]/50 bg-[#0B1628] p-3 text-center">
-            <p className="text-[10px] uppercase text-[#64748B]">Late (6mo)</p>
+            <p className="text-[10px] uppercase text-[#8A99AD]">Late (6mo)</p>
             <p className="mt-1 font-mono text-lg font-bold text-[#F43F5E]">{payments?.latePayments ?? 0}</p>
           </div>
           <div className="rounded-[10px] border border-[#1E3350]/50 bg-[#0B1628] p-3 text-center">
-            <p className="text-[10px] uppercase text-[#64748B]">Balance</p>
+            <p className="text-[10px] uppercase text-[#8A99AD]">Balance</p>
             <p className={cn('mt-1 font-mono text-lg font-bold', (payments?.currentBalance ?? 0) > 0 ? 'text-[#F43F5E]' : 'text-[#10B981]')}>
               ${(payments?.currentBalance ?? 0).toLocaleString()}
             </p>
           </div>
           <div className="rounded-[10px] border border-[#1E3350]/50 bg-[#0B1628] p-3 text-center">
-            <p className="text-[10px] uppercase text-[#64748B]">Payment Plan</p>
+            <p className="text-[10px] uppercase text-[#8A99AD]">Payment Plan</p>
             <p className="mt-1 text-sm font-bold text-[#F8FAFC]">{payments?.paymentPlanActive ? 'Active' : 'None'}</p>
           </div>
         </div>
@@ -720,14 +720,14 @@ function PaymentsSection({ payments }: { payments: any; lease: any }) {
 
       <SectionCard title="Recent Payments" subtitle="Last 10 transactions">
         {(payments?.recentPayments ?? []).length === 0 ? (
-          <p className="py-4 text-center text-xs text-[#64748B]">No recent payments</p>
+          <p className="py-4 text-center text-xs text-[#8A99AD]">No recent payments</p>
         ) : (
           <div className="max-h-[350px] space-y-2 overflow-y-auto">
             {(payments?.recentPayments ?? []).map((p: any) => (
               <div key={p.id} className="flex items-center justify-between rounded-[10px] border border-[#1E3350]/50 bg-[#0B1628] px-3 py-2">
                 <div>
                   <p className="text-xs font-medium text-[#F8FAFC]">${p.amount?.toLocaleString()}</p>
-                  <p className="text-[10px] text-[#64748B]">{new Date(p.date).toLocaleDateString()}</p>
+                  <p className="text-[10px] text-[#8A99AD]">{new Date(p.date).toLocaleDateString()}</p>
                 </div>
                 <span className={cn(
                   'rounded-full px-2 py-0.5 text-[10px] font-medium',
@@ -763,7 +763,7 @@ function MaintenanceSection({ maintenance }: { maintenance: any[] }) {
                     <p className="text-xs font-medium text-[#F8FAFC]">{m.title}</p>
                     <RiskMeter level={sev} className="w-20" />
                   </div>
-                  <p className="mt-1 text-[10px] text-[#64748B]">{m.unit?.name} · {m.status} · {new Date(m.createdAt).toLocaleDateString()}</p>
+                  <p className="mt-1 text-[10px] text-[#8A99AD]">{m.unit?.name} · {m.status} · {new Date(m.createdAt).toLocaleDateString()}</p>
                 </div>
               );
             })}
@@ -773,14 +773,14 @@ function MaintenanceSection({ maintenance }: { maintenance: any[] }) {
 
       <SectionCard title="Resolved" subtitle={`${resolved.length} completed`}>
         {resolved.length === 0 ? (
-          <p className="py-4 text-center text-xs text-[#64748B]">No resolved requests</p>
+          <p className="py-4 text-center text-xs text-[#8A99AD]">No resolved requests</p>
         ) : (
           <div className="max-h-[350px] space-y-2 overflow-y-auto">
             {resolved.slice(0, 10).map((m: any) => (
               <div key={m.id} className="flex items-center justify-between rounded-[10px] border border-[#1E3350]/50 bg-[#0B1628] px-3 py-2">
                 <div>
                   <p className="text-xs font-medium text-[#F8FAFC]">{m.title}</p>
-                  <p className="text-[10px] text-[#64748B]">{m.completedAt ? new Date(m.completedAt).toLocaleDateString() : ''}</p>
+                  <p className="text-[10px] text-[#8A99AD]">{m.completedAt ? new Date(m.completedAt).toLocaleDateString() : ''}</p>
                 </div>
                 <CheckCircle size={14} className="text-[#10B981]" />
               </div>
@@ -812,7 +812,7 @@ function DocumentsSection({ documents }: { documents: any[] }) {
   return (
     <SectionCard title="Documents" subtitle="Lease, addenda, ID, inspections">
       {(documents ?? []).length === 0 ? (
-        <p className="py-4 text-center text-xs text-[#64748B]">No documents uploaded</p>
+        <p className="py-4 text-center text-xs text-[#8A99AD]">No documents uploaded</p>
       ) : (
         <div className="space-y-2">
           {(documents ?? []).map((d: any) => (
@@ -821,7 +821,7 @@ function DocumentsSection({ documents }: { documents: any[] }) {
                 <FileText size={14} className="text-[#3B82F6]" />
                 <div>
                   <p className="text-xs font-medium text-[#F8FAFC]">{d.fileName}</p>
-                  <p className="text-[10px] text-[#64748B]">{d.category} · {new Date(d.createdAt).toLocaleDateString()}</p>
+                  <p className="text-[10px] text-[#8A99AD]">{d.category} · {new Date(d.createdAt).toLocaleDateString()}</p>
                 </div>
               </div>
             </div>
@@ -854,7 +854,7 @@ function ComplianceSection({ violations, notices, onLogViolation }: { violations
                   </span>
                 </div>
                 <p className="mt-1 text-[10px] text-[#94A3B8]">{v.description}</p>
-                <p className="mt-1 text-[10px] text-[#64748B]">Issued {new Date(v.issuedAt ?? v.createdAt).toLocaleDateString()}</p>
+                <p className="mt-1 text-[10px] text-[#8A99AD]">Issued {new Date(v.issuedAt ?? v.createdAt).toLocaleDateString()}</p>
               </div>
             ))}
           </div>
@@ -863,16 +863,16 @@ function ComplianceSection({ violations, notices, onLogViolation }: { violations
 
       <SectionCard title="Notices Sent" subtitle="Compliance & legal notices">
         {(notices ?? []).length === 0 ? (
-          <p className="py-4 text-center text-xs text-[#64748B]">No notices on file</p>
+          <p className="py-4 text-center text-xs text-[#8A99AD]">No notices on file</p>
         ) : (
           <div className="space-y-2">
             {(notices ?? []).map((n: any) => (
               <div key={n.id} className="flex items-center justify-between rounded-[10px] border border-[#1E3350]/50 bg-[#0B1628] px-3 py-2">
                 <div>
                   <p className="text-xs font-medium text-[#F8FAFC]">{n.type.replace(/_/g, ' ')}</p>
-                  <p className="text-[10px] text-[#64748B]">{n.message?.slice(0, 60) ?? ''}</p>
+                  <p className="text-[10px] text-[#8A99AD]">{n.message?.slice(0, 60) ?? ''}</p>
                 </div>
-                <span className="text-[10px] text-[#64748B]">{new Date(n.sentAt).toLocaleDateString()}</span>
+                <span className="text-[10px] text-[#8A99AD]">{new Date(n.sentAt).toLocaleDateString()}</span>
               </div>
             ))}
           </div>
@@ -926,7 +926,7 @@ function HealthSection({ health }: { health: any }) {
       <SectionCard title="Signals & Actions" subtitle="Recommended next steps">
         {(health.signals ?? []).length > 0 && (
           <div className="mb-4 space-y-2">
-            <p className="text-[10px] uppercase tracking-wider text-[#64748B]">Signals</p>
+            <p className="text-[10px] uppercase tracking-wider text-[#8A99AD]">Signals</p>
             {health.signals.map((s: string, i: number) => (
               <div key={i} className="flex items-start gap-2 rounded-[10px] border border-[#F59E0B]/10 bg-[#F59E0B]/5 px-3 py-2">
                 <AlertTriangle size={12} className="mt-0.5 shrink-0 text-[#F59E0B]" />
@@ -938,7 +938,7 @@ function HealthSection({ health }: { health: any }) {
 
         {(health.actions ?? []).length > 0 && (
           <div className="space-y-2">
-            <p className="text-[10px] uppercase tracking-wider text-[#64748B]">Actions</p>
+            <p className="text-[10px] uppercase tracking-wider text-[#8A99AD]">Actions</p>
             <div className="flex flex-wrap gap-2">
               {health.actions.map((a: string, i: number) => (
                 <Button key={i} size="sm" variant="outline">{a}</Button>

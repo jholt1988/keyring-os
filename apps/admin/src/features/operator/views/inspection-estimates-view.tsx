@@ -73,17 +73,17 @@ export function InspectionEstimatesView({
     <section aria-labelledby="inspection-estimates-title">
       <WorkflowFocusBanner
         item={workflowFocus}
-        matched={workflowFocus ? workbench?.inspections.some((item) => workflowFocusMatchesEntity(workflowFocus, 'InspectionRequest', item.inspectionId)) ?? false : undefined}
+        matched={workflowFocus ? workbench?.inspections?.some((item) => workflowFocusMatchesEntity(workflowFocus, 'InspectionRequest', item.inspectionId)) ?? false : undefined}
         onClear={onClearWorkflowFocus}
       />
 
       <div className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
-        <MetricTile label="Completed" value={formatNumber(workbench?.metrics.completedInspections)} detail="inspections" icon={ClipboardList} />
-        <MetricTile label="Need estimate" value={formatNumber(workbench?.metrics.inspectionsNeedingEstimate)} detail="findings ready" icon={AlertTriangle} />
-        <MetricTile label="Draft" value={formatNumber(workbench?.metrics.draftEstimates)} detail="estimates" icon={Inbox} />
-        <MetricTile label="Pending review" value={formatNumber(workbench?.metrics.pendingReviewEstimates)} detail="operator approval" icon={ShieldCheck} />
-        <MetricTile label="Approved" value={formatNumber(workbench?.metrics.approvedEstimates)} detail="repair scope" icon={PenLine} />
-        <MetricTile label="Repair ready" value={formatNumber(workbench?.metrics.repairReadyEstimates)} detail="needs request" icon={Wrench} />
+        <MetricTile label="Completed" value={formatNumber(workbench?.metrics?.completedInspections)} detail="inspections" icon={ClipboardList} />
+        <MetricTile label="Need estimate" value={formatNumber(workbench?.metrics?.inspectionsNeedingEstimate)} detail="findings ready" icon={AlertTriangle} />
+        <MetricTile label="Draft" value={formatNumber(workbench?.metrics?.draftEstimates)} detail="estimates" icon={Inbox} />
+        <MetricTile label="Pending review" value={formatNumber(workbench?.metrics?.pendingReviewEstimates)} detail="operator approval" icon={ShieldCheck} />
+        <MetricTile label="Approved" value={formatNumber(workbench?.metrics?.approvedEstimates)} detail="repair scope" icon={PenLine} />
+        <MetricTile label="Repair ready" value={formatNumber(workbench?.metrics?.repairReadyEstimates)} detail="needs request" icon={Wrench} />
       </div>
 
       <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
@@ -165,7 +165,7 @@ export function InspectionEstimateRow({
           <span>Scheduled {new Date(item.scheduledDate).toLocaleDateString()}</span>
           {item.completedDate ? <span>Completed {new Date(item.completedDate).toLocaleDateString()}</span> : null}
         </div>
-        {item.blockers.length > 0 ? <div className="mt-3 text-xs text-[var(--danger)]">{item.blockers.join(' ')}</div> : null}
+        {(item.blockers?.length ?? 0) > 0 ? <div className="mt-3 text-xs text-[var(--danger)]">{item.blockers?.join(' ')}</div> : null}
       </div>
 
       <div className="text-sm">

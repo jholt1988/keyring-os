@@ -77,7 +77,7 @@ export function RenewalsView({
         setMessage('Renewal signature status refreshed.');
       }
       if (action === 'moveout') {
-        const moveOutAt = moveOutByLease[item.leaseId] || item.endDate.slice(0, 10);
+        const moveOutAt = moveOutByLease[item.leaseId] || item.endDate?.slice(0, 10);
         await recordOperatorRenewalMoveOut(item.leaseId, {
           moveOutAt,
           message: note.trim() || undefined,
@@ -97,17 +97,17 @@ export function RenewalsView({
     <section aria-labelledby="renewals-title">
       <WorkflowFocusBanner
         item={workflowFocus}
-        matched={workflowFocus ? workbench?.leases.some((item) => workflowFocusMatchesEntity(workflowFocus, 'Lease', item.leaseId)) ?? false : undefined}
+        matched={workflowFocus ? workbench?.leases?.some((item) => workflowFocusMatchesEntity(workflowFocus, 'Lease', item.leaseId)) ?? false : undefined}
         onClear={onClearWorkflowFocus}
       />
 
       <div className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
-        <MetricTile label="Expiring" value={formatNumber(workbench?.metrics.expiringLeases)} detail="leases in window" icon={CalendarClock} />
-        <MetricTile label="Need offer" value={formatNumber(workbench?.metrics.needsOffer)} detail="no active offer" icon={ClipboardList} />
-        <MetricTile label="Pending" value={formatNumber(workbench?.metrics.offersPending)} detail="awaiting response" icon={Inbox} />
-        <MetricTile label="Accepted" value={formatNumber(workbench?.metrics.offersAccepted)} detail="ready to sign" icon={ShieldCheck} />
-        <MetricTile label="Signatures" value={formatNumber(workbench?.metrics.signaturesPending)} detail="pending envelopes" icon={PenLine} />
-        <MetricTile label="Move-outs" value={formatNumber(workbench?.metrics.moveOutNotices)} detail="notice given" icon={KeyRound} />
+        <MetricTile label="Expiring" value={formatNumber(workbench?.metrics?.expiringLeases)} detail="leases in window" icon={CalendarClock} />
+        <MetricTile label="Need offer" value={formatNumber(workbench?.metrics?.needsOffer)} detail="no active offer" icon={ClipboardList} />
+        <MetricTile label="Pending" value={formatNumber(workbench?.metrics?.offersPending)} detail="awaiting response" icon={Inbox} />
+        <MetricTile label="Accepted" value={formatNumber(workbench?.metrics?.offersAccepted)} detail="ready to sign" icon={ShieldCheck} />
+        <MetricTile label="Signatures" value={formatNumber(workbench?.metrics?.signaturesPending)} detail="pending envelopes" icon={PenLine} />
+        <MetricTile label="Move-outs" value={formatNumber(workbench?.metrics?.moveOutNotices)} detail="notice given" icon={KeyRound} />
       </div>
 
       <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
@@ -202,7 +202,7 @@ export function RenewalRow({
           {item.latestEnvelope ? <span>Envelope {item.latestEnvelope.status}</span> : null}
           {item.latestNotice ? <span>Notice {item.latestNotice.type}</span> : null}
         </div>
-        {item.blockers.length > 0 ? <div className="mt-3 text-xs text-[var(--danger)]">{item.blockers.join(' ')}</div> : null}
+        {(item.blockers?.length ?? 0) > 0 ? <div className="mt-3 text-xs text-[var(--danger)]">{item.blockers?.join(' ')}</div> : null}
       </div>
 
       <div className="space-y-2">

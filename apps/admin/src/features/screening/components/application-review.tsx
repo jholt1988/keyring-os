@@ -101,7 +101,7 @@ function SectionCard({
           <Icon className="h-4 w-4 text-[#38BDF8]" />
           <span className="font-medium text-[#F8FAFC]">{title}</span>
         </div>
-        {isOpen ? <ChevronUp className="h-4 w-4 text-[#64748B]" /> : <ChevronDown className="h-4 w-4 text-[#64748B]" />}
+        {isOpen ? <ChevronUp className="h-4 w-4 text-[#8A99AD]" /> : <ChevronDown className="h-4 w-4 text-[#8A99AD]" />}
       </button>
       {isOpen && (
         <div className="border-t border-white/8 px-4 py-4">
@@ -115,9 +115,9 @@ function SectionCard({
 function InfoRow({ label, value, icon: Icon }: { label: string; value: string | number; icon?: React.ElementType }) {
   return (
     <div className="flex items-start gap-3">
-      {Icon && <Icon className="mt-0.5 h-4 w-4 text-[#64748B]" />}
+      {Icon && <Icon className="mt-0.5 h-4 w-4 text-[#8A99AD]" />}
       <div>
-        <div className="text-xs uppercase tracking-wider text-[#64748B]">{label}</div>
+        <div className="text-xs uppercase tracking-wider text-[#8A99AD]">{label}</div>
         <div className="text-sm text-[#F8FAFC]">{value}</div>
       </div>
     </div>
@@ -251,12 +251,12 @@ export function ApplicationReview({
                   {application.occupants.map((occupant, idx) => (
                     <div key={idx} className="flex items-center justify-between rounded-lg bg-white/[0.02] px-3 py-2">
                       <span className="text-sm text-[#F8FAFC]">{occupant.name}</span>
-                      <span className="text-xs text-[#64748B]">{occupant.relationship}</span>
+                      <span className="text-xs text-[#8A99AD]">{occupant.relationship}</span>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-[#64748B]">No additional occupants</p>
+                <p className="text-sm text-[#8A99AD]">No additional occupants</p>
               )}
             </SectionCard>
 
@@ -302,12 +302,12 @@ export function ApplicationReview({
                       <FileText size={16} className="text-[#38BDF8]" />
                       <span className="text-sm text-[#F8FAFC]">{doc.name}</span>
                     </div>
-                    <span className="text-xs text-[#64748B]">{formatDate(doc.uploadedAt)}</span>
+                    <span className="text-xs text-[#8A99AD]">{formatDate(doc.uploadedAt)}</span>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-[#64748B]">No documents uploaded</p>
+              <p className="text-sm text-[#8A99AD]">No documents uploaded</p>
             )}
           </SectionCard>
         )}

@@ -1,8 +1,17 @@
 import { defineConfig } from 'vitest/config';
+import { fileURLToPath } from 'node:url';
 
 export default defineConfig({
+  // `@/…` resolves to the admin app's src (matching apps/admin/tsconfig.json).
+  // tenant-portal has no @/-importing tests, so a single alias is unambiguous.
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./apps/admin/src', import.meta.url)),
+    },
+  },
   test: {
     environment: 'jsdom',
+    setupFiles: ['./vitest.setup.ts'],
     include: ['apps/**/*.test.{ts,tsx}', 'apps/**/*.spec.{ts,tsx}', 'packages/**/*.test.{ts,tsx}', 'packages/**/*.spec.{ts,tsx}'],
     exclude: ['**/e2e/**', '**/tests/**', '**/node_modules/**'],
     coverage: {

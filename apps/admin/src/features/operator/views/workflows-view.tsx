@@ -21,7 +21,7 @@ export function WorkflowsView({
   onOpenWorkflow: (item: OperatorWorkflowItem) => void;
 }) {
   const groups = useMemo(() => data.workflows?.groups ?? [], [data.workflows?.groups]);
-  const totalItems = data.workflows?.totals.items ?? 0;
+  const totalItems = data.workflows?.totals?.items ?? 0;
   const paymentWorkbench = data.paymentWorkbench;
   const allItems = useMemo(() => groups.flatMap((group) => group.items), [groups]);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
@@ -46,10 +46,10 @@ export function WorkflowsView({
   return (
     <div>
       <div className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricTile label="Workflow groups" value={formatNumber(data.workflows?.totals.workflows ?? groups.length)} detail="Phase 3 operational areas" icon={Layers3} />
+        <MetricTile label="Workflow groups" value={formatNumber(data.workflows?.totals?.workflows ?? groups.length)} detail="Phase 3 operational areas" icon={Layers3} />
         <MetricTile label="Open items" value={formatNumber(totalItems)} detail="work ready or blocked" icon={ClipboardList} />
-        <MetricTile label="High priority" value={formatNumber(data.workflows?.totals.highPriority)} detail="needs same-day review" icon={AlertTriangle} />
-        <MetricTile label="Blocked" value={formatNumber(data.workflows?.totals.blocked)} detail="requires resolution before progress" icon={ShieldCheck} />
+        <MetricTile label="High priority" value={formatNumber(data.workflows?.totals?.highPriority)} detail="needs same-day review" icon={AlertTriangle} />
+        <MetricTile label="Blocked" value={formatNumber(data.workflows?.totals?.blocked)} detail="requires resolution before progress" icon={ShieldCheck} />
       </div>
 
       <section aria-labelledby="workflow-title">
@@ -76,11 +76,11 @@ export function WorkflowsView({
                   <span className="text-sm text-[var(--muted)]">{group.count} open</span>
                 </div>
 
-                {group.items.length === 0 ? (
+                {(group.items?.length ?? 0) === 0 ? (
                   <div className="px-4 py-4 text-sm text-[var(--muted)]">No active items in this workflow.</div>
                 ) : (
                   <div className="divide-y divide-[var(--border)]">
-                    {group.items.map((item) => (
+                    {(group.items ?? []).map((item) => (
                       <WorkflowRow
                         key={item.id}
                         item={item}
@@ -123,11 +123,11 @@ export function WorkflowsView({
         ) : (
           <div className="space-y-4">
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
-              <MetricTile label="Ledger balance" value={cents(paymentWorkbench.metrics.totalBalanceCents) ?? '$0'} detail={`${formatNumber(paymentWorkbench.metrics.ledgerAccounts)} accounts`} icon={Banknote} />
-              <MetricTile label="Delinquent" value={cents(paymentWorkbench.metrics.delinquentAmountCents) ?? '$0'} detail={`${formatNumber(paymentWorkbench.metrics.delinquentLeases)} leases`} icon={AlertTriangle} />
-              <MetricTile label="Exceptions" value={formatNumber(paymentWorkbench.metrics.paymentExceptions)} detail="bookkeeping exceptions" icon={ClipboardList} />
-              <MetricTile label="Unreconciled" value={formatNumber(paymentWorkbench.metrics.unreconciledItems)} detail="bank/recon items" icon={RefreshCcw} />
-              <MetricTile label="Payment gates" value={paymentWorkbench.metrics.paymentExpansionBlocked ? 'Blocked' : 'Ready'} detail="write expansion status" icon={ShieldCheck} />
+              <MetricTile label="Ledger balance" value={cents(paymentWorkbench.metrics?.totalBalanceCents) ?? '$0'} detail={`${formatNumber(paymentWorkbench.metrics?.ledgerAccounts)} accounts`} icon={Banknote} />
+              <MetricTile label="Delinquent" value={cents(paymentWorkbench.metrics?.delinquentAmountCents) ?? '$0'} detail={`${formatNumber(paymentWorkbench.metrics?.delinquentLeases)} leases`} icon={AlertTriangle} />
+              <MetricTile label="Exceptions" value={formatNumber(paymentWorkbench.metrics?.paymentExceptions)} detail="bookkeeping exceptions" icon={ClipboardList} />
+              <MetricTile label="Unreconciled" value={formatNumber(paymentWorkbench.metrics?.unreconciledItems)} detail="bank/recon items" icon={RefreshCcw} />
+              <MetricTile label="Payment gates" value={paymentWorkbench.metrics?.paymentExpansionBlocked ? 'Blocked' : 'Ready'} detail="write expansion status" icon={ShieldCheck} />
             </div>
 
             <div className="grid gap-5 xl:grid-cols-[1fr_420px]">
@@ -312,7 +312,7 @@ export function WorkflowInspector({
                   <span className="font-medium">{capability.task}</span>
                   <span className="rounded-sm border border-[var(--border)] px-2 py-0.5 text-xs">{capability.riskLevel.toLowerCase()}</span>
                 </div>
-                <p className="mt-1 text-xs leading-5 text-[var(--muted)]">{capability.primaryGuardrails[0] ?? capability.description}</p>
+                <p className="mt-1 text-xs leading-5 text-[var(--muted)]">{capability.primaryGuardrails?.[0] ?? capability.description}</p>
               </div>
             ))}
             {capabilities.length === 0 && (

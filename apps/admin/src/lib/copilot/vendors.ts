@@ -1,4 +1,5 @@
 import { api } from './core';
+import { API_V2_BASE } from '../api-client';
 
 export async function fetchVendors() {
   return api('/vendors');
@@ -12,8 +13,8 @@ export async function createVendor(data: Record<string, unknown>) {
 }
 
 export function getVendors1099ExportUrl() {
-  const base = process.env.NEXT_PUBLIC_API_URL ?? '';
-  return `${base}/vendors/1099-export`;
+  // Route through the /api/v2 proxy so the httpOnly auth cookie is forwarded.
+  return `${API_V2_BASE}/vendors/1099-export`;
 }
 
 export const vendorsApi = {

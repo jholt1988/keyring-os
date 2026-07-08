@@ -138,7 +138,7 @@ export function CreateUserForm({ onSave, onCancel }: CreateUserFormProps) {
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Username</label>
           <div className="relative">
-            <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input 
               value={form.username} 
               onChange={(e) => handleChange('username', e.target.value)}
@@ -158,7 +158,7 @@ export function CreateUserForm({ onSave, onCancel }: CreateUserFormProps) {
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Email</label>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input 
               type="email" 
               value={form.email} 
@@ -220,7 +220,7 @@ export function CreateUserForm({ onSave, onCancel }: CreateUserFormProps) {
             )}
           </div>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input 
               type="password" 
               value={form.password} 
@@ -246,7 +246,7 @@ export function CreateUserForm({ onSave, onCancel }: CreateUserFormProps) {
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Confirm Password</label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input 
               type="password" 
               value={confirmPassword} 

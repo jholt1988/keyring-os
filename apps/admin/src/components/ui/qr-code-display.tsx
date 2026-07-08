@@ -96,7 +96,7 @@ export function QRCodeDisplay({
               </div>
               
               <div className="relative">
-                <div className={`flex h-10 items-center rounded-lg border border-white/10 bg-[#0F1B31] px-3 font-mono text-sm ${showSecret ? 'text-[#F8FAFC]' : 'text-[#64748B]'}`}>
+                <div className={`flex h-10 items-center rounded-lg border border-white/10 bg-[#0F1B31] px-3 font-mono text-sm ${showSecret ? 'text-[#F8FAFC]' : 'text-[#8A99AD]'}`}>
                   {showSecret ? secret : '•'.repeat(32)}
                 </div>
                 <Button

@@ -93,7 +93,7 @@ export function PortfolioView({
             <h2 id="setup-title" className="text-lg font-semibold">Property and unit setup</h2>
             <p className="text-sm text-[var(--muted)]">Create beta portfolio records through audited Phase 3 setup contracts.</p>
           </div>
-          <span className="text-sm text-[var(--muted)]">{data.setup ? `${data.setup.metrics.unitsMissingDetails} units need details` : 'Waiting for setup summary'}</span>
+          <span className="text-sm text-[var(--muted)]">{data.setup ? `${data.setup.metrics?.unitsMissingDetails ?? 0} units need details` : 'Waiting for setup summary'}</span>
         </div>
 
         {setupMessage ? <div className="mb-3 rounded-md border border-[var(--border)] bg-[var(--panel-strong)] p-3 text-sm text-[var(--muted)]">{setupMessage}</div> : null}

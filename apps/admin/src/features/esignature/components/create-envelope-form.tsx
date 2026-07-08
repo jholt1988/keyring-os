@@ -70,7 +70,7 @@ export function CreateEnvelopeForm({ onSave, onCancel }: CreateEnvelopeFormProps
 
         <div className="space-y-2 md:col-span-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Message</label>
-          <textarea value={form.message || ''} onChange={(e) => setForm((prev) => ({ ...prev, message: e.target.value }))} className="flex min-h-[80px] w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#64748B] focus:border-[#3B82F6] focus:outline-none" placeholder="Optional message to recipients..." />
+          <textarea value={form.message || ''} onChange={(e) => setForm((prev) => ({ ...prev, message: e.target.value }))} className="flex min-h-[80px] w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] focus:border-[#3B82F6] focus:outline-none" placeholder="Optional message to recipients..." />
         </div>
 
         <div className="space-y-2 md:col-span-2">
@@ -83,7 +83,7 @@ export function CreateEnvelopeForm({ onSave, onCancel }: CreateEnvelopeFormProps
             <div key={i} className="grid gap-2 rounded-lg border border-white/10 bg-[#0F1B31] p-3 md:grid-cols-4">
               <Input value={r.name} onChange={(e) => updateRecipient(i, 'name', e.target.value)} placeholder="Name" className="h-9" />
               <div className="relative">
-                <Mail className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-[#64748B]" />
+                <Mail className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-[#8A99AD]" />
                 <Input value={r.email} onChange={(e) => updateRecipient(i, 'email', e.target.value)} placeholder="Email" className="h-9 pl-7" />
               </div>
               <Input value={r.role} onChange={(e) => updateRecipient(i, 'role', e.target.value)} placeholder="Role" className="h-9" />

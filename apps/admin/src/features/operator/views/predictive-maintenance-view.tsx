@@ -4,6 +4,24 @@ import { useCallback, useEffect, useState } from 'react';
 import { AlertTriangle } from 'lucide-react';
 import type { ReadOnlyOperatorData } from '@/lib/operator/read-only-data';
 
+interface PredictiveAlertMetadata {
+  assetId?: number;
+  assetName?: string;
+  category?: string;
+  remainingLifeDays?: number;
+  failureProbability?: number;
+  recommendedAction?: string;
+}
+
+interface PredictiveAlert {
+  id: string | number;
+  metadata?: PredictiveAlertMetadata;
+}
+
+interface PredictiveAssets {
+  alerts?: PredictiveAlert[];
+}
+
 export function PredictiveMaintenanceView({
   data,
   token,
@@ -13,7 +31,7 @@ export function PredictiveMaintenanceView({
   token: string;
   onRefresh: () => Promise<void>;
 }) {
-  const [predictiveAssets, setPredictiveAssets] = useState<any>(null);
+  const [predictiveAssets, setPredictiveAssets] = useState<PredictiveAssets | null>(null);
   const [loadingPredictive, setLoadingPredictive] = useState(false);
   const [triggeringAssetId, setTriggeringAssetId] = useState<number | null>(null);
   const [message, setMessage] = useState<string | null>(null);
@@ -28,7 +46,7 @@ export function PredictiveMaintenanceView({
       });
       if (res.ok) {
         const body = await res.json();
-        setPredictiveAssets(body.data || body);
+        setPredictiveAssets((body.data ?? body) as PredictiveAssets);
       }
     } catch (err) {
       console.error('Failed to load predictive assets.');
@@ -94,21 +112,21 @@ export function PredictiveMaintenanceView({
           </button>
         </div>
 
-        {predictiveAssets?.alerts?.length > 0 ? (
+        {(predictiveAssets?.alerts?.length ?? 0) > 0 ? (
           <div className="space-y-3">
-            {predictiveAssets.alerts.map((alert: any) => (
+            {predictiveAssets?.alerts?.map((alert) => (
               <div key={alert.id} className="flex flex-col gap-3 rounded-md bg-[var(--panel-strong)] p-3 text-xs md:flex-row md:items-center md:justify-between">
                 <div>
                   <div className="font-semibold text-[var(--foreground)]">{alert.metadata?.assetName} ({alert.metadata?.category})</div>
                   <div className="mt-1 text-[var(--muted)]">
                     Projected life remaining: <strong className="text-[var(--foreground)]">{alert.metadata?.remainingLifeDays} days</strong> · 
-                    Failure Probability: <strong className="text-red-600 font-semibold">{Math.round(alert.metadata?.failureProbability * 100)}%</strong>
+                    Failure Probability: <strong className="text-red-600 font-semibold">{Math.round((alert.metadata?.failureProbability ?? 0) * 100)}%</strong>
                   </div>
                   <div className="mt-1 font-medium text-yellow-700">{alert.metadata?.recommendedAction}</div>
                 </div>
                 <button
                   disabled={triggeringAssetId === alert.metadata?.assetId}
-                  onClick={() => void triggerPreventiveTicket(alert.metadata?.assetId)}
+                  onClick={() => alert.metadata?.assetId != null && void triggerPreventiveTicket(alert.metadata.assetId)}
                   className="rounded bg-[var(--accent)] px-3 py-1.5 font-semibold text-white hover:opacity-90 disabled:opacity-50 min-w-[150px] text-center"
                 >
                   {triggeringAssetId === alert.metadata?.assetId ? 'Generating...' : 'Approve Work Order'}

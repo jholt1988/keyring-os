@@ -68,7 +68,7 @@ export function LeaseForm({ initialData, tenantOptions = [], propertyOptions = [
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Tenant</label>
           <div className="relative">
-            <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <select
               value={form.tenantId}
               onChange={(e) => handleChange('tenantId', e.target.value)}
@@ -86,7 +86,7 @@ export function LeaseForm({ initialData, tenantOptions = [], propertyOptions = [
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Property</label>
           <div className="relative">
-            <Home className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Home className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <select
               value={form.propertyId}
               onChange={(e) => handleChange('propertyId', e.target.value)}
@@ -126,7 +126,7 @@ export function LeaseForm({ initialData, tenantOptions = [], propertyOptions = [
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Lease Start</label>
           <div className="relative">
-            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="date"
               value={form.leaseStart}
@@ -140,7 +140,7 @@ export function LeaseForm({ initialData, tenantOptions = [], propertyOptions = [
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Lease End</label>
           <div className="relative">
-            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="date"
               value={form.leaseEnd}
@@ -154,7 +154,7 @@ export function LeaseForm({ initialData, tenantOptions = [], propertyOptions = [
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Monthly Rent</label>
           <div className="relative">
-            <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="number"
               value={form.monthlyRent}
@@ -168,7 +168,7 @@ export function LeaseForm({ initialData, tenantOptions = [], propertyOptions = [
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Security Deposit</label>
           <div className="relative">
-            <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="number"
               value={form.securityDeposit}
@@ -197,7 +197,7 @@ export function LeaseForm({ initialData, tenantOptions = [], propertyOptions = [
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Move In Date</label>
           <div className="relative">
-            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="date"
               value={form.moveInAt || ''}
@@ -210,7 +210,7 @@ export function LeaseForm({ initialData, tenantOptions = [], propertyOptions = [
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Move Out Date</label>
           <div className="relative">
-            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="date"
               value={form.moveOutAt || ''}

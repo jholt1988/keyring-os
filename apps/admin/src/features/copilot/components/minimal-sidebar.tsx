@@ -28,6 +28,7 @@ import {
   Search,
 } from 'lucide-react';
 import { useOperatorData } from '@/features/operator/context/operator-data-context';
+import { LogoutButton } from '@/components/shell/logout-button';
 
 interface NavItem {
   icon: React.ElementType;
@@ -49,9 +50,9 @@ export function MinimalSidebar() {
   try {
     const { data } = useOperatorData();
     pendingApprovals = data.approvals?.length ?? 0;
-    openMaintenance = data.metrics?.maintenance?.open ?? data.maintenanceDispatch?.metrics.openRequests ?? 0;
-    pendingApplications = data.applications?.metrics.needsScreening ?? 0;
-    activeWorkflows = data.workflows?.groups.reduce((sum, g) => sum + g.items.length, 0) ?? 0;
+    openMaintenance = data.metrics?.maintenance?.open ?? data.maintenanceDispatch?.metrics?.openRequests ?? 0;
+    pendingApplications = data.applications?.metrics?.needsScreening ?? 0;
+    activeWorkflows = data.workflows?.groups?.reduce((sum, g) => sum + g.items.length, 0) ?? 0;
   } catch {
     // Context not available yet — use static badges
   }
@@ -129,6 +130,7 @@ export function MinimalSidebar() {
           {bottomNav.map((item) => (
             <SidebarLink key={item.href} item={item} pathname={pathname} collapsed={collapsed} />
           ))}
+          <LogoutButton collapsed={collapsed} />
         </div>
       </div>
     </aside>

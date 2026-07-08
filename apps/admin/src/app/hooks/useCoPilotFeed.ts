@@ -4,8 +4,9 @@ import { useQuery } from '@tanstack/react-query';
 import { mockFeed } from '@keyring/types';
 import type { FeedResponse } from '@keyring/types';
 import { useExecuteFeedAction } from './useExecuteAction';
+import { API_V2_BASE } from '@/lib/api-client';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? '/api/v2';
+const API_BASE = API_V2_BASE;
 
 export function useCoPilotFeed() {
   const performAction = useExecuteFeedAction();
@@ -22,7 +23,10 @@ export function useCoPilotFeed() {
           generatedAt: new Date().toISOString(),
         } satisfies FeedResponse;
       }
-      return res.json();
+      // The backend wraps the payload in an AI-gateway envelope
+      // ({ result: {...}, confidence, ... }); unwrap it to the FeedResponse.
+      const body = await res.json();
+      return (body?.result ?? body) as FeedResponse;
     },
     refetchInterval: 30000, // Poll every 30 seconds to keep feed fresh
   });

@@ -89,9 +89,9 @@ export function DenialComplianceCard({
         </div>
         <button className="rounded-lg p-1 hover:bg-white/5">
           {expanded ? (
-            <ChevronUp className="h-5 w-5 text-[#64748B]" />
+            <ChevronUp className="h-5 w-5 text-[#8A99AD]" />
           ) : (
-            <ChevronDown className="h-5 w-5 text-[#64748B]" />
+            <ChevronDown className="h-5 w-5 text-[#8A99AD]" />
           )}
         </button>
       </div>

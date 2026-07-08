@@ -69,11 +69,11 @@ export function RenewalResponseForm({ onSave, onCancel }: RenewalResponseFormPro
       <div className="space-y-2">
         <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Response Message</label>
         <div className="relative">
-          <FileText className="absolute left-3 top-3 h-4 w-4 text-[#64748B]" />
+          <FileText className="absolute left-3 top-3 h-4 w-4 text-[#8A99AD]" />
           <textarea
             value={form.message || ''}
             onChange={(e) => setForm((prev) => ({ ...prev, message: e.target.value }))}
-            className="flex min-h-[100px] w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 pl-10 text-sm text-[#F8FAFC] placeholder:text-[#64748B] focus:border-[#3B82F6] focus:outline-none"
+            className="flex min-h-[100px] w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 pl-10 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] focus:border-[#3B82F6] focus:outline-none"
             placeholder="Optional message..."
           />
         </div>

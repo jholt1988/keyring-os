@@ -159,7 +159,7 @@ export function DailyBrief() {
                     <span className="font-medium">System Ready ({opData.aiCapabilities.mode})</span>
                   </div>
                   <p>Model: {opData.aiCapabilities.model}</p>
-                  <p>{opData.aiCapabilities.capabilities.length} capabilities loaded</p>
+                  <p>{opData.aiCapabilities.capabilities?.length ?? 0} capabilities loaded</p>
                 </div>
               ) : (
                 <div className="rounded-[18px] border border-white/8 bg-black/10 p-4 text-[#94A3B8]">

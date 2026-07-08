@@ -34,7 +34,7 @@ export function ApplicationsView({
   onClearWorkflowFocus: () => void;
 }) {
   const workbench = data.applications;
-  const [selectedId, setSelectedId] = useState<number | null>(workbench?.applications[0]?.id ?? null);
+  const [selectedId, setSelectedId] = useState<number | null>(workbench?.applications?.[0]?.id ?? null);
   const [detail, setDetail] = useState<OperatorApplicationDetail | null>(null);
   const [pending, setPending] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
@@ -47,7 +47,7 @@ export function ApplicationsView({
   const [leaseDeposit, setLeaseDeposit] = useState('');
 
   useEffect(() => {
-    if (!selectedId && workbench?.applications[0]?.id) {
+    if (!selectedId && workbench?.applications?.[0]?.id) {
       setSelectedId(workbench.applications[0].id);
     }
   }, [selectedId, workbench?.applications]);
@@ -77,7 +77,7 @@ export function ApplicationsView({
     };
   }, [selectedId, token]);
 
-  const selected = detail?.application ?? workbench?.applications.find((item) => item.id === selectedId) ?? null;
+  const selected = detail?.application ?? workbench?.applications?.find((item) => item.id === selectedId) ?? null;
 
   async function runScreen(applicationId: number) {
     setPending(`screen-${applicationId}`);
@@ -141,15 +141,15 @@ export function ApplicationsView({
     <section aria-labelledby="applications-title">
       <WorkflowFocusBanner
         item={workflowFocus}
-        matched={workflowFocus ? workbench?.applications.some((item) => workflowFocusMatchesEntity(workflowFocus, 'RentalApplication', item.id)) ?? false : undefined}
+        matched={workflowFocus ? workbench?.applications?.some((item) => workflowFocusMatchesEntity(workflowFocus, 'RentalApplication', item.id)) ?? false : undefined}
         onClear={onClearWorkflowFocus}
       />
 
       <div className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricTile label="Applications" value={formatNumber(workbench?.metrics.totalApplications)} detail="current workbench" icon={Users} />
-        <MetricTile label="Need screening" value={formatNumber(workbench?.metrics.needsScreening)} detail="ready for policy review" icon={ClipboardList} />
-        <MetricTile label="Ready for lease" value={formatNumber(workbench?.metrics.approvedReadyForLease)} detail="approved handoffs" icon={KeyRound} />
-        <MetricTile label="Converted" value={formatNumber(workbench?.metrics.convertedToLease)} detail="draft leases created" icon={ShieldCheck} />
+        <MetricTile label="Applications" value={formatNumber(workbench?.metrics?.totalApplications)} detail="current workbench" icon={Users} />
+        <MetricTile label="Need screening" value={formatNumber(workbench?.metrics?.needsScreening)} detail="ready for policy review" icon={ClipboardList} />
+        <MetricTile label="Ready for lease" value={formatNumber(workbench?.metrics?.approvedReadyForLease)} detail="approved handoffs" icon={KeyRound} />
+        <MetricTile label="Converted" value={formatNumber(workbench?.metrics?.convertedToLease)} detail="draft leases created" icon={ShieldCheck} />
       </div>
 
       <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
@@ -220,12 +220,12 @@ export function ApplicationsView({
                   </button>
                   <div className="grid gap-2 sm:grid-cols-2">
                     <select value={reviewAction} onChange={(event) => setReviewAction(event.target.value)} className="h-10 rounded-md border border-[var(--border)] bg-[var(--panel)] px-2 text-sm" aria-label="Application review action">
-                      {workbench.reviewActions.map((action) => <option key={action} value={action}>{action.replaceAll('_', ' ')}</option>)}
+                      {(workbench.reviewActions ?? []).map((action) => <option key={action} value={action}>{action.replaceAll('_', ' ')}</option>)}
                     </select>
                     {reviewAction === 'DENY' ? (
                       <select value={denialReasonCode} onChange={(event) => setDenialReasonCode(event.target.value)} className="h-10 rounded-md border border-[var(--border)] bg-[var(--panel)] px-2 text-sm" aria-label="Denial reason code">
                         <option value="">Reason code</option>
-                        {workbench.denialReasonCodes.map((code) => <option key={code} value={code}>{code.replaceAll('_', ' ')}</option>)}
+                        {(workbench.denialReasonCodes ?? []).map((code) => <option key={code} value={code}>{code.replaceAll('_', ' ')}</option>)}
                       </select>
                     ) : null}
                   </div>
@@ -241,9 +241,9 @@ export function ApplicationsView({
 
                 <div className="space-y-2 border-t border-[var(--border)] pt-4">
                   <div className="text-sm font-semibold">Draft lease</div>
-                  {detail?.leaseHandoff?.readinessWarnings.length ? (
+                  {detail?.leaseHandoff?.readinessWarnings?.length ? (
                     <div className="rounded-md border border-[var(--border)] bg-[var(--panel-strong)] p-2 text-xs text-[var(--muted)]">
-                      {detail.leaseHandoff.readinessWarnings.join(' ')}
+                      {detail.leaseHandoff.readinessWarnings?.join(' ')}
                     </div>
                   ) : null}
                   <div className="grid gap-2 sm:grid-cols-2">
@@ -266,7 +266,7 @@ export function ApplicationsView({
                   <div className="space-y-2 text-xs text-[var(--muted)]">
                     <div>Policy: {JSON.stringify(detail?.policyEvaluation ?? {}).slice(0, 220)}</div>
                     <div>Lifecycle: {JSON.stringify(detail?.lifecycle ?? {}).slice(0, 180)}</div>
-                    <div>Timeline events: {detail?.timeline.length ?? 0}</div>
+                    <div>Timeline events: {detail?.timeline?.length ?? 0}</div>
                   </div>
                 </div>
               </div>

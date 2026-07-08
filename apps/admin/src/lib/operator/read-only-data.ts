@@ -728,12 +728,47 @@ async function loadArea<T>(
   }
 }
 
-function unwrapEnvelope<T>(payload: T): T {
-  if (payload && typeof payload === 'object' && 'data' in payload && 'meta' in payload && 'errors' in payload) {
-    return (payload as { data: T }).data;
+export function unwrapEnvelope<T>(payload: T): T {
+  // Endpoints may be wrapped in one or BOTH envelopes — the standard API
+  // envelope { data, meta, errors } and the AI-gateway envelope
+  // { result, confidence, ... } — sometimes nested ({ data: { result: ... } }).
+  // Peel every recognised layer so consumers get the bare payload.
+  let current: unknown = payload;
+  for (let i = 0; i < 5 && current && typeof current === 'object'; i++) {
+    if ('data' in current && 'meta' in current && 'errors' in current) {
+      current = (current as { data: unknown }).data;
+      continue;
+    }
+    if ('result' in current && 'confidence' in current) {
+      current = (current as { result: unknown }).result;
+      continue;
+    }
+    break;
   }
+  return current as T;
+}
 
-  return payload;
+
+
+/**
+ * Coerce the portfolio area into a stable { data: [], meta } shape regardless of
+ * whether the upstream envelope was unwrapped to a bare array, arrived as a
+ * PortfolioResponse, or is missing entirely. Prevents `.reduce` on undefined in
+ * consumers that read portfolio.data.
+ */
+function normalizePortfolio(value: unknown): PortfolioResponse {
+  // Unwrap an AI-gateway envelope ({ result: {...}, confidence, ... }) if present.
+  const v0 = value && typeof value === 'object' && 'result' in value
+    ? (value as { result: unknown }).result
+    : value;
+  if (Array.isArray(v0)) {
+    return { data: v0 as PortfolioResponse['data'], meta: emptyReadOnlyOperatorData.portfolio.meta };
+  }
+  if (v0 && typeof v0 === 'object' && Array.isArray((v0 as PortfolioResponse).data)) {
+    const v = v0 as PortfolioResponse;
+    return { data: v.data, meta: v.meta ?? emptyReadOnlyOperatorData.portfolio.meta };
+  }
+  return emptyReadOnlyOperatorData.portfolio;
 }
 
 export async function decideApprovalTask(
@@ -1088,7 +1123,7 @@ export async function loadReadOnlyOperatorData(options: ApiClientOptions): Promi
     metrics: metrics.data,
     briefing: commandCenter.data?.dailyBriefing ?? briefing.data,
     feed: feed.data?.items ?? [],
-    portfolio: portfolio.data ?? emptyReadOnlyOperatorData.portfolio,
+    portfolio: normalizePortfolio(portfolio.data),
     approvals: commandCenter.data?.approvals ?? approvalData,
     errors: [commandCenter.error, aiCapabilities.error, workflows.error, paymentWorkbench.error, setup.error, applications.error, leaseSigning.error, maintenanceDispatch.error, renewals.error, ownerStatements.error, metrics.error, briefing.error, feed.error, portfolio.error, approvals.error].filter((error) => error !== null),
   };

@@ -53,7 +53,7 @@ export function RenewalOfferForm({ initialData, onSave, onCancel }: RenewalOffer
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Proposed Rent</label>
           <div className="relative">
-            <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="number"
               step="0.01"
@@ -68,7 +68,7 @@ export function RenewalOfferForm({ initialData, onSave, onCancel }: RenewalOffer
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Escalation %</label>
           <div className="relative">
-            <Percent className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Percent className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="number"
               step="0.1"
@@ -83,7 +83,7 @@ export function RenewalOfferForm({ initialData, onSave, onCancel }: RenewalOffer
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Lease Start</label>
           <div className="relative">
-            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="date"
               value={form.proposedStart}
@@ -97,7 +97,7 @@ export function RenewalOfferForm({ initialData, onSave, onCancel }: RenewalOffer
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Lease End</label>
           <div className="relative">
-            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="date"
               value={form.proposedEnd}
@@ -111,7 +111,7 @@ export function RenewalOfferForm({ initialData, onSave, onCancel }: RenewalOffer
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Expires At</label>
           <div className="relative">
-            <Clock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" />
+            <Clock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="date"
               value={form.expiresAt || ''}
@@ -124,11 +124,11 @@ export function RenewalOfferForm({ initialData, onSave, onCancel }: RenewalOffer
         <div className="space-y-2 md:col-span-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Message</label>
           <div className="relative">
-            <FileText className="absolute left-3 top-3 h-4 w-4 text-[#64748B]" />
+            <FileText className="absolute left-3 top-3 h-4 w-4 text-[#8A99AD]" />
             <textarea
               value={form.message || ''}
               onChange={(e) => handleChange('message', e.target.value)}
-              className="flex min-h-[100px] w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 pl-10 text-sm text-[#F8FAFC] placeholder:text-[#64748B] focus:border-[#3B82F6] focus:outline-none"
+              className="flex min-h-[100px] w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 pl-10 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] focus:border-[#3B82F6] focus:outline-none"
               placeholder="Additional message to tenant..."
             />
           </div>
