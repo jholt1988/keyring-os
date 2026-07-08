@@ -658,9 +658,9 @@ function LeaseSection({ lease }: { lease: any }) {
             { label: 'Start', value: new Date(lease.startDate).toLocaleDateString() },
             { label: 'End', value: new Date(lease.endDate).toLocaleDateString() },
             { label: 'Days Remaining', value: lease.daysUntilEnd ?? '—' },
-            { label: 'Rent', value: `$${lease.rentAmount?.toLocaleString()}/mo` },
-            { label: 'Deposit', value: `$${lease.depositAmount?.toLocaleString()}` },
-            { label: 'Balance', value: `$${lease.currentBalance?.toLocaleString()}` },
+            { label: 'Rent', value: `$${(lease.rentAmountCents != null ? lease.rentAmountCents / 100 : lease.rentAmount)?.toLocaleString()}/mo` },
+            { label: 'Deposit', value: `$${(lease.depositAmountCents != null ? lease.depositAmountCents / 100 : lease.depositAmount)?.toLocaleString()}` },
+            { label: 'Balance', value: `$${(lease.currentBalanceCents != null ? lease.currentBalanceCents / 100 : lease.currentBalance)?.toLocaleString()}` },
             { label: 'Autopay', value: lease.autopayActive ? 'Active' : 'Not enrolled' },
             { label: 'Renewal', value: lease.renewalStatus ?? 'None' },
           ].map((row) => (

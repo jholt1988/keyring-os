@@ -197,12 +197,12 @@ export default function TenantsPage() {
               <div className="mb-4 space-y-2 rounded-[14px] border border-[#1E3350] bg-[#0F1B31] p-3">
                 <div className="flex justify-between text-xs">
                   <span className="text-[#94A3B8]">Rent</span>
-                  <span className="font-mono text-[#F8FAFC]">${selectedTenant.rentAmount?.toLocaleString() ?? '—'}/mo</span>
+                  <span className="font-mono text-[#F8FAFC]">${(selectedTenant.rentAmountCents != null ? selectedTenant.rentAmountCents / 100 : selectedTenant.rentAmount)?.toLocaleString() ?? '—'}/mo</span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-[#94A3B8]">Balance</span>
                   <span className={`font-mono ${(selectedTenant.currentBalance ?? 0) > 0 ? 'text-[#F43F5E]' : 'text-[#10B981]'}`}>
-                    ${(selectedTenant.currentBalance ?? 0).toLocaleString()}
+                    ${((selectedTenant.currentBalanceCents != null ? selectedTenant.currentBalanceCents / 100 : selectedTenant.currentBalance) ?? 0).toLocaleString()}
                   </span>
                 </div>
                 <div className="flex justify-between text-xs">
