@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Loader2 } from 'lucide-react';
 import type { ReadOnlyOperatorData } from '@/lib/operator/read-only-data';
-import { formatCurrency } from '../utils';
+import { cents, formatCurrency } from '../utils';
 
 interface PricingOption {
   termMonths?: number;
@@ -95,7 +95,7 @@ export function RentOptimizationView({
                 >
                   <div className="font-medium text-sm">{item.unitLabel || 'Unknown Unit'}</div>
                   <div className="text-xs text-[var(--muted)] mt-1">{item.propertyName}</div>
-                  <div className="text-xs text-[var(--muted)] mt-1">Current Rent: {formatCurrency(item.currentRent)}</div>
+                  <div className="text-xs text-[var(--muted)] mt-1">Current Rent: {cents(item.currentRentCents) ?? formatCurrency(item.currentRent)}</div>
                 </button>
               ))}
             </div>

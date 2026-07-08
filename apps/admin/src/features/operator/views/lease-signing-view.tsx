@@ -15,7 +15,7 @@ import {
 } from '@/lib/operator/read-only-data';
 import { MetricTile } from '../components/metric-tile';
 import { WorkflowFocusBanner, workflowFocusMatchesEntity, useFocusedRowScroll } from '../components/workflow-focus-banner';
-import { formatCurrency, formatNumber } from '../utils';
+import { cents, formatCurrency, formatNumber } from '../utils';
 
 export function LeaseSigningView({
   data,
@@ -148,8 +148,8 @@ export function LeaseSigningRow({
         </div>
         <p className="mt-1 text-sm text-[var(--muted)]">{item.propertyName ?? 'No property'} {item.unitLabel ? `- ${item.unitLabel}` : ''}</p>
         <div className="mt-3 flex flex-wrap gap-3 text-xs text-[var(--muted)]">
-          <span>{formatCurrency(item.rentAmount)} rent</span>
-          <span>{formatCurrency(item.depositAmount)} deposit</span>
+          <span>{cents(item.rentAmountCents) ?? formatCurrency(item.rentAmount)} rent</span>
+          <span>{cents(item.depositAmountCents) ?? formatCurrency(item.depositAmount)} deposit</span>
           <span>{new Date(item.startDate).toLocaleDateString()} to {new Date(item.endDate).toLocaleDateString()}</span>
           <span>{item.documentCount} packet docs</span>
         </div>
