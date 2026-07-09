@@ -2,13 +2,15 @@ import type { TenantFeedResponse } from '@keyring/types';
 
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
 const MOCK_USER_ID = process.env.NEXT_PUBLIC_MOCK_USER_ID ?? 'dev-tenant-uuid-001';
-const USE_MOCK_AUTH = process.env.NEXT_PUBLIC_USE_MOCK_AUTH === 'true';
+const USE_MOCK_AUTH =
+  process.env.NODE_ENV !== 'production' &&
+  process.env.NEXT_PUBLIC_ENABLE_MOCK_AUTH === 'true';
 
 /**
  * Get auth headers for API requests.
  *
  * Production: uses httpOnly cookie (JWT set by Next.js API route /api/auth/login).
- * Development: if NEXT_PUBLIC_USE_MOCK_AUTH=true, uses X-Mock-* headers.
+ * Development only (never in production): if NEXT_PUBLIC_ENABLE_MOCK_AUTH=true, uses X-Mock-* headers.
  */
 function headers(): HeadersInit {
   const base: HeadersInit = { 'Content-Type': 'application/json' };
