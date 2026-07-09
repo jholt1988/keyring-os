@@ -15,7 +15,7 @@ export interface Tenant {
   unitNumber: string;
   leaseStart: string;
   leaseEnd: string;
-  monthlyRent: number;
+  rentAmount: number;
   status: 'active' | 'pending' | 'past' | 'in-arrears';
 }
 
@@ -119,7 +119,7 @@ export function TenantList({ tenants, onSelectTenant, onFilterChange }: TenantLi
                 <div className="flex items-center gap-4">
                   <div className="text-right">
                     <div className="text-sm font-medium text-[#F8FAFC]">
-                      ${tenant.monthlyRent.toLocaleString()}/mo
+                      ${tenant.rentAmount.toLocaleString()}/mo
                     </div>
                     <div className="text-xs text-[#8A99AD]">Monthly rent</div>
                   </div>

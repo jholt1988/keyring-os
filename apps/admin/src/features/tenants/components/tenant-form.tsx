@@ -16,7 +16,7 @@ export interface TenantFormData {
   unitNumber: string;
   leaseStart: string;
   leaseEnd: string;
-  monthlyRent: number;
+  rentAmount: number;
   status: 'active' | 'pending' | 'past' | 'in-arrears';
 }
 
@@ -38,7 +38,7 @@ export function TenantForm({ initialData, propertyOptions = [], onSave, onCancel
     unitNumber: '',
     leaseStart: new Date().toISOString().split('T')[0],
     leaseEnd: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    monthlyRent: 0,
+    rentAmount: 0,
     status: 'pending',
   });
 
@@ -169,8 +169,8 @@ export function TenantForm({ initialData, propertyOptions = [], onSave, onCancel
             <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               type="number"
-              value={form.monthlyRent}
-              onChange={(e) => handleChange('monthlyRent', Number(e.target.value))}
+              value={form.rentAmount}
+              onChange={(e) => handleChange('rentAmount', Number(e.target.value))}
               className="pl-10"
               required
             />
