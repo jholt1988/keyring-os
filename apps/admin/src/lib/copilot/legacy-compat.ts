@@ -732,7 +732,7 @@ export async function createInspection(data: Record<string, unknown>) {
 
 /** @deprecated Use Operator API instead */
 export async function completeInspection(id: number) {
-  return api(`/inspections/${id}/complete`, { method: 'POST' });
+  return api(`/inspections/${id}/complete`, { method: 'PUT' });
 }
 
 /** @deprecated Use Operator API instead */
