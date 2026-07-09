@@ -12,7 +12,7 @@ import {
 } from '@/lib/operator/read-only-data';
 import { MetricTile } from '../components/metric-tile';
 import { WorkflowFocusBanner, workflowFocusMatchesEntity, useFocusedRowScroll } from '../components/workflow-focus-banner';
-import { formatCurrency, formatNumber } from '../utils';
+import { cents, formatCurrency, formatNumber } from '../utils';
 import { CalendarClock, ClipboardList, Inbox, KeyRound, Loader2, PenLine, ShieldCheck } from 'lucide-react';
 
 export function RenewalsView({
@@ -195,10 +195,10 @@ export function RenewalRow({
         </div>
         <p className="mt-2 text-sm text-[var(--muted)]">{item.propertyName ?? 'No property'} {item.unitLabel ? `- ${item.unitLabel}` : ''}</p>
         <div className="mt-3 flex flex-wrap gap-3 text-xs text-[var(--muted)]">
-          <span>Rent {formatCurrency(item.currentRent)}</span>
+          <span>Rent {cents(item.currentRentCents) ?? formatCurrency(item.currentRent)}</span>
           <span>Ends {new Date(item.endDate).toLocaleDateString()}</span>
           {item.renewalDueAt ? <span>Due {new Date(item.renewalDueAt).toLocaleDateString()}</span> : null}
-          {item.latestOffer ? <span>Offer {item.latestOffer.status} · {formatCurrency(item.latestOffer.proposedRent)}</span> : null}
+          {item.latestOffer ? <span>Offer {item.latestOffer.status} · {cents(item.latestOffer.proposedRentCents) ?? formatCurrency(item.latestOffer.proposedRent)}</span> : null}
           {item.latestEnvelope ? <span>Envelope {item.latestEnvelope.status}</span> : null}
           {item.latestNotice ? <span>Notice {item.latestNotice.type}</span> : null}
         </div>

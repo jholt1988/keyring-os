@@ -375,7 +375,9 @@ export type OperatorLeaseSigningItem = {
   startDate: string;
   endDate: string;
   rentAmount: number;
+  rentAmountCents?: number | null;
   depositAmount: number;
+  depositAmountCents?: number | null;
   documentCount: number;
   latestEnvelope: {
     id: number;
@@ -551,12 +553,14 @@ export type OperatorRenewalItem = {
   unitId: string;
   unitLabel: string | null;
   currentRent: number;
+  currentRentCents?: number | null;
   endDate: string;
   renewalDueAt: string | null;
   moveOutAt: string | null;
   latestOffer: {
     id: number;
     proposedRent: number;
+    proposedRentCents?: number | null;
     proposedStart: string;
     proposedEnd: string;
     status: string;
@@ -865,7 +869,9 @@ export async function convertOperatorApplicationToLease(
     startDate: string;
     endDate: string;
     rentAmount?: number;
+    rentAmountCents?: number;
     depositAmount?: number;
+    depositAmountCents?: number;
     moveInAt?: string;
     noticePeriodDays?: number;
   },
@@ -1016,7 +1022,7 @@ export async function createRepairRequestFromEstimate(
 
 export async function createOperatorRenewalOffer(
   leaseId: string,
-  input: { proposedRent?: number; proposedStart?: string; proposedEnd?: string; escalationPercent?: number; message?: string; expiresAt?: string },
+  input: { proposedRent?: number; proposedRentCents?: number; proposedStart?: string; proposedEnd?: string; escalationPercent?: number; message?: string; expiresAt?: string },
   options: ApiClientOptions,
 ): Promise<unknown> {
   const path = `/api/operator-renewals/leases/${leaseId}/offers` as keyof paths & string;
