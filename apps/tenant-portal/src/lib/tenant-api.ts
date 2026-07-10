@@ -1,37 +1,48 @@
 import type { TenantFeedResponse } from '@keyring/types';
 
-const BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
+/**
+ * Tenant-portal API client. **Browser-only.**
+ *
+ * Real requests go through the same-origin BFF proxy at `/api/v2/*`
+ * (src/app/api/v2/[...path]/route.ts), which reads the httpOnly `auth_token`
+ * cookie and forwards it to the backend as a Bearer token — the browser never
+ * handles the token and there is no cross-origin CORS. Do not call this client
+ * from Server Components/Actions: a relative `/api/v2` path has no origin on the
+ * server; call the backend directly there instead.
+ *
+ * The dev-only mock-auth path (NEXT_PUBLIC_ENABLE_MOCK_AUTH=true, never in
+ * production) bypasses the proxy and calls the backend directly with X-Mock-*
+ * headers.
+ */
+const PROXY_BASE = '/api/v2';
+const DIRECT_BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
 const MOCK_USER_ID = process.env.NEXT_PUBLIC_MOCK_USER_ID ?? 'dev-tenant-uuid-001';
 const USE_MOCK_AUTH =
   process.env.NODE_ENV !== 'production' &&
   process.env.NEXT_PUBLIC_ENABLE_MOCK_AUTH === 'true';
 
-/**
- * Get auth headers for API requests.
- *
- * Production: uses httpOnly cookie (JWT set by Next.js API route /api/auth/login).
- * Development only (never in production): if NEXT_PUBLIC_ENABLE_MOCK_AUTH=true, uses X-Mock-* headers.
- */
-function headers(): HeadersInit {
-  const base: HeadersInit = { 'Content-Type': 'application/json' };
-
+async function api<T>(path: string, init?: RequestInit): Promise<T> {
   if (USE_MOCK_AUTH) {
-    return {
-      ...base,
-      'X-Mock-User-Id': MOCK_USER_ID,
-      'X-Mock-Role': 'TENANT',
-    };
+    // Dev-only bypass: hit the backend directly with mock identity headers.
+    const res = await fetch(`${DIRECT_BASE}${path}`, {
+      ...init,
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Mock-User-Id': MOCK_USER_ID,
+        'X-Mock-Role': 'TENANT',
+        ...init?.headers,
+      },
+      credentials: 'omit',
+    });
+    if (!res.ok) throw new Error(`API ${res.status}: ${path}`);
+    return res.json() as Promise<T>;
   }
 
-  // Production: credentials: 'include' sends the httpOnly JWT cookie
-  return base;
-}
-
-async function api<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, {
+  // Same-origin BFF proxy forwards the httpOnly auth_token cookie as a Bearer.
+  const res = await fetch(`${PROXY_BASE}${path}`, {
     ...init,
-    headers: headers(),
-    credentials: USE_MOCK_AUTH ? 'omit' : 'include',
+    headers: { 'Content-Type': 'application/json', ...init?.headers },
+    credentials: 'include',
   });
   if (!res.ok) throw new Error(`API ${res.status}: ${path}`);
   return res.json() as Promise<T>;
@@ -393,7 +404,9 @@ export async function fetchDocuments(): Promise<Document[]> {
 }
 
 export function getDocumentDownloadUrl(id: number): string {
-  return `${BASE}/documents/${id}/download`;
+  // Same-origin proxy path so the httpOnly cookie is forwarded to the backend.
+  // (In dev mock-auth mode this link is unauthenticated — a dev-only edge.)
+  return `${PROXY_BASE}/documents/${id}/download`;
 }
 
 // ── Notifications ─────────────────────────────────────────────────────────────
