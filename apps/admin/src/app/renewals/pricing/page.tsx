@@ -10,7 +10,7 @@ export default function RentOptimizationPage({
 }: {
   searchParams: { unitId?: string };
 }) {
-  const { data, loaded, token, refresh } = useOperatorData();
+  const { data, loaded, token } = useOperatorData();
 
   return (
     <ApprovalGate requiredRoles={['ADMIN', 'PROPERTY_MANAGER']}>

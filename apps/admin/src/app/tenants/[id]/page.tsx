@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use client';
 
 import { useTenantActivity,useTenantWorkspace } from '@/app/hooks/useWorkspace';

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { ReadOnlyOperatorData, CommandCenterDecisionDetail, CommandCenterDecision, FeedItem } from '@/lib/operator/read-only-data';
+import type { ReadOnlyOperatorData, CommandCenterDecisionDetail, FeedItem } from '@/lib/operator/read-only-data';
 import {
   loadCommandCenterDecisionDetail,
   executeCommandCenterAction,

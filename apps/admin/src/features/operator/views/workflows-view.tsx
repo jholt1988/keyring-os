@@ -5,7 +5,7 @@ import type { ReadOnlyOperatorData, OperatorWorkflowItem, CommandCenterDecision 
 import { MetricTile } from '../components/metric-tile';
 import { workflowItemMatchesDecision, workflowTargetView, workflowTargetLabel } from '../components/workflow-focus-banner';
 import { formatNumber, cents } from '../utils';
-import { AlertTriangle, ArrowUpRight, Banknote, ClipboardList, Layers3, RefreshCcw, ShieldCheck, Wrench } from 'lucide-react';
+import { AlertTriangle, ArrowUpRight, Banknote, ClipboardList, Layers3, RefreshCcw, ShieldCheck } from 'lucide-react';
 
 export function WorkflowsView({
   data,

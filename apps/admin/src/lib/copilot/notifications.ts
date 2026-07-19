@@ -5,7 +5,7 @@ export async function fetchNotifications(params?: { unread?: boolean; limit?: nu
     const qs = new URLSearchParams();
     if (params?.unread) qs.set('unread', 'true');
     if (params?.limit) qs.set('limit', String(params.limit));
-    return await api<any[]>(`/notifications?${qs.toString()}`);
+    return await api<unknown[]>(`/notifications?${qs.toString()}`);
   } catch {
     return [];
   }
