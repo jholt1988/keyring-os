@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { Shield, Plus, AlertTriangle, CheckCircle, FileText, Search } from 'lucide-react';
+import { Shield, Plus, AlertTriangle, CheckCircle, Search } from 'lucide-react';
 import { WorkspaceShell, SectionCard, MetricCard } from '@/components/copilot';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';

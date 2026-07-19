@@ -23,7 +23,7 @@ interface PredictiveAssets {
 }
 
 export function PredictiveMaintenanceView({
-  data,
+  data: _data,
   token,
   onRefresh,
 }: {
@@ -48,7 +48,7 @@ export function PredictiveMaintenanceView({
         const body = await res.json();
         setPredictiveAssets((body.data ?? body) as PredictiveAssets);
       }
-    } catch (err) {
+    } catch {
       console.error('Failed to load predictive assets.');
     } finally {
       setLoadingPredictive(false);
@@ -79,7 +79,7 @@ export function PredictiveMaintenanceView({
       } else {
         setMessage('Failed to generate preventative work order.');
       }
-    } catch (err) {
+    } catch {
       setMessage('Error triggering preventative ticket.');
     } finally {
       setTriggeringAssetId(null);
