@@ -2,8 +2,8 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { Bot, Send, User, RefreshCw, Loader2 } from 'lucide-react';
-import { WorkspaceShell, SectionCard } from '@/components/copilot';
+import { Bot, Send, User, Loader2 } from 'lucide-react';
+import { WorkspaceShell } from '@/components/copilot';
 import { Button } from '@/components/ui/button';
 import { fetchChatSession, sendChatMessage } from '@/lib/copilot-api';
 import { useToast } from '@/components/ui/toast';

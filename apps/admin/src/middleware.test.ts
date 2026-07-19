@@ -10,7 +10,7 @@ function req(path: string, cookies: Record<string, string> = {}) {
       get: (name: string) =>
         cookies[name] ? { value: cookies[name], name } : undefined,
     },
-  } as any;
+  } as unknown;
 }
 
 describe('middleware', () => {

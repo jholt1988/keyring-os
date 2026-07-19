@@ -9,7 +9,6 @@ import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
   ClipboardList,
-  FileText,
   Wrench,
   Home,
   Users,
