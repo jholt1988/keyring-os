@@ -6,7 +6,7 @@ import { ScrollText, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { SectionCard } from '@/components/copilot/section-card';
 import { Button } from '@/components/ui/button';
-import { fetchAuditLogs } from '@/lib/operator/audit';
+import { loadOperatorAuditLogWorkbench } from '@/lib/operator/read-only-data';
 
 const PAGE_SIZE = 25;
 
@@ -37,16 +37,16 @@ export default function AuditLogPage() {
 
   const { data, isLoading } = useQuery({
     queryKey: ['audit-logs', page, debouncedSearch, moduleFilter],
-    queryFn: () => fetchAuditLogs({
+    queryFn: () => loadOperatorAuditLogWorkbench({
       skip: page * PAGE_SIZE,
       limit: PAGE_SIZE,
       module: moduleFilter || undefined,
       entityId: debouncedSearch || undefined,
-    }),
+    }, {}),
   });
 
-  const logs: any[] = data?.data ?? [];
-  const total: number = data?.total ?? 0;
+  const logs: any[] = (data as any)?.data ?? [];
+  const total: number = (data as any)?.total ?? 0;
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
   const modules = Object.keys(MODULE_COLORS);

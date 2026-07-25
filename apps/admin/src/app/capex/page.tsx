@@ -6,7 +6,7 @@ import { Landmark, Plus, RefreshCw } from 'lucide-react';
 import { WorkspaceShell, MetricCard, SectionCard } from '@/components/copilot';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
-import { approveCapexForecast, completeCapexForecast, createCapexForecast, fetchCapexForecasts, fetchCapexSummary, generateCapexForecast } from '@/lib/operator/capex';
+import { approveOperatorCapexForecast, completeOperatorCapexForecast, createOperatorCapexForecast, loadOperatorCapexWorkbench, generateOperatorCapexForecast } from '@/lib/operator/read-only-data';
 import { useToast } from '@/components/ui/toast';
 
 export default function CapexPage() {
@@ -14,22 +14,23 @@ export default function CapexPage() {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ propertyId: '', estimatedCost: '', description: '' });
-  const { data: summary } = useQuery({ queryKey: ['capex-summary'], queryFn: fetchCapexSummary });
-  const { data } = useQuery({ queryKey: ['capex-forecasts'], queryFn: fetchCapexForecasts });
-  const forecasts = Array.isArray(data) ? data : [];
+  const { data: summary } = useQuery({ queryKey: ['capex-summary'], queryFn: () => loadOperatorCapexWorkbench({}) });
+  const { data } = useQuery({ queryKey: ['capex-forecasts'], queryFn: () => loadOperatorCapexWorkbench({}) });
+  const summaryData = summary as any;
+  const forecasts = Array.isArray(data) ? data : ((data as any)?.forecasts ?? []);
   const refresh = () => qc.invalidateQueries({ queryKey: ['capex-forecasts'] });
-  const createM = useMutation({ mutationFn: () => createCapexForecast({ ...form, estimatedCost: Number(form.estimatedCost) || 0 }), onSuccess: () => { toast('Forecast created'); setOpen(false); refresh(); } });
-  const approveM = useMutation({ mutationFn: (id: string) => approveCapexForecast(id), onSuccess: () => { toast('Forecast approved'); refresh(); } });
-  const completeM = useMutation({ mutationFn: (id: string) => completeCapexForecast(id), onSuccess: () => { toast('Forecast completed'); refresh(); } });
-  const generateM = useMutation({ mutationFn: (propertyId: string) => generateCapexForecast(propertyId), onSuccess: () => { toast('Forecast generated'); refresh(); } });
+  const createM = useMutation({ mutationFn: () => createOperatorCapexForecast({ ...form, estimatedCost: Number(form.estimatedCost) || 0 }, {}), onSuccess: () => { toast('Forecast created'); setOpen(false); refresh(); } });
+  const approveM = useMutation({ mutationFn: (id: string) => approveOperatorCapexForecast(id, 0, {}), onSuccess: () => { toast('Forecast approved'); refresh(); } });
+  const completeM = useMutation({ mutationFn: (id: string) => completeOperatorCapexForecast(id, 0, {}), onSuccess: () => { toast('Forecast completed'); refresh(); } });
+  const generateM = useMutation({ mutationFn: (propertyId: string) => generateOperatorCapexForecast(propertyId, {}), onSuccess: () => { toast('Forecast generated'); refresh(); } });
 
   return (
     <>
       <WorkspaceShell title="CapEx Forecasting" subtitle="Forecast pipeline and approvals" icon={Landmark} actions={<Button size="sm" onClick={() => setOpen(true)}><Plus size={12} /> New Forecast</Button>}>
         <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-3">
-          <MetricCard value={`$${summary?.totalForecastedSpend ?? 0}`} label="Forecasted Spend" variant="danger" />
-          <MetricCard value={summary?.approvedCount ?? 0} label="Approved" variant="success" />
-          <MetricCard value={summary?.pendingCount ?? 0} label="Pending" variant="warning" />
+          <MetricCard value={`$${summaryData?.totalForecastedSpend ?? 0}`} label="Forecasted Spend" variant="danger" />
+          <MetricCard value={summaryData?.approvedCount ?? 0} label="Approved" variant="success" />
+          <MetricCard value={summaryData?.pendingCount ?? 0} label="Pending" variant="warning" />
         </div>
         <SectionCard title="Forecasts" subtitle="Approve, complete, or generate property forecasts">
           <div className="space-y-3">

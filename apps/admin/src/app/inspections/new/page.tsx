@@ -7,7 +7,8 @@ import { ClipboardList, RefreshCw } from 'lucide-react';
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { SectionCard } from '@/components/copilot/section-card';
 import { Button } from '@/components/ui/button';
-import { createInspection } from '@/lib/operator/inspections';
+import { createOperatorInspection } from '@/lib/operator/read-only-data';
+import { useOperatorData } from '@/features/operator';
 import { useToast } from '@/components/ui/toast';
 
 const TYPES = ['MOVE_IN', 'MOVE_OUT', 'ROUTINE', 'ANNUAL', 'DRIVE_BY'];
@@ -15,6 +16,7 @@ const TYPES = ['MOVE_IN', 'MOVE_OUT', 'ROUTINE', 'ANNUAL', 'DRIVE_BY'];
 export default function NewInspectionPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { token } = useOperatorData();
   const [form, setForm] = useState({
     type: 'ROUTINE',
     propertyId: '',
@@ -24,13 +26,13 @@ export default function NewInspectionPage() {
   });
 
   const mutation = useMutation({
-    mutationFn: () => createInspection({
+    mutationFn: () => createOperatorInspection({
       type: form.type,
       propertyId: form.propertyId || undefined,
       unitId: form.unitId || undefined,
       scheduledAt: form.scheduledDate || undefined,
       notes: form.notes || undefined,
-    }),
+    }, { token: token || undefined }),
     onSuccess: (insp: any) => {
       toast('Inspection created');
       router.push(`/inspections/${insp.id}`);

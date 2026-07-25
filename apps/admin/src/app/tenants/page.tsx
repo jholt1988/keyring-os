@@ -6,8 +6,7 @@ import { TenantCard,TenantHealthBadge } from '@/components/tenant';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 import { useToast } from '@/components/ui/toast';
-import { createMessageThread } from '@/lib/operator/messaging';
-import { recordTenantNotice } from '@/lib/operator/leases';
+import { startTenantConversation, recordTenantLeaseNotice } from '@/lib/operator/read-only-data';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
 AlertTriangle,
@@ -76,11 +75,11 @@ export default function TenantsPage() {
 
   const messageMutation = useMutation({
     mutationFn: () =>
-      createMessageThread({
+      startTenantConversation({
         subject: msgSubject || `Message to ${selectedTenant?.firstName ?? 'Tenant'}`,
         content: msgBody,
-        participantIds: [selectedTenant?.userId ?? selectedTenant?.id].filter(Boolean),
-      }),
+        participantIds: [selectedTenant?.userId ?? selectedTenant?.id].filter(Boolean) as string[],
+      }, {}),
     onSuccess: () => {
       toast('Message sent');
       setMsgOpen(false);
@@ -92,11 +91,11 @@ export default function TenantsPage() {
 
   const noticeMutation = useMutation({
     mutationFn: () =>
-      recordTenantNotice(selectedTenant?.leaseId, {
+      recordTenantLeaseNotice(selectedTenant?.leaseId, {
         type: noticeType,
         deliveryMethod: noticeMethod,
         message: noticeMessage || undefined,
-      }),
+      }, {}),
     onSuccess: () => {
       toast('Notice recorded');
       setNoticeOpen(false);

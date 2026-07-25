@@ -7,9 +7,7 @@ import { useMutation } from '@tanstack/react-query';
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
-import { fetchUnitWorkspace, transitionUnitState, fetchUnitLedger, fetchUnitRepairs, updateUnit } from '@/lib/operator/units';
-import { fetchAuditLogs } from '@/lib/operator/audit';
-import { createMaintenanceRequest } from '@/lib/operator/maintenance';
+import { loadUnitWorkspace, transitionUnitStatus, loadUnitLedger, loadUnitRepairs, loadAuditLogs, updateUnit, createMaintenanceFromPage } from '@/lib/operator/read-only-data';
 import { useToast } from '@/components/ui/toast';
 import { TimelineRail } from '@/components/copilot/timeline-rail';
 
@@ -47,7 +45,7 @@ export default function UnitPage() {
   });
 
   const noteMutation = useMutation({
-    mutationFn: () => createMaintenanceRequest({
+    mutationFn: () => createMaintenanceFromPage({
       title: 'Note',
       description: noteText,
       category: 'OTHER',
@@ -62,16 +60,16 @@ export default function UnitPage() {
   const loadData = () => {
     if (id && unitId) {
       Promise.all([
-        fetchUnitWorkspace(id, unitId),
-        fetchUnitRepairs(unitId),
-        fetchAuditLogs({ entityId: unitId })
+        loadUnitWorkspace(id, unitId),
+        loadUnitRepairs(unitId),
+        loadAuditLogs({ entityId: unitId })
       ]).then(async ([res, reps, logs]) => {
         setUnit(res.unit);
         setRollup(res.rollup);
         setRepairs(reps);
         setAuditLogs(Array.isArray(logs) ? logs : (logs as any).data ?? []);
         if ((res.rollup as any)?.leaseId) {
-          const ledgerData = await fetchUnitLedger((res.rollup as any).leaseId);
+          const ledgerData = await loadUnitLedger((res.rollup as any).leaseId);
           setLedger(ledgerData);
         }
         setLoading(false);
@@ -91,7 +89,7 @@ export default function UnitPage() {
     }
     if (newState) {
       try {
-        await transitionUnitState(unitId, newState);
+        await transitionUnitStatus(unitId, newState);
         loadData();
       } catch (e) {
         console.error('Failed to transition state', e);
