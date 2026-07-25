@@ -11,7 +11,7 @@ import {
   fetchMessageStats,
   fetchMessagingTenants,
   replyToConversation,
-} from '@/lib/copilot-api';
+} from '@/lib/operator/messaging';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   MessageSquare,

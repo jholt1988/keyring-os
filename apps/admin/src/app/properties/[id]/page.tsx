@@ -5,7 +5,8 @@ import { useParams, useRouter } from 'next/navigation';
 import { Building2, XCircle, Clock } from 'lucide-react';
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { Button } from '@/components/ui/button';
-import { fetchPropertyWorkspace, fetchPropertyRepairs, fetchAuditLogs } from '@/lib/copilot-api';
+import { fetchPropertyWorkspace, fetchPropertyRepairs } from '@/lib/operator/properties';
+import { fetchAuditLogs } from '@/lib/operator/audit';
 import { TimelineRail } from '@/components/copilot/timeline-rail';
 
 export default function PropertyPage() {

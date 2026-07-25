@@ -9,7 +9,7 @@ import {
   fetchTenants,
   fetchTenantWorkspace,
   fetchTenantActivity,
-} from '@/lib/copilot-api';
+} from '@/lib/operator/workspace';
 
 export function usePaymentsWorkspace() {
   return useQuery({ queryKey: ['workspace', 'payments'], queryFn: fetchPaymentsWorkspace });

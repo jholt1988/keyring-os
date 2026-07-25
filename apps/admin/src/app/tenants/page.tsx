@@ -6,7 +6,8 @@ import { TenantCard,TenantHealthBadge } from '@/components/tenant';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 import { useToast } from '@/components/ui/toast';
-import { createMessageThread, recordTenantNotice } from '@/lib/copilot-api';
+import { createMessageThread } from '@/lib/operator/messaging';
+import { recordTenantNotice } from '@/lib/operator/leases';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
 AlertTriangle,

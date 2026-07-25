@@ -5,7 +5,7 @@ import { ApprovalGate } from '@/features/operator';
 import { useQuery } from '@tanstack/react-query';
 import { Shield } from 'lucide-react';
 import { WorkspaceShell, SectionCard } from '@/components/copilot';
-import { fetchSecurityEvents } from '@/lib/copilot-api';
+import { fetchSecurityEvents } from '@/lib/operator/security';
 
 export default function SecuritySettingsPage() {
   const [filters, setFilters] = useState({ userId: '', type: '', from: '', to: '' });

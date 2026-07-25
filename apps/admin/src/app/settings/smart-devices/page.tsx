@@ -6,7 +6,7 @@ import { Cpu, Plus } from 'lucide-react';
 import { WorkspaceShell, SectionCard } from '@/components/copilot';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
-import { createAccessCode, fetchAccessCodes, fetchSmartDevices, registerSmartDevice } from '@/lib/copilot-api';
+import { createAccessCode, fetchAccessCodes, fetchSmartDevices, registerSmartDevice } from '@/lib/operator/smart-devices';
 import { useToast } from '@/components/ui/toast';
 
 export default function SmartDevicesPage() {

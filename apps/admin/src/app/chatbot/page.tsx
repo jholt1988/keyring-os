@@ -5,7 +5,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { Bot, Send, User, Loader2 } from 'lucide-react';
 import { WorkspaceShell } from '@/components/copilot';
 import { Button } from '@/components/ui/button';
-import { fetchChatSession, sendChatMessage } from '@/lib/copilot-api';
+import { fetchChatSession, sendChatMessage } from '@/lib/operator/chatbot';
 import { useToast } from '@/components/ui/toast';
 
 export default function ChatbotPage() {

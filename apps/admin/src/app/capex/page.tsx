@@ -6,7 +6,7 @@ import { Landmark, Plus, RefreshCw } from 'lucide-react';
 import { WorkspaceShell, MetricCard, SectionCard } from '@/components/copilot';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
-import { approveCapexForecast, completeCapexForecast, createCapexForecast, fetchCapexForecasts, fetchCapexSummary, generateCapexForecast } from '@/lib/copilot-api';
+import { approveCapexForecast, completeCapexForecast, createCapexForecast, fetchCapexForecasts, fetchCapexSummary, generateCapexForecast } from '@/lib/operator/capex';
 import { useToast } from '@/components/ui/toast';
 
 export default function CapexPage() {

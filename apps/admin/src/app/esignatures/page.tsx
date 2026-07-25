@@ -5,7 +5,7 @@ import { FileSignature, Download, RefreshCw, XCircle, Send } from 'lucide-react'
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { SectionCard } from '@/components/copilot/section-card';
 import { Button } from '@/components/ui/button';
-import { fetchEsignEnvelopes, voidEnvelope, resendEnvelope, getSignedDocUrl } from '@/lib/copilot-api';
+import { fetchEsignEnvelopes, voidEnvelope, resendEnvelope, getSignedDocUrl } from '@/lib/operator/esignatures';
 import { useToast } from '@/components/ui/toast';
 
 const STATUS_STYLES: Record<string, string> = {

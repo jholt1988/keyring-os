@@ -4,7 +4,7 @@ import { SectionCard } from '@/components/copilot/section-card';
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/toast';
-import { createLease } from '@/lib/copilot-api';
+import { createLease } from '@/lib/operator/leases';
 import { useMutation } from '@tanstack/react-query';
 import { FileText,RefreshCw } from 'lucide-react';
 import { useRouter } from 'next/navigation';

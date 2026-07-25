@@ -7,7 +7,7 @@ import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { SectionCard } from '@/components/copilot/section-card';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
-import { fetchDocuments, uploadDocument, getDocumentDownloadUrl } from '@/lib/copilot-api';
+import { fetchDocuments, uploadDocument, getDocumentDownloadUrl } from '@/lib/operator/documents';
 import { useToast } from '@/components/ui/toast';
 
 const CATEGORY_LABELS: Record<string, string> = {

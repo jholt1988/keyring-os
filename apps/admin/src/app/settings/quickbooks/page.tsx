@@ -4,7 +4,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { Landmark } from 'lucide-react';
 import { WorkspaceShell, SectionCard } from '@/components/copilot';
 import { Button } from '@/components/ui/button';
-import { disconnectQuickBooks, fetchAccountingSyncStatus, fetchQuickBooksStatus, getQuickBooksAuthUrl, syncQuickBooks, testQuickBooksConnection } from '@/lib/copilot-api';
+import { disconnectQuickBooks, fetchAccountingSyncStatus, fetchQuickBooksStatus, getQuickBooksAuthUrl, syncQuickBooks, testQuickBooksConnection } from '@/lib/operator/quickbooks';
 import { useToast } from '@/components/ui/toast';
 
 export default function QuickBooksSettingsPage() {

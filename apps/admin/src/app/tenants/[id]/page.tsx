@@ -14,7 +14,7 @@ createMaintenanceRequest,
 logManualPayment,
 recordLeaseNotice,
 updateTenantProfile,
-} from '@/lib/copilot-api';
+} from '@/lib/operator/tenants';
 import { cn } from '@/lib/utils';
 import type { Severity } from '@keyring/types';
 import { useMutation,useQueryClient } from '@tanstack/react-query';

@@ -29,7 +29,7 @@ import {
   resolveLegalHold,
   scheduleTour,
   updateTourStatus,
-} from '@/lib/copilot-api';
+} from '@/lib/operator/parity';
 
 function getList<T>(value: unknown): T[] {
   if (Array.isArray(value)) return value;

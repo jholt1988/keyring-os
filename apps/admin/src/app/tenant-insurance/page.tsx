@@ -6,7 +6,7 @@ import { Shield, Plus, AlertTriangle, CheckCircle, Search } from 'lucide-react';
 import { WorkspaceShell, SectionCard, MetricCard } from '@/components/copilot';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
-import { fetchTenantInsurance, recordTenantInsurance } from '@/lib/copilot-api';
+import { fetchTenantInsurance, recordTenantInsurance } from '@/lib/operator/tenant-insurance';
 import { useToast } from '@/components/ui/toast';
 
 export default function TenantInsurancePage() {

@@ -6,7 +6,7 @@ import { ScrollText, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { SectionCard } from '@/components/copilot/section-card';
 import { Button } from '@/components/ui/button';
-import { fetchAuditLogs } from '@/lib/copilot-api';
+import { fetchAuditLogs } from '@/lib/operator/audit';
 
 const PAGE_SIZE = 25;
 

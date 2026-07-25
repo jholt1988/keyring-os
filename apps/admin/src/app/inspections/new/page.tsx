@@ -7,7 +7,7 @@ import { ClipboardList, RefreshCw } from 'lucide-react';
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { SectionCard } from '@/components/copilot/section-card';
 import { Button } from '@/components/ui/button';
-import { createInspection } from '@/lib/copilot-api';
+import { createInspection } from '@/lib/operator/inspections';
 import { useToast } from '@/components/ui/toast';
 
 const TYPES = ['MOVE_IN', 'MOVE_OUT', 'ROUTINE', 'ANNUAL', 'DRIVE_BY'];

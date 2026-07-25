@@ -6,7 +6,7 @@ import { ArrowRightLeft } from 'lucide-react';
 import { WorkspaceShell, SectionCard } from '@/components/copilot';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
-import { startMoveIn, startMoveOut } from '@/lib/copilot-api';
+import { startMoveIn, startMoveOut } from '@/lib/operator/move-orchestration';
 import { useToast } from '@/components/ui/toast';
 
 export default function MoveOrchestrationPage() {

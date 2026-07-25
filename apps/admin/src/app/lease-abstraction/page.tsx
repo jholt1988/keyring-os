@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { FileText, Upload } from 'lucide-react';
 import { WorkspaceShell, MetricCard, SectionCard } from '@/components/copilot';
 import { Button } from '@/components/ui/button';
-import { bulkExtractLeases, extractLease, fetchLeaseAbstractionAnalytics, fetchLeaseAbstractions, reviewLeaseAbstraction } from '@/lib/copilot-api';
+import { bulkExtractLeases, uploadLeaseForExtraction, fetchLeaseAbstractionAnalytics, fetchLeaseAbstractions, reviewLeaseAbstraction } from '@/lib/operator/lease-abstraction';
 import { useToast } from '@/components/ui/toast';
 
 export default function LeaseAbstractionPage() {
@@ -17,7 +17,7 @@ export default function LeaseAbstractionPage() {
   const { data } = useQuery({ queryKey: ['lease-abstractions'], queryFn: fetchLeaseAbstractions });
   const abstractions = Array.isArray(data) ? data : [];
   const refresh = () => qc.invalidateQueries({ queryKey: ['lease-abstractions'] });
-  const extractM = useMutation({ mutationFn: async () => { const fd = new FormData(); if (single) fd.append('file', single); return extractLease(fd); }, onSuccess: () => { toast('Lease uploaded for extraction'); refresh(); } });
+  const extractM = useMutation({ mutationFn: async () => { const fd = new FormData(); if (single) fd.append('file', single); return uploadLeaseForExtraction(fd); }, onSuccess: () => { toast('Lease uploaded for extraction'); refresh(); } });
   const bulkM = useMutation({ mutationFn: async () => { return bulkExtractLeases(); }, onSuccess: () => { toast('Bulk extraction started'); refresh(); } });
   const reviewM = useMutation({ mutationFn: (id: string) => reviewLeaseAbstraction(id, { reviewed: true, approved: true }), onSuccess: () => { toast('Abstraction reviewed'); refresh(); } });
 

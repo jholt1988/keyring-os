@@ -6,7 +6,7 @@ import { ClipboardList, CheckCircle2, Play, AlertCircle, RefreshCw } from 'lucid
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { SectionCard } from '@/components/copilot/section-card';
 import { Button } from '@/components/ui/button';
-import { fetchInspection, completeInspection, startInspection } from '@/lib/copilot-api';
+import { fetchInspection, completeInspection, startInspection } from '@/lib/operator/inspections';
 import { useToast } from '@/components/ui/toast';
 
 const TYPE_LABELS: Record<string, string> = {

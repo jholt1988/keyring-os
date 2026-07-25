@@ -7,7 +7,9 @@ import { useMutation } from '@tanstack/react-query';
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
-import { fetchUnitWorkspace, transitionUnitState, fetchUnitLedger, fetchUnitRepairs, fetchAuditLogs, updateUnit, createMaintenanceRequest } from '@/lib/copilot-api';
+import { fetchUnitWorkspace, transitionUnitState, fetchUnitLedger, fetchUnitRepairs, updateUnit } from '@/lib/operator/units';
+import { fetchAuditLogs } from '@/lib/operator/audit';
+import { createMaintenanceRequest } from '@/lib/operator/maintenance';
 import { useToast } from '@/components/ui/toast';
 import { TimelineRail } from '@/components/copilot/timeline-rail';
 

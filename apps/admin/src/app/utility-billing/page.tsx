@@ -6,7 +6,7 @@ import { Gauge, Plus } from 'lucide-react';
 import { WorkspaceShell, SectionCard } from '@/components/copilot';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
-import { allocateMasterBill, recordMasterBill } from '@/lib/copilot-api';
+import { allocateMasterBill, recordMasterBill } from '@/lib/operator/utility-billing';
 import { useToast } from '@/components/ui/toast';
 
 export default function UtilityBillingPage() {

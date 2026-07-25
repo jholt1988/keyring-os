@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchBriefing, executeDecisionAction } from '@/lib/copilot-api';
+import { fetchBriefing, executeDecisionAction } from '@/lib/operator/briefing';
 import type { BriefingData } from '@keyring/types';
 
 export function useBriefing() {
