@@ -19,7 +19,7 @@ import {
   fetchPaymentHistory,
   fetchCapexAnalytics,
   fetchReportHeatmap,
-} from '@/lib/copilot-api';
+} from '@/lib/operator/reports';
 
 const TABS = [
   { id: 'rent-roll',    label: 'Rent Roll',     icon: Home },

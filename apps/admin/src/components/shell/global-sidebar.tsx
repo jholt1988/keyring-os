@@ -9,7 +9,7 @@ import {
   Bell, MessageSquare, PenLine, BarChart2, ScrollText, Bot, Building, Zap, Shield, Cpu, BriefcaseBusiness, Calendar, TrendingUp,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { fetchNotifications } from '@/lib/copilot-api';
+import { fetchNotifications } from '@/lib/operator/notifications';
 
 const lanes = [
   { label: 'Briefing',    icon: LayoutDashboard, href: '/' },
