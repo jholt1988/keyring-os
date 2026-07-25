@@ -8,13 +8,14 @@ import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 import { useToast } from '@/components/ui/toast';
 import {
-addHouseholdMember,addViolation,
-createConversation,
-createMaintenanceRequest,
-logManualPayment,
-recordLeaseNotice,
-updateTenantProfile,
-} from '@/lib/copilot-api';
+  addHouseholdMember,
+  addViolation,
+  createTenantMaintenanceRequest as createMaintenanceRequest,
+  logTenantManualPayment as logManualPayment,
+  recordTenantLeaseNotice as recordLeaseNotice,
+  startTenantConversation as createConversation,
+  updateTenantProfile,
+} from '@/lib/operator/read-only-data';
 import { cn } from '@/lib/utils';
 import type { Severity } from '@keyring/types';
 import { useMutation,useQueryClient } from '@tanstack/react-query';

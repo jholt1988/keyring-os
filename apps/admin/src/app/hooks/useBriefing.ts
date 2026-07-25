@@ -1,19 +1,22 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchBriefing, executeDecisionAction } from '@/lib/copilot-api';
+import { executeCommandCenterAction, loadReadOnlyOperatorData } from '@/lib/operator/read-only-data';
 import type { BriefingData } from '@keyring/types';
 
 export function useBriefing() {
   const queryClient = useQueryClient();
 
-  const { data, isLoading, error } = useQuery<BriefingData>({
+  const { data: raw, isLoading, error } = useQuery<BriefingData>({
     queryKey: ['briefing'],
-    queryFn: fetchBriefing,
+    queryFn: async () => {
+      const ro = await loadReadOnlyOperatorData({});
+      return ro.briefing as unknown as BriefingData;
+    },
     refetchInterval: 30_000,
   });
 
   const executeMutation = useMutation({
     mutationFn: ({ endpoint, method, body }: { endpoint: string; method: string; body?: Record<string, unknown> }) =>
-      executeDecisionAction(endpoint, method, body),
+      executeCommandCenterAction(endpoint, method, body ? JSON.stringify(body) : '', {}),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['briefing'] }),
   });
 
@@ -24,5 +27,5 @@ export function useBriefing() {
     });
   };
 
-  return { data, isLoading, error, executeMutation, dismissDecision };
+  return { data: raw, isLoading, error, executeMutation, dismissDecision };
 }

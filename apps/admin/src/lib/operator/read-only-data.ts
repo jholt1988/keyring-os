@@ -1135,6 +1135,197 @@ export async function loadReadOnlyOperatorData(options: ApiClientOptions): Promi
   };
 }
 
+// ── Property & Unit detail workspace loaders ─────────────────────────────────
+
+/**
+ * Load property detail data: the property record plus its rollup summary.
+ * Mirrors the legacy fetchPropertyWorkspace but via the operator API client.
+ */
+export async function loadPropertyWorkspace(
+  propertyId: string,
+  options: ApiClientOptions = {},
+): Promise<{ property: PortfolioProperty | null; rollup: Record<string, unknown> | null }> {
+  const propertyPath = `/api/properties/${propertyId}` as keyof paths & string;
+  const rollupPath = `/api/properties/${propertyId}/rollup` as keyof paths & string;
+  const [propertyRes, rollupRes] = await Promise.allSettled([
+    apiRequest<PortfolioProperty>('get', propertyPath, options),
+    apiRequest<Record<string, unknown>>('get', rollupPath, options),
+  ]);
+
+  return {
+    property: propertyRes.status === 'fulfilled' ? unwrapEnvelope(propertyRes.value) : null,
+    rollup: rollupRes.status === 'fulfilled' ? unwrapEnvelope(rollupRes.value) : null,
+  };
+}
+
+/**
+ * Load unit detail data: the unit record (from the parent property) plus its
+ * rollup summary. Mirrors the legacy fetchUnitWorkspace.
+ */
+export async function loadUnitWorkspace(
+  propertyId: string,
+  unitId: string,
+  options: ApiClientOptions = {},
+): Promise<{ unit: PropertyUnit | null; rollup: Record<string, unknown> | null }> {
+  const propertyPath = `/api/properties/${propertyId}` as keyof paths & string;
+  const rollupPath = `/api/properties/units/${unitId}/rollup` as keyof paths & string;
+  const [propertyRes, rollupRes] = await Promise.allSettled([
+    apiRequest<PortfolioProperty>('get', propertyPath, options),
+    apiRequest<Record<string, unknown>>('get', rollupPath, options),
+  ]);
+  let unit: PropertyUnit | null = null;
+  if (propertyRes.status === 'fulfilled') {
+    const prop = unwrapEnvelope(propertyRes.value);
+    unit = (prop?.units ?? []).find((u) => u.id === unitId) ?? null;
+  }
+
+  return {
+    unit,
+    rollup: rollupRes.status === 'fulfilled' ? unwrapEnvelope(rollupRes.value) : null,
+  };
+}
+
+/**
+ * Transition a unit to a new lifecycle status.
+ * Mirrors the legacy transitionUnitState.
+ */
+export async function transitionUnitStatus(
+  unitId: string,
+  status: string,
+  options: ApiClientOptions = {},
+): Promise<unknown> {
+  const path = `/api/properties/units/${unitId}/transition` as keyof paths & string;
+  return unwrapEnvelope(
+    await apiRequest<unknown>('post', path, {
+      ...options,
+      body: { status },
+    }),
+  );
+}
+
+/**
+ * Update a unit's fields (e.g. rent amount). Mirrors the legacy updateUnit.
+ */
+export async function updateUnit(
+  propertyId: string,
+  unitId: string,
+  data: Record<string, unknown>,
+  options: ApiClientOptions = {},
+): Promise<PropertyUnit> {
+  const path = `/api/properties/${propertyId}/units/${unitId}` as keyof paths & string;
+  return unwrapEnvelope(
+    await apiRequest<PropertyUnit>('patch', path, {
+      ...options,
+      body: data,
+    }),
+  );
+}
+
+/**
+ * Load maintenance/repair requests for a specific unit.
+ */
+export async function loadUnitRepairs(
+  unitId: string,
+  options: ApiClientOptions = {},
+): Promise<unknown[]> {
+  try {
+    const res = await apiRequest<unknown>('get', '/api/maintenance', {
+      ...options,
+      query: { unitId },
+    });
+    const unwrapped = unwrapEnvelope(res);
+    return Array.isArray(unwrapped) ? unwrapped : ((unwrapped as { data?: unknown[] })?.data ?? []);
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Load maintenance/repair requests for a specific property.
+ */
+export async function loadPropertyRepairs(
+  propertyId: string,
+  options: ApiClientOptions = {},
+): Promise<unknown[]> {
+  try {
+    const res = await apiRequest<unknown>('get', '/api/maintenance', {
+      ...options,
+      query: { propertyId },
+    });
+    const unwrapped = unwrapEnvelope(res);
+    return Array.isArray(unwrapped) ? unwrapped : ((unwrapped as { data?: unknown[] })?.data ?? []);
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Load audit logs with optional filter params.
+ * Mirrors the legacy fetchAuditLogs.
+ */
+export async function loadAuditLogs(
+  params: {
+    entityId?: string;
+    module?: string;
+    actorId?: string;
+    startDate?: string;
+    endDate?: string;
+    limit?: number;
+    skip?: number;
+  },
+  options: ApiClientOptions = {},
+): Promise<{ data: unknown[]; total?: number }> {
+  try {
+    const res = await apiRequest<{ data: unknown[]; total?: number }>('get', '/api/audit-log' as keyof paths & string, {
+      ...options,
+      query: params as Record<string, string | number | boolean | undefined>,
+    });
+    return unwrapEnvelope(res) ?? { data: [], total: 0 };
+  } catch {
+    return { data: [], total: 0 };
+  }
+}
+
+/**
+ * Create a new maintenance request.
+ * Mirrors the legacy createMaintenanceRequest.
+ */
+export async function createMaintenanceFromPage(
+  data: {
+    title: string;
+    category: string;
+    priority: string;
+    description: string;
+    unitId?: string;
+    propertyId?: string;
+    tenantId?: string;
+  },
+  options: ApiClientOptions = {},
+): Promise<unknown> {
+  return unwrapEnvelope(
+    await apiRequest<unknown>('post', '/api/maintenance', {
+      ...options,
+      body: data as unknown as Record<string, unknown>,
+    }),
+  );
+}
+
+/**
+ * Load the tenant ledger for a specific lease.
+ * Mirrors the legacy fetchUnitLedger.
+ */
+export async function loadUnitLedger(
+  leaseId: string,
+  options: ApiClientOptions = {},
+): Promise<unknown | null> {
+  try {
+    const res = await apiRequest<unknown>('get', `/api/payments/ledger/accounts/${leaseId}` as keyof paths & string, options);
+    return unwrapEnvelope(res);
+  } catch {
+    return null;
+  }
+}
+
 export async function createSetupProperty(
   input: { name: string; address: string; city?: string; state?: string; zipCode?: string; propertyType?: string },
   options: ApiClientOptions,
@@ -1155,4 +1346,463 @@ export async function createSetupUnit(
     ...options,
     body: input,
   }));
+}
+
+// ── Inspection CRUD (operator API) ────────────────────────────────────────────
+
+export async function loadOperatorInspectionDetail(
+  inspectionId: number,
+  options: ApiClientOptions,
+): Promise<unknown> {
+  const path = `/api/inspections/${inspectionId}` as keyof paths & string;
+  return unwrapEnvelope(await apiRequest<unknown>('get', path, options));
+}
+
+export async function startOperatorInspection(
+  inspectionId: number,
+  options: ApiClientOptions,
+): Promise<unknown> {
+  const path = '/api/inspections/start' as keyof paths & string;
+  return unwrapEnvelope(await apiRequest<unknown>('post', path, {
+    ...options,
+    body: { inspectionId },
+  }));
+}
+
+export async function completeOperatorInspection(
+  inspectionId: number,
+  options: ApiClientOptions,
+): Promise<unknown> {
+  const path = `/api/inspections/${inspectionId}/complete` as keyof paths & string;
+  return unwrapEnvelope(await apiRequest<unknown>('put', path, options));
+}
+
+export async function createOperatorInspection(
+  input: {
+    type: string;
+    propertyId?: string;
+    unitId?: string;
+    scheduledAt?: string;
+    notes?: string;
+  },
+  options: ApiClientOptions,
+): Promise<{ id: string | number; [key: string]: unknown }> {
+  const path = '/api/inspections' as keyof paths & string;
+  return unwrapEnvelope(await apiRequest<{ id: string | number; [key: string]: unknown }>('post', path, {
+    ...options,
+    body: input,
+  }));
+}
+
+// ── Tenant operations (operator API) ─────────────────────────────────────────
+
+export async function updateTenantProfile(
+  tenantId: string,
+  data: Record<string, unknown>,
+  options: ApiClientOptions = {},
+): Promise<unknown> {
+  const path = `/api/tenants/${encodeURIComponent(tenantId)}/profile` as keyof paths & string;
+  return unwrapEnvelope(await apiRequest<unknown>('patch', path, {
+    ...options,
+    body: data,
+  }));
+}
+
+export async function addHouseholdMember(
+  tenantId: string,
+  data: Record<string, unknown>,
+  options: ApiClientOptions = {},
+): Promise<unknown> {
+  const path = `/api/tenants/${encodeURIComponent(tenantId)}/household` as keyof paths & string;
+  return unwrapEnvelope(await apiRequest<unknown>('post', path, {
+    ...options,
+    body: data,
+  }));
+}
+
+export async function addViolation(
+  tenantId: string,
+  data: Record<string, unknown>,
+  options: ApiClientOptions = {},
+): Promise<unknown> {
+  const path = `/api/tenants/${encodeURIComponent(tenantId)}/violations` as keyof paths & string;
+  return unwrapEnvelope(await apiRequest<unknown>('post', path, {
+    ...options,
+    body: data,
+  }));
+}
+
+export async function recordTenantLeaseNotice(
+  leaseId: string,
+  data: { type: string; deliveryMethod: string; message?: string },
+  options: ApiClientOptions = {},
+): Promise<unknown> {
+  const path = `/api/leases/${encodeURIComponent(leaseId)}/notices` as keyof paths & string;
+  return unwrapEnvelope(await apiRequest<unknown>('post', path, {
+    ...options,
+    body: data,
+  }));
+}
+
+export async function createTenantMaintenanceRequest(
+  data: {
+    title: string;
+    category: string;
+    priority: string;
+    description: string;
+    unitId?: string;
+    propertyId?: string;
+    tenantId?: string;
+  },
+  options: ApiClientOptions = {},
+): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('post', '/api/maintenance', { ...options, body: data }));
+}
+
+export async function logTenantManualPayment(
+  data: {
+    leaseId: string;
+    propertyId: string;
+    unitId?: string;
+    tenantId: string;
+    amountCents: number;
+    method: string;
+    referenceNumber?: string;
+    receivedAt?: string;
+    appliedTo?: string;
+    memo?: string;
+  },
+  options: ApiClientOptions = {},
+): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('post', '/api/payments/manual', { ...options, body: data }));
+}
+
+export async function startTenantConversation(
+  dto: { subject?: string; content: string; participantIds?: string[] },
+  options: ApiClientOptions = {},
+): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('post', '/api/messaging/threads', { ...options, body: dto }));
+}
+
+// ── Lease creation (operator API) ─────────────────────────────────────────────
+
+export async function createOperatorLease(
+  input: {
+    tenantId: string;
+    unitId: string;
+    startDate: string;
+    endDate: string;
+    rentAmount?: number;
+    rentAmountCents?: number;
+    depositAmount?: number;
+    depositAmountCents?: number;
+    noticePeriodDays?: number;
+    moveInAt?: string;
+    autoRenew?: boolean;
+  },
+  options: ApiClientOptions,
+): Promise<{ id: string; [key: string]: unknown }> {
+  const path = '/api/leases' as keyof paths & string;
+  return unwrapEnvelope(await apiRequest<{ id: string; [key: string]: unknown }>('post', path, {
+    ...options,
+    body: input,
+  }));
+}
+
+// ── Estimate creation (operator API) ──────────────────────────────────────────
+
+export async function createOperatorEstimate(
+  data: Record<string, unknown>,
+  options: ApiClientOptions,
+): Promise<unknown> {
+  const path = '/api/estimates' as keyof paths & string;
+  return unwrapEnvelope(await apiRequest<unknown>('post', path, {
+    ...options,
+    body: data,
+  }));
+}
+
+// ── Move orchestration (operator API) ──────────────────────────────────────────
+
+export async function startOperatorMoveIn(
+  data: { leaseId: string; tenantId: string },
+  options: ApiClientOptions,
+): Promise<unknown> {
+  const path = '/api/move-orchestration/move-in' as keyof paths & string;
+  return unwrapEnvelope(await apiRequest<unknown>('post', path, {
+    ...options,
+    body: data,
+  }));
+}
+
+export async function startOperatorMoveOut(
+  data: { leaseId: string; tenantId: string },
+  options: ApiClientOptions,
+): Promise<unknown> {
+  const path = '/api/move-orchestration/move-out' as keyof paths & string;
+  return unwrapEnvelope(await apiRequest<unknown>('post', path, {
+    ...options,
+    body: data,
+  }));
+}
+
+// ── Messaging (operator API) ───────────────────────────────────────────────────
+
+export async function loadOperatorMessagingWorkbench(options: ApiClientOptions): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('get', '/api/operator-messaging' as keyof paths & string, options));
+}
+
+export async function loadOperatorConversations(options: ApiClientOptions): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('get', '/api/operator-messaging/conversations' as keyof paths & string, options));
+}
+
+export async function createOperatorConversation(
+  dto: { subject?: string; content: string; participantIds?: string[] },
+  options: ApiClientOptions,
+): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('post', '/api/operator-messaging/conversations' as keyof paths & string, {
+    ...options,
+    body: dto,
+  }));
+}
+
+export async function loadOperatorMessages(conversationId: number, options: ApiClientOptions): Promise<unknown> {
+  const path = `/api/operator-messaging/conversations/${conversationId}/messages` as keyof paths & string;
+  return unwrapEnvelope(await apiRequest<unknown>('get', path, options));
+}
+
+export async function sendOperatorMessage(conversationId: number, content: string, options: ApiClientOptions): Promise<unknown> {
+  const path = `/api/operator-messaging/conversations/${conversationId}/messages` as keyof paths & string;
+  return unwrapEnvelope(await apiRequest<unknown>('post', path, { ...options, body: { content } }));
+}
+
+// ── Documents (operator API) ───────────────────────────────────────────────────
+
+export async function loadOperatorDocumentsWorkbench(options: ApiClientOptions): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('get', '/api/operator-documents' as keyof paths & string, options));
+}
+
+export async function uploadOperatorDocument(formData: FormData, options: ApiClientOptions): Promise<unknown> {
+  // FormData uploads don't use the standard JSON client — use fetch directly
+  const token = options.token
+    || (typeof window !== 'undefined' ? window.localStorage.getItem('operator_api_token') : null)
+    || undefined;
+  const res = await fetch('/api/v2/operator-documents/upload', {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    credentials: 'include',
+    body: formData,
+  });
+  if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
+  return res.json();
+}
+
+export async function downloadOperatorDocument(docId: number, options: ApiClientOptions): Promise<string> {
+  const path = `/api/operator-documents/${docId}/download` as keyof paths & string;
+  const res = await apiRequest<Blob>('get', path, options);
+  // Return a download URL
+  return URL.createObjectURL(res as unknown as Blob);
+}
+
+export async function deleteOperatorDocument(docId: number, options: ApiClientOptions): Promise<unknown> {
+  const path = `/api/operator-documents/${docId}` as keyof paths & string;
+  return unwrapEnvelope(await apiRequest<unknown>('delete', path, options));
+}
+
+// ── E-Signatures (operator API) ───────────────────────────────────────────────
+
+export async function loadOperatorEsignaturesWorkbench(options: ApiClientOptions): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('get', '/api/operator-esignatures' as keyof paths & string, options));
+}
+
+export async function voidOperatorEnvelope(envelopeId: number, options: ApiClientOptions): Promise<unknown> {
+  const path = `/api/operator-esignatures/envelopes/${envelopeId}/void` as keyof paths & string;
+  return unwrapEnvelope(await apiRequest<unknown>('patch', path, options));
+}
+
+export async function resendOperatorEnvelope(envelopeId: number, options: ApiClientOptions): Promise<unknown> {
+  const path = `/api/operator-esignatures/envelopes/${envelopeId}/resend` as keyof paths & string;
+  return unwrapEnvelope(await apiRequest<unknown>('post', path, options));
+}
+
+export async function getOperatorSignedDocUrl(envelopeId: number, options: ApiClientOptions): Promise<string> {
+  const path = `/api/operator-esignatures/envelopes/${envelopeId}/documents/signed` as keyof paths & string;
+  const res = await apiRequest<{ url?: string; data?: { url?: string } }>('get', path, options);
+  const unwrapped = unwrapEnvelope(res);
+  return (unwrapped as { url?: string }).url ?? `/api/v2/operator-esignatures/envelopes/${envelopeId}/documents/signed`;
+}
+
+// ── CapEx (operator API) ───────────────────────────────────────────────────────
+
+export async function loadOperatorCapexWorkbench(options: ApiClientOptions): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('get', '/api/operator-capex' as keyof paths & string, options));
+}
+
+export async function createOperatorCapexForecast(data: Record<string, unknown>, options: ApiClientOptions): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('post', '/api/operator-capex/forecasts' as keyof paths & string, { ...options, body: data }));
+}
+
+export async function approveOperatorCapexForecast(id: string, approvedBudget: number, options: ApiClientOptions): Promise<unknown> {
+  const path = `/api/operator-capex/forecasts/${id}/approve` as keyof paths & string;
+  return unwrapEnvelope(await apiRequest<unknown>('patch', path, { ...options, body: { approvedBudget } }));
+}
+
+export async function completeOperatorCapexForecast(id: string, actualCostCents: number, options: ApiClientOptions): Promise<unknown> {
+  const path = `/api/operator-capex/forecasts/${id}/complete` as keyof paths & string;
+  return unwrapEnvelope(await apiRequest<unknown>('patch', path, { ...options, body: { actualCostCents } }));
+}
+
+export async function generateOperatorCapexForecast(propertyId: string, options: ApiClientOptions): Promise<unknown> {
+  const path = `/api/operator-capex/properties/${propertyId}/generate` as keyof paths & string;
+  return unwrapEnvelope(await apiRequest<unknown>('post', path, options));
+}
+
+// ── Vendors (operator API) ────────────────────────────────────────────────────
+
+export async function loadOperatorVendorsWorkbench(options: ApiClientOptions): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('get', '/api/operator-vendors' as keyof paths & string, options));
+}
+
+export async function createOperatorVendor(data: Record<string, unknown>, options: ApiClientOptions): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('post', '/api/operator-vendors' as keyof paths & string, { ...options, body: data }));
+}
+
+export function getOperatorVendors1099ExportUrl(): string {
+  return '/api/v2/operator-vendors/1099-export';
+}
+
+// ── Security Events (operator API) ────────────────────────────────────────────
+
+export async function loadOperatorSecurityWorkbench(
+  params: { userId?: string; username?: string; type?: string; from?: string; to?: string; limit?: number; offset?: number },
+  options: ApiClientOptions,
+): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('get', '/api/operator-security' as keyof paths & string, { ...options, query: params as Record<string, string | number | boolean | undefined> }));
+}
+
+// ── QuickBooks (operator API) ─────────────────────────────────────────────────
+
+export async function loadOperatorQuickBooksWorkbench(options: ApiClientOptions): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('get', '/api/operator-quickbooks' as keyof paths & string, options));
+}
+
+export async function getOperatorQuickBooksAuthUrl(options: ApiClientOptions): Promise<{ authUrl?: string; url?: string }> {
+  return unwrapEnvelope(await apiRequest<{ authUrl?: string; url?: string }>('get', '/api/operator-quickbooks/auth-url' as keyof paths & string, options));
+}
+
+export async function syncOperatorQuickBooks(options: ApiClientOptions): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('post', '/api/operator-quickbooks/sync' as keyof paths & string, options));
+}
+
+export async function disconnectOperatorQuickBooks(options: ApiClientOptions): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('post', '/api/operator-quickbooks/disconnect' as keyof paths & string, options));
+}
+
+export async function testOperatorQuickBooksConnection(options: ApiClientOptions): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('get', '/api/operator-quickbooks/test-connection' as keyof paths & string, options));
+}
+
+// ── Smart Devices (operator API) ──────────────────────────────────────────────
+
+export async function loadOperatorSmartDevicesWorkbench(
+  params: { propertyId?: string; unitId?: string },
+  options: ApiClientOptions,
+): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('get', '/api/operator-smart-devices' as keyof paths & string, { ...options, query: params as Record<string, string | number | boolean | undefined> }));
+}
+
+export async function registerOperatorSmartDevice(data: Record<string, unknown>, options: ApiClientOptions): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('post', '/api/operator-smart-devices' as keyof paths & string, { ...options, body: data }));
+}
+
+export async function createOperatorAccessCode(deviceId: string, data: Record<string, unknown>, options: ApiClientOptions): Promise<unknown> {
+  const path = `/api/operator-smart-devices/${deviceId}/access-codes` as keyof paths & string;
+  return unwrapEnvelope(await apiRequest<unknown>('post', path, { ...options, body: data }));
+}
+
+export async function loadOperatorAccessCodes(deviceId: string, options: ApiClientOptions): Promise<unknown> {
+  const path = `/api/operator-smart-devices/${deviceId}/access-codes` as keyof paths & string;
+  return unwrapEnvelope(await apiRequest<unknown>('get', path, options));
+}
+
+// ── Tenant Insurance (operator API) ───────────────────────────────────────────
+
+export async function loadOperatorTenantInsuranceWorkbench(options: ApiClientOptions): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('get', '/api/operator-tenant-insurance' as keyof paths & string, options));
+}
+
+export async function recordOperatorTenantInsurance(leaseId: string, data: Record<string, unknown>, options: ApiClientOptions): Promise<unknown> {
+  const path = `/api/operator-tenant-insurance/lease/${leaseId}` as keyof paths & string;
+  return unwrapEnvelope(await apiRequest<unknown>('post', path, { ...options, body: data }));
+}
+
+export async function loadOperatorTenantInsurance(leaseId: string, options: ApiClientOptions): Promise<unknown> {
+  const path = `/api/operator-tenant-insurance/lease/${leaseId}` as keyof paths & string;
+  return unwrapEnvelope(await apiRequest<unknown>('get', path, options));
+}
+
+// ── Utility Billing (operator API) ────────────────────────────────────────────
+
+export async function loadOperatorUtilityBillingWorkbench(options: ApiClientOptions): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('get', '/api/operator-utility-billing' as keyof paths & string, options));
+}
+
+export async function recordOperatorMasterBill(data: Record<string, unknown>, options: ApiClientOptions): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('post', '/api/operator-utility-billing/master-bill' as keyof paths & string, { ...options, body: data }));
+}
+
+export async function allocateOperatorMasterBill(billId: string, options: ApiClientOptions): Promise<unknown> {
+  const path = `/api/operator-utility-billing/master-bill/${billId}/allocate` as keyof paths & string;
+  return unwrapEnvelope(await apiRequest<unknown>('post', path, options));
+}
+
+// ── Lease Abstraction (operator API) ─────────────────────────────────────────
+
+export async function loadOperatorLeaseAbstractionWorkbench(options: ApiClientOptions): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('get', '/api/operator-lease-abstraction' as keyof paths & string, options));
+}
+
+export async function extractOperatorLease(data: Record<string, unknown>, options: ApiClientOptions): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('post', '/api/operator-lease-abstraction/extract' as keyof paths & string, { ...options, body: data }));
+}
+
+export async function bulkExtractOperatorLeases(options: ApiClientOptions): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('post', '/api/operator-lease-abstraction/bulk-extract' as keyof paths & string, options));
+}
+
+export async function loadOperatorLeaseAbstractions(options: ApiClientOptions): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('get', '/api/operator-lease-abstraction/abstractions' as keyof paths & string, options));
+}
+
+export async function reviewOperatorLeaseAbstraction(id: string, data: Record<string, unknown>, options: ApiClientOptions): Promise<unknown> {
+  const path = `/api/operator-lease-abstraction/abstractions/${id}/review` as keyof paths & string;
+  return unwrapEnvelope(await apiRequest<unknown>('patch', path, { ...options, body: data }));
+}
+
+export async function loadOperatorLeaseAbstractionAnalytics(options: ApiClientOptions): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('get', '/api/operator-lease-abstraction/analytics' as keyof paths & string, options));
+}
+
+// ── Chatbot (operator API) ────────────────────────────────────────────────────
+
+export async function loadOperatorChatbotWorkbench(options: ApiClientOptions): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('get', '/api/operator-chatbot' as keyof paths & string, options));
+}
+
+export async function sendOperatorChatMessage(message: string, sessionId: string | undefined, options: ApiClientOptions): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('post', '/api/operator-chatbot/message' as keyof paths & string, { ...options, body: { message, sessionId } }));
+}
+
+export async function loadOperatorChatSession(sessionId: string, options: ApiClientOptions): Promise<unknown> {
+  const path = `/api/operator-chatbot/session/${sessionId}` as keyof paths & string;
+  return unwrapEnvelope(await apiRequest<unknown>('get', path, options));
+}
+
+// ── Audit Log (operator API) ──────────────────────────────────────────────────
+
+export async function loadOperatorAuditLogWorkbench(
+  params: { entityId?: string; module?: string; actorId?: string; startDate?: string; endDate?: string; limit?: number; skip?: number },
+  options: ApiClientOptions,
+): Promise<unknown> {
+  return unwrapEnvelope(await apiRequest<unknown>('get', '/api/operator-audit-log' as keyof paths & string, { ...options, query: params as Record<string, string | number | boolean | undefined> }));
 }
