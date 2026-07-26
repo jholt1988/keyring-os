@@ -549,7 +549,7 @@ function ProfileSection({ profile, editingProfile, profileForm, onEditStart, onE
 
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-      <SectionCard title="Personal Information" subtitle="Identity & contact details"
+      <SectionCard title="Personal Information"
         actions={
           editingProfile ? (
             <div className="flex gap-2">
@@ -589,7 +589,7 @@ function ProfileSection({ profile, editingProfile, profileForm, onEditStart, onE
         </div>
       </SectionCard>
 
-      <SectionCard title="Household" subtitle="Occupants & emergency contacts"
+      <SectionCard title="Household"
         actions={<Button size="sm" variant="outline" onClick={onAddHousehold}><Users size={11} /> Add Member</Button>}
       >
         {(profile.householdMembers ?? []).length === 0 ? (
@@ -652,7 +652,7 @@ function LeaseSection({ lease }: { lease: any }) {
 
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-      <SectionCard title="Current Lease" subtitle="Active agreement details">
+      <SectionCard title="Current Lease">
         <div className="space-y-3">
           {[
             { label: 'Status', value: lease.status },
@@ -674,7 +674,7 @@ function LeaseSection({ lease }: { lease: any }) {
         </div>
       </SectionCard>
 
-      <SectionCard title="Renewal & Transfer" subtitle="Lease lifecycle actions">
+      <SectionCard title="Renewal & Transfer">
         <div className="space-y-3">
           {lease.daysUntilEnd != null && lease.daysUntilEnd <= 90 && (
             <div className="rounded-[14px] border border-[#F59E0B]/20 bg-[#F59E0B]/5 p-3">
@@ -697,7 +697,7 @@ function LeaseSection({ lease }: { lease: any }) {
 function PaymentsSection({ payments }: { payments: any; lease: any }) {
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-      <SectionCard title="Payment Summary" subtitle="Ledger overview">
+      <SectionCard title="Payment Summary">
         <div className="mb-4 grid grid-cols-2 gap-3">
           <div className="rounded-[10px] border border-[#1E3350]/50 bg-[#0B1628] p-3 text-center">
             <p className="text-[10px] uppercase text-[#8A99AD]">On-Time Rate</p>
@@ -720,7 +720,7 @@ function PaymentsSection({ payments }: { payments: any; lease: any }) {
         </div>
       </SectionCard>
 
-      <SectionCard title="Recent Payments" subtitle="Last 10 transactions">
+      <SectionCard title="Recent Payments">
         {(payments?.recentPayments ?? []).length === 0 ? (
           <p className="py-4 text-center text-xs text-[#8A99AD]">No recent payments</p>
         ) : (
@@ -804,7 +804,7 @@ function CommsSection({ communications }: { communications: any[] }) {
   }));
 
   return (
-    <SectionCard title="Communication Timeline" subtitle="Emails, SMS, notices, calls">
+    <SectionCard title="Communication Timeline">
       <CommunicationTimeline events={events} />
     </SectionCard>
   );
@@ -812,7 +812,7 @@ function CommsSection({ communications }: { communications: any[] }) {
 
 function DocumentsSection({ documents }: { documents: any[] }) {
   return (
-    <SectionCard title="Documents" subtitle="Lease, addenda, ID, inspections">
+    <SectionCard title="Documents">
       {(documents ?? []).length === 0 ? (
         <p className="py-4 text-center text-xs text-[#8A99AD]">No documents uploaded</p>
       ) : (
@@ -837,7 +837,7 @@ function DocumentsSection({ documents }: { documents: any[] }) {
 function ComplianceSection({ violations, notices, onLogViolation }: { violations: any[]; notices: any[]; onLogViolation: () => void }) {
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-      <SectionCard title="Violations" subtitle="Lease violations & warnings"
+      <SectionCard title="Violations"
         actions={<Button size="sm" variant="outline" onClick={onLogViolation}><AlertTriangle size={11} /> Log Violation</Button>}
       >
         {(violations ?? []).length === 0 ? (
@@ -863,7 +863,7 @@ function ComplianceSection({ violations, notices, onLogViolation }: { violations
         )}
       </SectionCard>
 
-      <SectionCard title="Notices Sent" subtitle="Compliance & legal notices">
+      <SectionCard title="Notices Sent">
         {(notices ?? []).length === 0 ? (
           <p className="py-4 text-center text-xs text-[#8A99AD]">No notices on file</p>
         ) : (
@@ -896,7 +896,7 @@ function HealthSection({ health }: { health: any }) {
 
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-      <SectionCard title="Tenant Health" subtitle="AI-derived operational assessment">
+      <SectionCard title="Tenant Health">
         <div className="mb-4 flex items-center justify-between">
           <div>
             <TenantHealthBadge classification={health.classification} />
@@ -925,7 +925,7 @@ function HealthSection({ health }: { health: any }) {
         </div>
       </SectionCard>
 
-      <SectionCard title="Signals & Actions" subtitle="Recommended next steps">
+      <SectionCard title="Signals & Actions">
         {(health.signals ?? []).length > 0 && (
           <div className="mb-4 space-y-2">
             <p className="text-[10px] uppercase tracking-wider text-[#8A99AD]">Signals</p>
@@ -955,7 +955,7 @@ function HealthSection({ health }: { health: any }) {
 
 function ActivitySection({ events }: { events: any[] }) {
   return (
-    <SectionCard title="Activity Timeline" subtitle="Chronological cross-module events">
+    <SectionCard title="Activity Timeline">
       <CommunicationTimeline events={events ?? []} />
     </SectionCard>
   );

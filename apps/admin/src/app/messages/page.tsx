@@ -182,8 +182,261 @@ export default function MessagesPage() {
   }, [tenants, tenantSearch]);
 
   return (
-    <HydrationBoundary state={dehydrate(qc)}>
-      <MessagesView />
-    </HydrationBoundary>
+    <WorkspaceShell title="Messages" icon={MessageSquare}>
+      {/* Stats row */}
+      <div className="glass-panel rounded-[30px] p-6 mb-6">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.22em] text-[#7FA7D9]">Tenant Communications</p>
+            <h2 className="mt-2 font-[family-name:var(--font-space)] text-3xl font-semibold tracking-tight text-[#F8FAFC]">
+              Centralized messaging hub.
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#8DA4C5]">
+              Communicate directly with tenants, manage conversation threads, and track response metrics across your organization.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {[
+              { label: 'Total Threads', value: String((stats as any)?.totalConversations ?? conversations.length), tone: 'text-[#F8FAFC]' },
+              { label: 'Active Today', value: String((stats as any)?.activeToday ?? '—'), tone: 'text-[#60A5FA]' },
+              { label: 'Avg Response', value: String((stats as any)?.avgResponseTime ?? '—'), tone: 'text-[#10B981]' },
+            ].map((item) => (
+              <div key={item.label} className="rounded-[20px] border border-white/8 bg-black/10 px-4 py-3">
+                <div className="text-[11px] uppercase tracking-[0.18em] text-[#6E85A5]">{item.label}</div>
+                <div className={`mt-2 text-xl font-semibold ${item.tone}`}>{item.value}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-12 gap-4">
+        {/* ── Left: Conversation List ── */}
+        <div className="col-span-4">
+          <SectionCard
+            title="Conversations"
+            actions={
+              <Button size="sm" onClick={() => setComposeOpen(true)}>
+                <MessageSquare size={12} /> Compose
+              </Button>
+            }
+          >
+            <div className="relative mb-3">
+              <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8A99AD]" />
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search conversations..."
+                className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] py-2 pl-8 pr-3 text-xs text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]"
+              />
+            </div>
+
+            {convsLoading ? (
+              <div className="flex items-center justify-center py-10">
+                <RefreshCw size={16} className="animate-spin text-[#8A99AD]" />
+              </div>
+            ) : filteredConvs.length === 0 ? (
+              <div className="py-10 text-center text-sm text-[#8A99AD]">No conversations yet</div>
+            ) : (
+              <div className="max-h-[520px] space-y-1.5 overflow-y-auto pr-1">
+                {filteredConvs.map((conv) => (
+                  <button
+                    key={conv.id}
+                    onClick={() => setActiveConvId(conv.id)}
+                    className={`w-full rounded-[12px] border p-3 text-left transition-all duration-150 ${
+                      activeConvId === conv.id
+                        ? 'border-[#3B82F6]/40 bg-[#17304E]'
+                        : 'border-[#1E3350] bg-[#0F1B31] hover:border-[#2B4A73] hover:bg-[#13233C]'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold text-[#F8FAFC]">{participantName(conv)}</span>
+                      <span className="text-[10px] text-[#8A99AD]">{timeAgo(conv.updatedAt)}</span>
+                    </div>
+                    {conv.subject && <p className="mt-0.5 text-[10px] font-medium text-[#94A3B8]">{conv.subject}</p>}
+                    <p className="mt-1 truncate text-[10px] text-[#8A99AD]">{conversationPreview(conv)}</p>
+                  </button>
+                ))}
+              </div>
+            )}
+          </SectionCard>
+        </div>
+
+        {/* ── Center: Thread Panel ── */}
+        <div className="col-span-8">
+          {activeConvId == null ? (
+            <div className="flex min-h-[400px] flex-col items-center justify-center rounded-[24px] border border-[#1E3350] bg-[#0F1B31]">
+              <MessageSquare size={32} className="mb-3 text-[#1E3350]" />
+              <p className="text-sm text-[#8A99AD]">Select a conversation</p>
+              <p className="mt-1 text-xs text-[#8A99AD]">or compose a new message</p>
+              <Button size="sm" className="mt-4" onClick={() => setComposeOpen(true)}>
+                <MessageSquare size={13} /> New Message
+              </Button>
+            </div>
+          ) : (
+            <div
+              className="flex flex-col rounded-[24px] border border-[#1E3350] bg-[#0F1B31]"
+              style={{ minHeight: 520 }}
+            >
+              {/* Thread header */}
+              <div className="flex items-center justify-between border-b border-[#1E3350] px-5 py-3">
+                <div>
+                  <p className="text-sm font-semibold text-[#F8FAFC]">
+                    {activeConv ? participantName(activeConv) : '—'}
+                  </p>
+                  {activeConv?.subject && <p className="text-xs text-[#8A99AD]">{activeConv.subject}</p>}
+                </div>
+                <button onClick={() => setActiveConvId(null)} className="text-[#8A99AD] hover:text-[#F8FAFC]">
+                  <X size={15} />
+                </button>
+              </div>
+
+              {/* Messages */}
+              <div className="flex-1 space-y-3 overflow-y-auto p-5">
+                {msgsLoading ? (
+                  <div className="flex justify-center py-10">
+                    <RefreshCw size={16} className="animate-spin text-[#8A99AD]" />
+                  </div>
+                ) : messages.length === 0 ? (
+                  <p className="py-10 text-center text-xs text-[#8A99AD]">No messages in this thread</p>
+                ) : (
+                  messages.map((msg) => (
+                    <div key={msg.id} className="flex gap-3">
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#17304E] text-xs font-bold text-[#3B82F6]">
+                        {(msg.sender?.username ?? '?').charAt(0).toUpperCase()}
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-xs font-medium text-[#94A3B8]">
+                            {msg.sender?.username ?? 'Unknown'}
+                          </span>
+                          <span className="text-[10px] text-[#8A99AD]">{timeAgo(msg.createdAt)}</span>
+                        </div>
+                        <p className="mt-1 rounded-[10px] border border-[#1E3350] bg-[#13233C] px-3 py-2 text-sm text-[#E2E8F0]">
+                          {msg.content}
+                        </p>
+                      </div>
+                    </div>
+                  ))
+                )}
+                <div ref={messagesEndRef} />
+              </div>
+
+              {/* Reply box */}
+              <div className="border-t border-[#1E3350] p-4">
+                <div className="flex gap-2">
+                  <textarea
+                    value={replyBody}
+                    onChange={(e) => setReplyBody(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && replyBody.trim()) {
+                        replyMutation.mutate();
+                      }
+                    }}
+                    rows={2}
+                    placeholder="Type a reply… (Ctrl+Enter to send)"
+                    className="flex-1 resize-none rounded-lg border border-[#1E3350] bg-[#13233C] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]"
+                  />
+                  <Button
+                    size="sm"
+                    className="self-end"
+                    onClick={() => replyMutation.mutate()}
+                    disabled={!replyBody.trim() || replyMutation.isPending}
+                  >
+                    {replyMutation.isPending ? <RefreshCw size={14} className="animate-spin" /> : <Send size={14} />}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── Compose Modal ── */}
+      <Modal
+        open={composeOpen}
+        onClose={() => setComposeOpen(false)}
+        title="New Message"
+        footer={
+          <>
+            <Button variant="outline" size="sm" onClick={() => setComposeOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => threadMutation.mutate()}
+              disabled={!composeBody.trim() || !composeTenantId || threadMutation.isPending}
+            >
+              {threadMutation.isPending ? <RefreshCw size={13} className="animate-spin" /> : <Send size={13} />} Send
+            </Button>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          {/* Recipient */}
+          <div>
+            <label className="mb-1 block text-xs font-medium text-[#94A3B8]">
+              Recipient <span className="text-[#F43F5E]">*</span>
+            </label>
+            <div className="relative">
+              <Users size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8A99AD]" />
+              <input
+                value={tenantSearch}
+                onChange={(e) => {
+                  setTenantSearch(e.target.value);
+                  setComposeTenantId('');
+                }}
+                placeholder="Search tenants..."
+                className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] py-2 pl-8 pr-3 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]"
+              />
+            </div>
+            {tenantSearch && !composeTenantId && filteredTenants.length > 0 && (
+              <div className="mt-1 max-h-36 overflow-y-auto rounded-lg border border-[#1E3350] bg-[#0F1B31]">
+                {filteredTenants.map((t) => (
+                  <button
+                    key={t.id}
+                    onClick={() => {
+                      setComposeTenantId(t.id);
+                      setTenantSearch(
+                        [t.firstName, t.lastName].filter(Boolean).join(' ') || t.username || t.id,
+                      );
+                    }}
+                    className="w-full px-3 py-2 text-left text-sm text-[#F8FAFC] hover:bg-[#17304E]"
+                  >
+                    {[t.firstName, t.lastName].filter(Boolean).join(' ') || t.username || t.id}
+                  </button>
+                ))}
+              </div>
+            )}
+            {composeTenantId && <p className="mt-1 text-xs text-[#10B981]">✓ Recipient selected</p>}
+          </div>
+
+          {/* Subject */}
+          <div>
+            <label className="mb-1 block text-xs font-medium text-[#94A3B8]">Subject (optional)</label>
+            <input
+              value={composeSubject}
+              onChange={(e) => setComposeSubject(e.target.value)}
+              placeholder="Lease renewal, maintenance update..."
+              className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]"
+            />
+          </div>
+
+          {/* Message */}
+          <div>
+            <label className="mb-1 block text-xs font-medium text-[#94A3B8]">
+              Message <span className="text-[#F43F5E]">*</span>
+            </label>
+            <textarea
+              value={composeBody}
+              onChange={(e) => setComposeBody(e.target.value)}
+              rows={5}
+              placeholder="Type your message..."
+              className="w-full resize-none rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]"
+            />
+          </div>
+        </div>
+      </Modal>
+    </WorkspaceShell>
   );
 }

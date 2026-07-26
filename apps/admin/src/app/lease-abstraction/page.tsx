@@ -25,7 +25,7 @@ export default function LeaseAbstractionPage() {
   const reviewM = useMutation({ mutationFn: (id: string) => reviewOperatorLeaseAbstraction(id, { reviewed: true, approved: true }, {}), onSuccess: () => { toast('Abstraction reviewed'); refresh(); } });
 
   return (
-    <WorkspaceShell title="Lease Abstraction" subtitle="AI extraction and review of lease documents" icon={FileText}>
+    <WorkspaceShell title="Lease Abstraction" icon={FileText}>
       <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4">
         <MetricCard value={(analytics as any)?.totalAbstractions ?? 0} label="Abstractions" variant="info" />
         <MetricCard value={(analytics as any)?.reviewedCount ?? 0} label="Reviewed" variant="success" />
@@ -33,7 +33,7 @@ export default function LeaseAbstractionPage() {
         <MetricCard value={(analytics as any)?.accuracyScore ?? 'n/a'} label="Accuracy" variant="info" />
       </div>
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <SectionCard title="Upload" subtitle="Single or bulk lease extraction">
+        <SectionCard title="Upload">
           <div className="space-y-3">
             <input type="file" accept=".pdf" onChange={(e) => setSingle(e.target.files?.[0] ?? null)} className="block w-full text-sm text-[#94A3B8]" />
             <Button size="sm" onClick={() => extractM.mutate()} disabled={!single}><Upload size={12} /> Extract Single</Button>
@@ -41,7 +41,7 @@ export default function LeaseAbstractionPage() {
             <Button size="sm" variant="outline" onClick={() => bulkM.mutate()} disabled={!bulk?.length}><Upload size={12} /> Bulk Extract</Button>
           </div>
         </SectionCard>
-        <SectionCard title="Abstractions" subtitle="Review extracted lease records" className="lg:col-span-2">
+        <SectionCard title="Abstractions" className="lg:col-span-2">
           <div className="space-y-3">
             {abstractions.map((item: any) => (
               <div key={item.id} className="rounded-[14px] border border-[#1E3350] bg-[#0F1B31] p-3">

@@ -29,13 +29,13 @@ export default function CapexPage() {
 
   return (
     <>
-      <WorkspaceShell title="CapEx Forecasting" subtitle="Forecast pipeline and approvals" icon={Landmark} actions={<Button size="sm" onClick={() => setOpen(true)}><Plus size={12} /> New Forecast</Button>}>
+      <WorkspaceShell title="CapEx Forecasting" icon={Landmark} actions={<Button size="sm" onClick={() => setOpen(true)}><Plus size={12} /> New Forecast</Button>}>
         <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-3">
           <MetricCard value={`$${summaryData?.totalForecastedSpend ?? 0}`} label="Forecasted Spend" variant="danger" />
           <MetricCard value={summaryData?.approvedCount ?? 0} label="Approved" variant="success" />
           <MetricCard value={summaryData?.pendingCount ?? 0} label="Pending" variant="warning" />
         </div>
-        <SectionCard title="Forecasts" subtitle="Approve, complete, or generate property forecasts">
+        <SectionCard title="Forecasts">
           <div className="space-y-3">
             {forecasts.map((forecast: any) => (
               <div key={forecast.id} className="rounded-[14px] border border-[#1E3350] bg-[#0F1B31] p-3">
