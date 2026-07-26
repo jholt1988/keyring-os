@@ -109,7 +109,7 @@ export default function TenantsPage() {
 
 
   return (
-    <WorkspaceShell title="Tenants" subtitle="Resident Relationship Management" icon={UserCheck}>
+    <WorkspaceShell title="Tenants" icon={UserCheck}>
       <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4">
         <MetricCard value={total} label="Total Tenants" variant="info" />
         <MetricCard value={atRiskCount} label="At Risk" variant="danger" />

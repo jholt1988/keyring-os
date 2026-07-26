@@ -18,8 +18,21 @@ export default function QuickBooksSettingsPage() {
   const disconnectM = useMutation({ mutationFn: () => disconnectOperatorQuickBooks({}), onSuccess: () => { toast('Disconnected'); refetch(); } });
   const testM = useMutation({ mutationFn: () => testOperatorQuickBooksConnection({}), onSuccess: () => toast('Connection test complete') });
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <QuickBooksSettingsView />
-    </HydrationBoundary>
+    <WorkspaceShell title="QuickBooks" icon={Landmark}>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <SectionCard title="Connection Status">
+          <pre className="mb-4 overflow-x-auto text-xs text-[#CBD5E1]">{JSON.stringify(status ?? {}, null, 2)}</pre>
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" onClick={() => connectM.mutate()}>Connect</Button>
+            <Button size="sm" variant="outline" onClick={() => syncM.mutate()}>Sync Now</Button>
+            <Button size="sm" variant="outline" onClick={() => testM.mutate()}>Test Connection</Button>
+            <Button size="sm" variant="destructive" onClick={() => disconnectM.mutate()}>Disconnect</Button>
+          </div>
+        </SectionCard>
+        <SectionCard title="Accounting Sync Status">
+          <pre className="overflow-x-auto text-xs text-[#CBD5E1]">{JSON.stringify(syncStatus ?? {}, null, 2)}</pre>
+        </SectionCard>
+      </div>
+    </WorkspaceShell>
   );
 }

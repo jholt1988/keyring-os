@@ -19,8 +19,8 @@ export default function UtilityBillingPage() {
 
   return (
     <>
-      <WorkspaceShell title="Utility Billing" subtitle="Record and allocate master utility bills" icon={Gauge} actions={<Button size="sm" onClick={() => setOpen(true)}><Plus size={12} /> Record Bill</Button>}>
-        <SectionCard title="Master Bills" subtitle="Property-period utility bills">
+      <WorkspaceShell title="Utility Billing" icon={Gauge} actions={<Button size="sm" onClick={() => setOpen(true)}><Plus size={12} /> Record Bill</Button>}>
+        <SectionCard title="Master Bills">
           <div className="space-y-3">
             {bills.map((bill: any) => <div key={bill.id} className="rounded-[14px] border border-[#1E3350] bg-[#0F1B31] p-3"><p className="text-sm font-medium text-[#F8FAFC]">{bill.propertyId} · {bill.utilityType}</p><p className="text-xs text-[#94A3B8]">{bill.period} · ${bill.amount ?? 0}</p><div className="mt-3"><Button size="sm" variant="outline" onClick={() => allocM.mutate(bill.id)}>Allocate Bill</Button></div></div>)}
             {bills.length === 0 && <p className="text-sm text-[#94A3B8]">No master bills recorded in this session yet.</p>}
