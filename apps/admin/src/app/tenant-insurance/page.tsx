@@ -37,7 +37,6 @@ export default function TenantInsurancePage() {
     <>
       <WorkspaceShell 
         title="Tenant Insurance" 
-        subtitle="Track insurance compliance and policy status across your portfolio" 
         icon={Shield} 
         actions={
           <Button size="sm" onClick={() => setOpen(true)} disabled={!leaseId}>
@@ -53,7 +52,7 @@ export default function TenantInsurancePage() {
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
-            <SectionCard title="Policy Verification" subtitle="Enter a lease ID to view associated insurance policies">
+            <SectionCard title="Policy Verification">
               <div className="flex gap-2 mb-6">
                 <div className="relative flex-1">
                   <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
@@ -114,7 +113,7 @@ export default function TenantInsurancePage() {
           </div>
 
           <div className="space-y-6">
-            <SectionCard title="Compliance Rules" subtitle="Minimum requirements">
+            <SectionCard title="Compliance Rules">
               <div className="space-y-4 text-sm">
                 <div className="flex justify-between border-b border-[#1E3350] pb-2">
                   <span className="text-[#94A3B8]">Liability Coverage</span>

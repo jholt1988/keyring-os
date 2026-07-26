@@ -90,8 +90,34 @@ export default function ESignaturesPage() {
   };
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <ESignaturesView />
-    </HydrationBoundary>
+    <WorkspaceShell title="E-Signatures" icon={FileSignature}>
+      {isLoading ? (
+        <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-16 animate-pulse rounded-[24px] bg-[#0F1B31]" />)}</div>
+      ) : (envelopes as any[]).length === 0 ? (
+        <SectionCard title="No Envelopes">
+          <div className="py-12 text-center">
+            <FileSignature size={32} className="mx-auto mb-3 text-[#94A3B8]" />
+            <p className="text-sm text-[#94A3B8]">No signature envelopes on record.</p>
+          </div>
+        </SectionCard>
+      ) : (
+        <div className="space-y-6">
+          {active.length > 0 && (
+            <SectionCard title={`Pending Signatures (${active.length})`}>
+              <div className="space-y-2">
+                {active.map((env: any) => <EnvelopeRow key={env.id} env={env} />)}
+              </div>
+            </SectionCard>
+          )}
+          {archived.length > 0 && (
+            <SectionCard title={`Archived (${archived.length})`}>
+              <div className="space-y-2">
+                {archived.map((env: any) => <EnvelopeRow key={env.id} env={env} />)}
+              </div>
+            </SectionCard>
+          )}
+        </div>
+      )}
+    </WorkspaceShell>
   );
 }

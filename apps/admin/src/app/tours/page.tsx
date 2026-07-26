@@ -6,8 +6,8 @@ import { ToursSection } from '@/components/parity/shared';
 
 export default function ToursPage() {
   return (
-    <WorkspaceShell title="Tours" subtitle="Standalone tour scheduling and status management" icon={Calendar}>
-      <ToursSection title="All Tours" subtitle="Calendar and list workflow for tours" />
+    <WorkspaceShell title="Tours" icon={Calendar}>
+      <ToursSection title="All Tours" />
     </WorkspaceShell>
   );
 }

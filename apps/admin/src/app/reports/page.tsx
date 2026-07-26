@@ -137,7 +137,7 @@ export default function ReportsPage() {
   const [activeTab, setActiveTab] = useState<TabId>('rent-roll');
 
   return (
-    <WorkspaceShell title="Reports" subtitle="Portfolio Analytics & Financials" icon={BarChart3}>
+    <WorkspaceShell title="Reports" icon={BarChart3}>
       {/* Tab bar */}
       <div className="mb-6 flex flex-wrap gap-1 rounded-[18px] border border-[#1E3350] bg-[#0F1B31] p-1">
         {TABS.map(({ id, label, icon: Icon }) => (

@@ -58,7 +58,7 @@ export default function DocumentsPage() {
 
   return (
     <>
-      <WorkspaceShell title="Documents" subtitle="Document Management" icon={FolderOpen}
+      <WorkspaceShell title="Documents" icon={FolderOpen}
         actions={<Button size="sm" onClick={() => setUploadOpen(true)}><Upload size={13} /> Upload</Button>}
       >
         <SectionCard title="Documents">
