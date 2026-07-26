@@ -1,38 +1,20 @@
-'use client';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { createServerQueryClient, prefetchServerQuery, serverApiGet } from '@/lib/server-fetch';
+import FeedView from './feed-view';
 
-import { TenantHeader } from '@/components/shell/tenant-header';
-import { TenantFeedList } from '@/components/feed/tenant-feed-list';
-import { useTenantFeed } from '@/hooks/useTenantFeed';
-
-export default function FeedPage() {
-  const {
-    items,
-    isLoading,
-    isError,
-    dismiss,
-    refetch,
-    showDismissed,
-    setShowDismissed,
-    dismissedCount,
-    usingFallback,
-  } = useTenantFeed();
+/**
+ * Server Component: prefetch the tenant feed so the first paint carries data,
+ * eliminating the client mount -> fetch -> render waterfall. FeedView (client)
+ * reads the same ['tenant-feed'] query from the hydrated cache and keeps owning
+ * dismiss / refetch / filter interactivity. Part of the RSC migration (#22).
+ */
+export default async function FeedPage() {
+  const queryClient = createServerQueryClient();
+  await prefetchServerQuery(queryClient, ['tenant-feed'], () => serverApiGet('/tenant/feed'));
 
   return (
-    <>
-      <TenantHeader title="My Feed" />
-      <div className="p-6">
-        <TenantFeedList
-          items={items}
-          isLoading={isLoading}
-          isError={isError}
-          onDismiss={dismiss}
-          onRefetch={refetch}
-          showDismissed={showDismissed}
-          onToggleDismissed={setShowDismissed}
-          dismissedCount={dismissedCount}
-          usingFallback={usingFallback}
-        />
-      </div>
-    </>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <FeedView />
+    </HydrationBoundary>
   );
 }

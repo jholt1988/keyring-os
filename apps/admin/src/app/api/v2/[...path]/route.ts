@@ -1,120 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-const AUTH_COOKIE = 'auth_token';
-const REFRESH_COOKIE = 'refresh_token';
-const ROLE_COOKIE = 'user_role'; // non-httpOnly: readable by middleware for UX-layer role guards
-const ONE_DAY_SECONDS = 60 * 60 * 24;
-const THIRTY_DAYS_SECONDS = ONE_DAY_SECONDS * 30;
-const BACKEND_TIMEOUT_MS = 10_000;
-
-// Evaluated at call time (not module load) so error verbosity always reflects
-// the current NODE_ENV. Production must never leak upstream error details.
-function isDev(): boolean {
-  return process.env.NODE_ENV !== 'production';
-}
-
-function getBackendBase(): string {
-  const configured = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL;
-  if (!configured) {
-    if (process.env.NODE_ENV === 'production') {
-      throw new Error('API_URL, NEXT_PUBLIC_API_URL, or NEXT_PUBLIC_API_BASE_URL must be configured in production');
-    }
-    return 'http://localhost:3001/api';
-  }
-
-  const trimmed = configured.replace(/\/+$/, '');
-  if (trimmed.endsWith('/api/v2')) return trimmed.slice(0, -3);
-  if (trimmed.endsWith('/api')) return trimmed;
-  return `${trimmed}/api`;
-}
-
-function copyResponseHeaders(response: Response): Headers {
-  const headers = new Headers();
-  const contentType = response.headers.get('content-type');
-  if (contentType) headers.set('content-type', contentType);
-  return headers;
-}
-
-/**
- * Parse a JSON string without throwing. Returns undefined when the body is
- * empty or not valid JSON, so a malformed backend response can never crash
- * the proxy with an unhandled exception.
- */
-function safeJsonParse(text: string): any {
-  if (!text) return undefined;
-  try {
-    return JSON.parse(text);
-  } catch {
-    return undefined;
-  }
-}
-
-interface AuthTokenPayload {
-  access_token?: any;
-  accessToken?: any;
-  refresh_token?: any;
-  refreshToken?: any;
-  result?: any;
-}
-
-/** Unwrap an optional `{ result: {...} }` envelope used by some backend routes. */
-function unwrapResult(payload: any): Record<string, unknown> {
-  if (!payload || typeof payload !== 'object') return {};
-  const obj = payload as { result?: any };
-  if (obj.result && typeof obj.result === 'object') return obj.result as Record<string, unknown>;
-  return obj as Record<string, unknown>;
-}
-
-function asToken(value: any): string | undefined {
-  return typeof value === 'string' && value.length > 0 ? value : undefined;
-}
-
-function resolveUserRole(payload: any): string | undefined {
-  if (!payload || typeof payload !== 'object') return undefined;
-
-  const obj = payload as { role?: any; roles?: any; user?: { role?: any; roles?: any } };
-
-  // 1. Check direct role at root
-  if (typeof obj.role === 'string' && obj.role.trim()) {
-    return obj.role;
-  }
-
-  // 2. Check direct roles at root
-  if (Array.isArray(obj.roles)) {
-    const firstRole = obj.roles.find((value) => typeof value === 'string' && value.trim());
-    if (typeof firstRole === 'string') return firstRole;
-  }
-
-  // 3. Check nested user role
-  const user = obj.user;
-  if (user && typeof user === 'object') {
-    if (typeof user.role === 'string' && user.role.trim()) {
-      return user.role;
-    }
-    if (Array.isArray(user.roles)) {
-      const firstRole = user.roles.find((value) => typeof value === 'string' && value.trim());
-      if (typeof firstRole === 'string') return firstRole;
-    }
-  }
-
-  return undefined;
-}
-
-function setSessionCookie(
-  response: NextResponse,
-  name: string,
-  value: string,
-  maxAge: number,
-  secure: boolean,
-) {
-  response.cookies.set(name, value, {
-    httpOnly: true,
-    secure,
-    sameSite: 'lax',
-    path: '/',
-    maxAge,
-  });
-}
+import {
+  AUTH_COOKIE,
+  REFRESH_COOKIE,
+  ROLE_COOKIE,
+  ONE_DAY_SECONDS,
+  THIRTY_DAYS_SECONDS,
+  BACKEND_TIMEOUT_MS,
+  isDev,
+  getBackendBase,
+  copyResponseHeaders,
+  safeJsonParse,
+  unwrapResult,
+  asToken,
+  resolveUserRole,
+  setSessionCookie,
+  type AuthTokenPayload,
+} from '@/lib/proxy/backend-proxy';
 
 async function proxyRequest(
   request: NextRequest,

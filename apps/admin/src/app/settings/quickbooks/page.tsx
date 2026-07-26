@@ -1,4 +1,6 @@
-'use client';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { createServerQueryClient, prefetchServerQuery, serverApiGet } from '@/lib/server-fetch';
+import QuickBooksSettingsView from './quickbooks-view';
 
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Landmark } from 'lucide-react';
