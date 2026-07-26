@@ -3,11 +3,16 @@ name: ci
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
-# No pull_request trigger — when a PR targets main and you push to main,
-# both push+pull_request fire, creating duplicate runs that GitHub cancels.
-# push: main is sufficient.
+# Runs on PRs targeting main (so lint/typecheck/unit/e2e gate merges) and on
+# push to main. The concurrency group cancels superseded in-progress runs so
+# rapid pushes to the same ref don't pile up duplicate runs.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   quality:

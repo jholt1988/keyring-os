@@ -5,7 +5,7 @@ import { FileSignature, Download, RefreshCw, XCircle, Send } from 'lucide-react'
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { SectionCard } from '@/components/copilot/section-card';
 import { Button } from '@/components/ui/button';
-import { fetchEsignEnvelopes, voidEnvelope, resendEnvelope, getSignedDocUrl } from '@/lib/copilot-api';
+import { loadOperatorEsignaturesWorkbench, voidOperatorEnvelope, resendOperatorEnvelope } from '@/lib/operator/read-only-data';
 import { useToast } from '@/components/ui/toast';
 
 const STATUS_STYLES: Record<string, string> = {
@@ -23,17 +23,17 @@ export default function ESignaturesPage() {
 
   const { data: envelopes = [], isLoading } = useQuery({
     queryKey: ['esign-envelopes'],
-    queryFn: () => fetchEsignEnvelopes(),
+    queryFn: () => loadOperatorEsignaturesWorkbench({}),
   });
 
   const voidMutation = useMutation({
-    mutationFn: (id: string) => voidEnvelope(id),
+    mutationFn: (id: string) => voidOperatorEnvelope(Number(id), {}),
     onSuccess: () => { toast('Envelope voided'); qc.invalidateQueries({ queryKey: ['esign-envelopes'] }); },
     onError: () => toast('Failed to void envelope', 'error'),
   });
 
   const resendMutation = useMutation({
-    mutationFn: (id: string) => resendEnvelope(id),
+    mutationFn: (id: string) => resendOperatorEnvelope(Number(id), {}),
     onSuccess: () => toast('Envelope resent'),
     onError: () => toast('Failed to resend envelope', 'error'),
   });
@@ -58,7 +58,7 @@ export default function ESignaturesPage() {
             {env.status}
           </span>
           {status === 'COMPLETED' && (
-            <a href={getSignedDocUrl(env.id)} target="_blank" rel="noopener noreferrer"
+            <a href={`/api/v2/operator-esignatures/envelopes/${env.id}/documents/signed`} target="_blank" rel="noopener noreferrer"
               className="flex h-7 w-7 items-center justify-center rounded-md border border-[#1E3350] bg-[#07111F] text-[#94A3B8] transition-all hover:border-[#3B82F6] hover:text-[#3B82F6]"
               title="Download signed document">
               <Download size={12} />
