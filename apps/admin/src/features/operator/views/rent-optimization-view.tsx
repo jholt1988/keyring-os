@@ -51,7 +51,7 @@ export function RentOptimizationView({
       } else {
         setMessage('Failed to load seasonal pricing matrix.');
       }
-    } catch (err) {
+    } catch {
       setMessage('Error loading pricing matrix.');
     } finally {
       setLoadingPricing(false);

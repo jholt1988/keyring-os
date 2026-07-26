@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchTenantFeed } from '@/lib/tenant-api';
+import type { TenantFeedItem } from '@keyring/types';
 
 function getDismissed(): Set<string> {
   try {
@@ -17,21 +18,16 @@ function saveDismissed(items: Set<string>): void {
   } catch {}
 }
 
-export interface FeedItemData {
-  id: string;
-  message: string;
-  createdAt: string;
-  domain: string;
-  read: boolean;
-}
+// FeedItemData is now identical to TenantFeedItem — kept for backward compat
+export type FeedItemData = TenantFeedItem;
 
 export function useTenantFeed() {
-  const [dismissed, setDismissed] = useState<Set<string>>(new Set());
-
-  // Hydrate dismissed set from localStorage after mount
-  useEffect(() => {
-    setDismissed(getDismissed());
-  }, []);
+  // Lazy-init from localStorage — avoids setState-in-effect lint warning
+  const [dismissed, setDismissed] = useState<Set<string>>(() => {
+    if (typeof window === 'undefined') return new Set<string>();
+    return getDismissed();
+  });
+  const [showDismissed, setShowDismissed] = useState(false);
 
   const primaryQuery = useQuery({
     queryKey: ['tenant-feed'],
@@ -43,11 +39,15 @@ export function useTenantFeed() {
     },
   });
 
-  const items: FeedItemData[] =
-    (primaryQuery.data?.items ?? []).filter((item: { id?: string }) => item?.id && !dismissed.has(item.id));
+  const allItems: TenantFeedItem[] = primaryQuery.data?.items ?? [];
+  const items: TenantFeedItem[] = allItems.filter(
+    (item) => item?.id && (showDismissed || !dismissed.has(item.id))
+  );
 
+  const dismissedCount = dismissed.size;
+  const unreadCount = items.filter((item) => item.isDismissed !== true).length;
+  const usingFallback = primaryQuery.isError;
 
-  const unreadCount = items.filter((item: { read?: boolean }) => !item?.read).length;
   const dismiss = (id: string) => {
     setDismissed((prev) => {
       const next = new Set(prev);
@@ -57,5 +57,17 @@ export function useTenantFeed() {
     });
   };
 
-  return { items, unreadCount, dismiss, isLoading: primaryQuery.isLoading, error: primaryQuery.error };
+  return {
+    items,
+    unreadCount,
+    dismiss,
+    isLoading: primaryQuery.isLoading,
+    isError: primaryQuery.isError,
+    error: primaryQuery.error,
+    refetch: primaryQuery.refetch,
+    showDismissed,
+    setShowDismissed,
+    dismissedCount,
+    usingFallback,
+  };
 }

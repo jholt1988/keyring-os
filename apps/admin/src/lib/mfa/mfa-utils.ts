@@ -67,7 +67,7 @@ function generateRandomBase32(length: number): string {
 }
 
 // Mock QR code generation (in real app, use a proper QR library)
-function generateMockQRCodeDataUrl(data: string): string {
+function generateMockQRCodeDataUrl(_data: string): string {
   // Return a placeholder data URL
   // In production, use something like `qrcode.generate(data, { small: true })`
   return 'data:image/svg+xml;base64,' + btoa(`

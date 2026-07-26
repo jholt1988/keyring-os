@@ -4,7 +4,7 @@ import { SectionCard } from '@/components/copilot/section-card';
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/toast';
-import { createLease } from '@/lib/copilot-api';
+import { createOperatorLease } from '@/lib/operator/read-only-data';
 import { useMutation } from '@tanstack/react-query';
 import { FileText,RefreshCw } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -29,7 +29,7 @@ export default function NewLeasePage() {
   const set = (k: string, v: string | boolean) => setForm(p => ({ ...p, [k]: v }));
 
   const mutation = useMutation({
-    mutationFn: () => createLease({
+    mutationFn: () => createOperatorLease({
       tenantId: form.tenantId,
       unitId: form.unitId,
       startDate: form.startDate,
@@ -39,7 +39,7 @@ export default function NewLeasePage() {
       noticePeriodDays: form.noticePeriodDays ? parseInt(form.noticePeriodDays) : undefined,
       moveInAt: form.moveInAt || undefined,
       autoRenew: form.autoRenew,
-    }),
+    }, {}),
     onSuccess: () => {
       toast('Lease created');
       router.push(`/tenants/${form.tenantId}`);

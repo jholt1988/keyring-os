@@ -43,7 +43,7 @@ function stubFetch(response: Response) {
   return spy;
 }
 
-function jsonResponse(obj: unknown, status = 200) {
+function jsonResponse(obj: any, status = 200) {
   return new Response(JSON.stringify(obj), {
     status,
     headers: { 'content-type': 'application/json' },
