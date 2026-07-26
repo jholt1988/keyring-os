@@ -42,3 +42,16 @@ jobs:
             exit 1
           fi
           echo "No tracked file exceeds 5 MB."
+
+  mock-auth:
+    name: No unconditional mock-auth headers
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Guard against mock-auth header leakage
+        # Equivalent to `pnpm check:no-mock-auth` (scripts/check-no-mock-auth.sh).
+        # Pure bash/grep, so no toolchain install is needed. Fails the run if
+        # apps/admin/src references the mock identity headers, or if any app
+        # references them without the strict dev-only fail-closed gate
+        # (NODE_ENV !== 'production' && NEXT_PUBLIC_ENABLE_MOCK_AUTH === 'true').
+        run: bash scripts/check-no-mock-auth.sh
