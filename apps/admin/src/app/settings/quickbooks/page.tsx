@@ -1,4 +1,6 @@
-'use client';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { createServerQueryClient, prefetchServerQuery, serverApiGet } from '@/lib/server-fetch';
+import QuickBooksSettingsView from './quickbooks-view';
 
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Landmark } from 'lucide-react';
@@ -16,21 +18,8 @@ export default function QuickBooksSettingsPage() {
   const disconnectM = useMutation({ mutationFn: () => disconnectOperatorQuickBooks({}), onSuccess: () => { toast('Disconnected'); refetch(); } });
   const testM = useMutation({ mutationFn: () => testOperatorQuickBooksConnection({}), onSuccess: () => toast('Connection test complete') });
   return (
-    <WorkspaceShell title="QuickBooks" subtitle="Connection and accounting sync controls" icon={Landmark}>
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <SectionCard title="Connection Status" subtitle="Current QuickBooks integration state">
-          <pre className="mb-4 overflow-x-auto text-xs text-[#CBD5E1]">{JSON.stringify(status ?? {}, null, 2)}</pre>
-          <div className="flex flex-wrap gap-2">
-            <Button size="sm" onClick={() => connectM.mutate()}>Connect</Button>
-            <Button size="sm" variant="outline" onClick={() => syncM.mutate()}>Sync Now</Button>
-            <Button size="sm" variant="outline" onClick={() => testM.mutate()}>Test Connection</Button>
-            <Button size="sm" variant="destructive" onClick={() => disconnectM.mutate()}>Disconnect</Button>
-          </div>
-        </SectionCard>
-        <SectionCard title="Accounting Sync Status" subtitle="Backend reporting endpoint state">
-          <pre className="overflow-x-auto text-xs text-[#CBD5E1]">{JSON.stringify(syncStatus ?? {}, null, 2)}</pre>
-        </SectionCard>
-      </div>
-    </WorkspaceShell>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <QuickBooksSettingsView />
+    </HydrationBoundary>
   );
 }

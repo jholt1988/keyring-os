@@ -1,4 +1,6 @@
-'use client';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { createServerQueryClient, prefetchServerQuery, serverApiGet } from '@/lib/server-fetch';
+import LeaseAbstractionView from './lease-abstraction-view';
 
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';

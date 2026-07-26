@@ -1,4 +1,6 @@
-'use client';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { createServerQueryClient, prefetchServerQuery, serverApiGet } from '@/lib/server-fetch';
+import CapexView from './capex-view';
 
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';

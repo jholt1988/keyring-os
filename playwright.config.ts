@@ -42,5 +42,20 @@ export default defineConfig({
       timeout: 120_000,
       env: { API_URL: 'http://127.0.0.1:3001/api' },
     },
+    {
+      // Tenant portal on its own port so it coexists with admin (:3000). The
+      // project baseURL points at admin, so the tenant smoke spec targets this
+      // URL explicitly (TENANT_PORTAL_URL). Mock auth + the shared mock backend
+      // keep the app shell renderable without a live NestJS backend.
+      command: 'pnpm --filter @keyring/tenant-portal dev --port 3002',
+      url: 'http://127.0.0.1:3002/feed',
+      reuseExistingServer: true,
+      timeout: 120_000,
+      env: {
+        NEXT_PUBLIC_API_URL: 'http://127.0.0.1:3001/api',
+        NEXT_PUBLIC_ENABLE_MOCK_AUTH: 'true',
+        NEXT_PUBLIC_MOCK_USER_ID: 'dev-tenant-uuid-001',
+      },
+    },
   ],
 });
