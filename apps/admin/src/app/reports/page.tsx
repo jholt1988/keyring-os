@@ -7,19 +7,19 @@ import { BarChart3, TrendingUp, Home, AlertTriangle, Wrench, CreditCard, Zap } f
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { SectionCard } from '@/components/copilot/section-card';
 import {
-  fetchAccountingSyncStatus,
-  fetchRentRoll,
-  fetchProfitLoss,
-  fetchVacancyRate,
-  fetchDelinquencyAnalytics,
-  fetchMaintenanceAnalytics,
-  fetchManualChargesSummary,
-  fetchManualPaymentsSummary,
-  fetchOpexAnomalies,
-  fetchPaymentHistory,
-  fetchCapexAnalytics,
-  fetchReportHeatmap,
-} from '@/lib/operator/reports';
+  loadOperatorAccountingSyncStatus,
+  loadOperatorRentRoll,
+  loadOperatorProfitLoss,
+  loadOperatorVacancyRate,
+  loadOperatorDelinquencyAnalytics,
+  loadOperatorMaintenanceAnalytics,
+  loadOperatorManualChargesSummary,
+  loadOperatorManualPaymentsSummary,
+  loadOperatorOpexAnomalies,
+  loadOperatorPaymentHistory,
+  loadOperatorCapexAnalytics,
+  loadOperatorReportHeatmap,
+} from '@/lib/operator/read-only-data';
 
 const TABS = [
   { id: 'rent-roll',    label: 'Rent Roll',     icon: Home },
@@ -87,18 +87,18 @@ function TableSection({ rows, title }: { rows: any[]; title: string }) {
 
 function ReportContent({ tab }: { tab: TabId }) {
   const queryMap: Record<TabId, () => Promise<unknown>> = {
-    'rent-roll':    () => fetchRentRoll(),
-    'pnl':          () => fetchProfitLoss(),
-    'vacancy':      () => fetchVacancyRate(),
-    'delinquency':  () => fetchDelinquencyAnalytics(),
-    'maintenance':  () => fetchMaintenanceAnalytics(),
-    'payments':     () => fetchPaymentHistory(),
-    'capex':        () => fetchCapexAnalytics(),
-    'heatmap':      () => fetchReportHeatmap(),
-    'opex':         () => fetchOpexAnomalies(),
-    'accounting':   () => fetchAccountingSyncStatus(),
-    'manual-pay':   () => fetchManualPaymentsSummary(),
-    'manual-charge': () => fetchManualChargesSummary(),
+    'rent-roll':    () => loadOperatorRentRoll({}),
+    'pnl':          () => loadOperatorProfitLoss({}),
+    'vacancy':      () => loadOperatorVacancyRate({}),
+    'delinquency':  () => loadOperatorDelinquencyAnalytics({}),
+    'maintenance':  () => loadOperatorMaintenanceAnalytics({}),
+    'payments':     () => loadOperatorPaymentHistory({}),
+    'capex':        () => loadOperatorCapexAnalytics({}),
+    'heatmap':      () => loadOperatorReportHeatmap({}),
+    'opex':         () => loadOperatorOpexAnomalies({}),
+    'accounting':   () => loadOperatorAccountingSyncStatus({}),
+    'manual-pay':   () => loadOperatorManualPaymentsSummary({}),
+    'manual-charge': () => loadOperatorManualChargesSummary({}),
   };
 
   const { data, isLoading } = useQuery({
