@@ -1,3 +1,4 @@
+'use client';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { createServerQueryClient, prefetchServerQuery, serverApiGet } from '@/lib/server-fetch';
 import SmartDevicesView from './smart-devices-view';
@@ -24,7 +25,7 @@ export default function SmartDevicesPage() {
   const createDeviceM = useMutation({ mutationFn: () => registerOperatorSmartDevice(deviceForm, {}), onSuccess: () => { toast('Device registered'); setOpen(false); qc.invalidateQueries({ queryKey: ['smart-devices'] }); } });
   const createCodeM = useMutation({ mutationFn: () => createOperatorAccessCode(selectedDevice!, codeForm, {}), onSuccess: () => { toast('Access code created'); qc.invalidateQueries({ queryKey: ['access-codes', selectedDevice] }); } });
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <HydrationBoundary state={dehydrate(useQueryClient())}>
       <SmartDevicesView />
     </HydrationBoundary>
   );

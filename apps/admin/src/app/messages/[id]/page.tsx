@@ -2,8 +2,9 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { MessageSquare, Send, RefreshCw } from 'lucide-react';
+import ConversationView from './conversation-view';
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { Button } from '@/components/ui/button';
 import { loadOperatorMessages, sendOperatorMessage } from '@/lib/operator/read-only-data';
@@ -43,7 +44,7 @@ export default function ConversationPage() {
   };
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <HydrationBoundary state={dehydrate(qc)}>
       <ConversationView />
     </HydrationBoundary>
   );

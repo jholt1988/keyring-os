@@ -7,6 +7,9 @@ import { SectionCard } from '@/components/copilot/section-card';
 import { Button } from '@/components/ui/button';
 import { loadOperatorEsignaturesWorkbench, voidOperatorEnvelope, resendOperatorEnvelope } from '@/lib/operator/read-only-data';
 import { useToast } from '@/components/ui/toast';
+import{ dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { createServerQueryClient, prefetchServerQuery, serverApiGet } from '@/lib/server-fetch';
+import ESignaturesView from './esignatures-view';
 
 const STATUS_STYLES: Record<string, string> = {
   SENT:       'text-[#3B82F6] bg-[#3B82F6]/10',
@@ -90,7 +93,7 @@ export default function ESignaturesPage() {
   };
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <HydrationBoundary state={dehydrate(useQueryClient())}>
       <ESignaturesView />
     </HydrationBoundary>
   );

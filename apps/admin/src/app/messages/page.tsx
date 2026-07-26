@@ -12,7 +12,8 @@ import {
   loadOperatorMessagingTenants,
   replyToOperatorConversation,
 } from '@/lib/operator/read-only-data';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient, dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import MessagesView from './messages-view';
 import {
   MessageSquare,
   RefreshCw,
@@ -181,7 +182,7 @@ export default function MessagesPage() {
   }, [tenants, tenantSearch]);
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <HydrationBoundary state={dehydrate(qc)}>
       <MessagesView />
     </HydrationBoundary>
   );
