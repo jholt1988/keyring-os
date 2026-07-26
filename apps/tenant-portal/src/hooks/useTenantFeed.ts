@@ -1,5 +1,8 @@
-import { useState } from 'react';
+'use client';
+
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import type { TenantFeedItem } from '@keyring/types';
 import { fetchTenantFeed } from '@/lib/tenant-api';
 import type { TenantFeedItem } from '@keyring/types';
 
@@ -15,38 +18,37 @@ function getDismissed(): Set<string> {
 function saveDismissed(items: Set<string>): void {
   try {
     localStorage.setItem('dismissed-feed-items', JSON.stringify([...items]));
-  } catch {}
+  } catch {
+    /* localStorage unavailable — dismissals just won't persist */
+  }
 }
 
-// FeedItemData is now identical to TenantFeedItem — kept for backward compat
-export type FeedItemData = TenantFeedItem;
-
+/**
+ * Tenant feed state.
+ *
+ * Returns the full surface `FeedPage` / `TenantFeedList` consume:
+ * `TenantFeedItem[]` (not the old ad-hoc shape), plus error/refetch and the
+ * dismissed-items controls. Dismissal is a client-only concern (localStorage),
+ * so it lives here rather than in the query. The `['tenant-feed']` query is
+ * prefetched by the Server Component wrapper and served from the hydrated cache.
+ */
 export function useTenantFeed() {
-  // Lazy-init from localStorage — avoids setState-in-effect lint warning
-  const [dismissed, setDismissed] = useState<Set<string>>(() => {
-    if (typeof window === 'undefined') return new Set<string>();
-    return getDismissed();
-  });
+  const [dismissed, setDismissed] = useState<Set<string>>(new Set());
   const [showDismissed, setShowDismissed] = useState(false);
 
-  const primaryQuery = useQuery({
+  // Hydrate the dismissed set from localStorage after mount (client-only).
+  useEffect(() => {
+    setDismissed(getDismissed());
+  }, []);
+
+  const query = useQuery({
     queryKey: ['tenant-feed'],
     queryFn: fetchTenantFeed,
     refetchInterval: 60_000,
-    retry: (failureCount, error) => {
-      console.warn('useTenantFeed primary fetch failed:', error);
-      return failureCount < 2;
-    },
   });
 
-  const allItems: TenantFeedItem[] = primaryQuery.data?.items ?? [];
-  const items: TenantFeedItem[] = allItems.filter(
-    (item) => item?.id && (showDismissed || !dismissed.has(item.id))
-  );
-
-  const dismissedCount = dismissed.size;
-  const unreadCount = items.filter((item) => item.isDismissed !== true).length;
-  const usingFallback = primaryQuery.isError;
+  const all: TenantFeedItem[] = (query.data?.items ?? []).filter((item) => Boolean(item?.id));
+  const items = showDismissed ? all : all.filter((item) => !dismissed.has(item.id));
 
   const dismiss = (id: string) => {
     setDismissed((prev) => {
@@ -59,15 +61,16 @@ export function useTenantFeed() {
 
   return {
     items,
-    unreadCount,
+    isLoading: query.isLoading,
+    isError: query.isError,
+    refetch: () => {
+      void query.refetch();
+    },
     dismiss,
-    isLoading: primaryQuery.isLoading,
-    isError: primaryQuery.isError,
-    error: primaryQuery.error,
-    refetch: primaryQuery.refetch,
     showDismissed,
     setShowDismissed,
-    dismissedCount,
-    usingFallback,
+    dismissedCount: dismissed.size,
+    // No client-side synthesis fallback is currently wired; data is always live.
+    usingFallback: false,
   };
 }
