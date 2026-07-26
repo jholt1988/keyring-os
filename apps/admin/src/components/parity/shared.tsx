@@ -9,27 +9,27 @@ import { Modal } from '@/components/ui/modal';
 import { SectionCard } from '@/components/copilot/section-card';
 import { useToast } from '@/components/ui/toast';
 import {
-  aiScoreBid,
-  assignTour,
-  awardBid,
-  createBid,
-  createManualCharge,
-  createPaymentPlan,
-  createStripeCheckoutSession,
-  fetchAttorneyPacket,
-  fetchContractorBids,
-  fetchContractorRecommendations,
-  fetchLegalTracker,
-  fetchPaymentPlans,
-  fetchTours,
-  recordCourtDate,
-  referAttorney,
-  rejectBid,
-  rescheduleTour,
-  resolveLegalHold,
-  scheduleTour,
-  updateTourStatus,
-} from '@/lib/copilot-api';
+  aiScoreOperatorBid,
+  assignOperatorTour,
+  awardOperatorBid,
+  createOperatorBid,
+  createOperatorManualCharge,
+  createOperatorPaymentPlan,
+  createOperatorStripeCheckoutSession,
+  loadOperatorAttorneyPacket,
+  loadOperatorContractorBids,
+  loadOperatorContractorRecommendations,
+  loadOperatorLegalTracker,
+  loadOperatorPaymentPlans,
+  loadOperatorTours,
+  recordOperatorCourtDate,
+  referOperatorAttorney,
+  rejectOperatorBid,
+  rescheduleOperatorTour,
+  resolveOperatorLegalHold,
+  scheduleOperatorTour,
+  updateOperatorTourStatus,
+} from '@/lib/operator/read-only-data';
 
 function getList<T>(value: unknown): T[] {
   if (Array.isArray(value)) return value;
@@ -58,7 +58,7 @@ export function ToursSection({ embeddedLeadId, title = 'Tours', subtitle = 'Sche
 
   const { data, refetch, isLoading } = useQuery({
     queryKey: ['parity', 'tours', embeddedLeadId ?? 'all'],
-    queryFn: () => fetchTours(embeddedLeadId ? { leadId: embeddedLeadId } : undefined),
+    queryFn: () => loadOperatorTours(embeddedLeadId ? { leadId: embeddedLeadId } : {}),
   });
 
   const tours = getList<unknown>(data);
@@ -69,7 +69,7 @@ export function ToursSection({ embeddedLeadId, title = 'Tours', subtitle = 'Sche
   };
 
   const scheduleMutation = useMutation({
-    mutationFn: () => scheduleTour(form),
+    mutationFn: () => scheduleOperatorTour(form, {}),
     onSuccess: () => {
       toast('Tour scheduled');
       setScheduleOpen(false);
@@ -80,7 +80,7 @@ export function ToursSection({ embeddedLeadId, title = 'Tours', subtitle = 'Sche
   });
 
   const statusMutation = useMutation({
-    mutationFn: ({ id, status }: { id: string; status: string }) => updateTourStatus(id, status),
+    mutationFn: ({ id, status }: { id: string; status: string }) => updateOperatorTourStatus(id, status, {}),
     onSuccess: () => {
       toast('Tour updated');
       invalidate();
@@ -89,7 +89,7 @@ export function ToursSection({ embeddedLeadId, title = 'Tours', subtitle = 'Sche
   });
 
   const assignMutation = useMutation({
-    mutationFn: () => assignTour(assignTarget.id, agentId),
+    mutationFn: () => assignOperatorTour(assignTarget.id, agentId, {}),
     onSuccess: () => {
       toast('Tour assigned');
       setAssignTarget(null);
@@ -100,7 +100,7 @@ export function ToursSection({ embeddedLeadId, title = 'Tours', subtitle = 'Sche
   });
 
   const rescheduleMutation = useMutation({
-    mutationFn: () => rescheduleTour(rescheduleTarget.id, { scheduledAt: rescheduleAt }),
+    mutationFn: () => rescheduleOperatorTour(rescheduleTarget.id, { scheduledAt: rescheduleAt }),
     onSuccess: () => {
       toast('Tour rescheduled');
       setRescheduleTarget(null);
@@ -239,15 +239,15 @@ export function PaymentOperationsSection({ delinquentItems = [], invoices = [], 
   const [planForm, setPlanForm] = useState({ leaseId: '', amount: '', cadence: 'MONTHLY', startDate: '' });
   const [chargeForm, setChargeForm] = useState({ leaseId: '', amount: '', description: '' });
 
-  const plansQuery = useQuery({ queryKey: ['parity', 'payment-plans'], queryFn: fetchPaymentPlans });
+  const plansQuery = useQuery({ queryKey: ['parity', 'payment-plans'], queryFn: () => loadOperatorPaymentPlans({}), });
   const trackerQuery = useQuery({
     queryKey: ['parity', 'legal-tracker', trackerLeaseId],
-    queryFn: () => fetchLegalTracker(trackerLeaseId!),
+    queryFn: () => loadOperatorLegalTracker(trackerLeaseId!, {}),
     enabled: !!trackerLeaseId,
   });
   const attorneyPacketQuery = useQuery({
     queryKey: ['parity', 'attorney-packet', trackerLeaseId],
-    queryFn: () => fetchAttorneyPacket(trackerLeaseId!),
+    queryFn: () => loadOperatorAttorneyPacket(trackerLeaseId!, {}),
     enabled: !!trackerLeaseId,
   });
 
@@ -259,25 +259,25 @@ export function PaymentOperationsSection({ delinquentItems = [], invoices = [], 
   };
 
   const referMutation = useMutation({
-    mutationFn: (leaseId: string) => referAttorney({ leaseId }),
+    mutationFn: (leaseId: string) => referOperatorAttorney({ leaseId }, {}),
     onSuccess: () => { toast('Attorney referral sent'); invalidate(); },
     onError: () => toast('Failed to refer attorney', 'error'),
   });
 
   const resolveMutation = useMutation({
-    mutationFn: (leaseId: string) => resolveLegalHold({ leaseId }),
+    mutationFn: (leaseId: string) => resolveOperatorLegalHold({ leaseId }),
     onSuccess: () => { toast('Legal hold resolved'); invalidate(); },
     onError: () => toast('Failed to resolve legal hold', 'error'),
   });
 
   const courtDateMutation = useMutation({
-    mutationFn: () => recordCourtDate({ leaseId: selectedLeaseId, courtDate: legalDate }),
+    mutationFn: () => recordOperatorCourtDate({ leaseId: selectedLeaseId, courtDate: legalDate }, {}),
     onSuccess: () => { toast('Court date recorded'); setSelectedLeaseId(''); setLegalDate(''); invalidate(); },
     onError: () => toast('Failed to record court date', 'error'),
   });
 
   const planMutation = useMutation({
-    mutationFn: () => createPaymentPlan({ ...planForm, amount: Number(planForm.amount) || 0 }),
+    mutationFn: () => createOperatorPaymentPlan({ ...planForm, amount: Number(planForm.amount) || 0 }, {}),
     onSuccess: () => {
       toast('Payment plan created');
       setPlanOpen(false);
@@ -288,7 +288,7 @@ export function PaymentOperationsSection({ delinquentItems = [], invoices = [], 
   });
 
   const manualChargeMutation = useMutation({
-    mutationFn: () => createManualCharge({ ...chargeForm, amount: Number(chargeForm.amount) || 0 }),
+    mutationFn: () => createOperatorManualCharge({ ...chargeForm, amount: Number(chargeForm.amount) || 0 }, {}),
     onSuccess: () => {
       toast('Manual charge created');
       setChargeOpen(false);
@@ -299,7 +299,7 @@ export function PaymentOperationsSection({ delinquentItems = [], invoices = [], 
   });
 
   const checkoutMutation = useMutation({
-    mutationFn: (invoice: unknown) => createStripeCheckoutSession({ invoiceId: invoice.id, leaseId: invoice.leaseId, amount: invoice.amount ?? invoice.balance }),
+    mutationFn: (invoice: unknown) => createOperatorStripeCheckoutSession({ invoiceId: invoice.id, leaseId: invoice.leaseId, amount: invoice.amount ?? invoice.balance }, {}),
     onSuccess: (result) => {
       const link = getLink(result);
       if (link && typeof window !== 'undefined') window.open(link, '_blank', 'noopener,noreferrer');
@@ -470,11 +470,11 @@ export function ContractorBidsSection({ propertyId, requestId, title = 'Contract
 
   const bidsQuery = useQuery({
     queryKey: ['parity', 'contractor-bids', propertyId ?? 'all', requestId ?? 'all'],
-    queryFn: () => fetchContractorBids({ ...(propertyId ? { propertyId } : {}), ...(requestId ? { requestId } : {}) }),
+    queryFn: () => loadOperatorContractorBids({ ...(propertyId ? { propertyId } : {}), ...(requestId ? { requestId } : {}) }),
   });
   const recommendationsQuery = useQuery({
     queryKey: ['parity', 'contractor-recommendations', propertyId],
-    queryFn: () => fetchContractorRecommendations(propertyId!),
+    queryFn: () => loadOperatorContractorRecommendations(propertyId!, {}),
     enabled: !!propertyId,
   });
 
@@ -487,7 +487,7 @@ export function ContractorBidsSection({ propertyId, requestId, title = 'Contract
   };
 
   const createMutation = useMutation({
-    mutationFn: () => createBid({ ...form, amount: Number(form.amount) || 0 }),
+    mutationFn: () => createOperatorBid({ ...form, amount: Number(form.amount) || 0 }, {}),
     onSuccess: () => {
       toast('Bid created');
       setCreateOpen(false);
@@ -496,9 +496,9 @@ export function ContractorBidsSection({ propertyId, requestId, title = 'Contract
     },
     onError: () => toast('Failed to create bid', 'error'),
   });
-  const awardMutation = useMutation({ mutationFn: (id: string) => awardBid(id), onSuccess: () => { toast('Bid awarded'); invalidate(); }, onError: () => toast('Failed to award bid', 'error') });
-  const rejectMutation = useMutation({ mutationFn: (id: string) => rejectBid(id), onSuccess: () => { toast('Bid rejected'); invalidate(); }, onError: () => toast('Failed to reject bid', 'error') });
-  const aiMutation = useMutation({ mutationFn: (id: string) => aiScoreBid(id), onSuccess: () => { toast('AI score requested'); invalidate(); }, onError: () => toast('Failed to score bid', 'error') });
+  const awardMutation = useMutation({ mutationFn: (id: string) => awardOperatorBid(id, {}), onSuccess: () => { toast('Bid awarded'); invalidate(); }, onError: () => toast('Failed to award bid', 'error') });
+  const rejectMutation = useMutation({ mutationFn: (id: string) => rejectOperatorBid(id, {}), onSuccess: () => { toast('Bid rejected'); invalidate(); }, onError: () => toast('Failed to reject bid', 'error') });
+  const aiMutation = useMutation({ mutationFn: (id: string) => aiScoreOperatorBid(id, {}), onSuccess: () => { toast('AI score requested'); invalidate(); }, onError: () => toast('Failed to score bid', 'error') });
 
   return (
     <>

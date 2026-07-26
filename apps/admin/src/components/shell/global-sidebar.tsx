@@ -9,7 +9,7 @@ import {
   Bell, MessageSquare, PenLine, BarChart2, ScrollText, Bot, Building, Zap, Shield, Cpu, BriefcaseBusiness, Calendar, TrendingUp,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { fetchNotifications } from '@/lib/copilot-api';
+import { loadOperatorNotifications } from '@/lib/operator/read-only-data';
 
 const lanes = [
   { label: 'Briefing',    icon: LayoutDashboard, href: '/' },
@@ -48,7 +48,7 @@ export function GlobalSidebar() {
 
   const { data: notifications = [] } = useQuery({
     queryKey: ['notifications', 'unread'],
-    queryFn: () => fetchNotifications({ unread: true }),
+    queryFn: () => loadOperatorNotifications({ unread: true }),
     refetchInterval: 60_000,
   });
   const unreadCount = (notifications as Array<{ isRead: boolean }>).filter((n) => !n.isRead).length;

@@ -5,13 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 import { useToast } from '@/components/ui/toast';
 import {
-  createMessageThread,
-  fetchAdminConversations,
-  fetchConversationMessages,
-  fetchMessageStats,
-  fetchMessagingTenants,
-  replyToConversation,
-} from '@/lib/copilot-api';
+  createOperatorMessageThread,
+  loadOperatorAdminConversations,
+  loadOperatorConversationMessages,
+  loadOperatorMessageStats,
+  loadOperatorMessagingTenants,
+  replyToOperatorConversation,
+} from '@/lib/operator/read-only-data';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   MessageSquare,
@@ -85,7 +85,7 @@ export default function MessagesPage() {
   // Conversations list
   const { data: convsRaw, isLoading: convsLoading } = useQuery({
     queryKey: ['messaging', 'conversations'],
-    queryFn: () => fetchAdminConversations(),
+    queryFn: () => loadOperatorAdminConversations({}),
     refetchInterval: 30_000,
   });
   const conversations: Conversation[] = (convsRaw as any)?.data ?? convsRaw ?? [];
@@ -93,14 +93,14 @@ export default function MessagesPage() {
   // Stats
   const { data: stats } = useQuery({
     queryKey: ['messaging', 'stats'],
-    queryFn: () => fetchMessageStats(),
+    queryFn: () => loadOperatorMessageStats({}),
     staleTime: 60_000,
   });
 
   // Tenants (for compose)
   const { data: tenantsRaw } = useQuery({
     queryKey: ['messaging', 'tenants'],
-    queryFn: () => fetchMessagingTenants(),
+    queryFn: () => loadOperatorMessagingTenants({}),
   });
   const tenants = (Array.isArray(tenantsRaw) ? tenantsRaw : []) as Tenant[];
 
@@ -108,7 +108,7 @@ export default function MessagesPage() {
   const [activeConvId, setActiveConvId] = useState<number | null>(null);
   const { data: threadMessages, isLoading: msgsLoading } = useQuery({
     queryKey: ['messaging', 'messages', activeConvId],
-    queryFn: () => fetchConversationMessages(activeConvId!),
+    queryFn: () => loadOperatorConversationMessages(activeConvId!, {}),
     enabled: activeConvId != null,
     refetchInterval: 10_000,
   });
@@ -117,7 +117,7 @@ export default function MessagesPage() {
   // Reply
   const [replyBody, setReplyBody] = useState('');
   const replyMutation = useMutation({
-    mutationFn: () => replyToConversation(activeConvId!, replyBody),
+    mutationFn: () => replyToOperatorConversation(activeConvId!, replyBody, {}),
     onSuccess: () => {
       setReplyBody('');
       qc.invalidateQueries({ queryKey: ['messaging', 'messages', activeConvId] });
@@ -148,11 +148,11 @@ export default function MessagesPage() {
     mutationFn: () => {
       const tenant = tenants.find((t) => t.id === composeTenantId);
       const participantId = tenant?.userId ?? tenant?.id ?? composeTenantId;
-      return createMessageThread({
+      return createOperatorMessageThread({
         subject: composeSubject || undefined,
         content: composeBody,
         participantIds: [participantId],
-      });
+      }, {});
     },
     onSuccess: (thread: any) => {
       toast('Message sent');

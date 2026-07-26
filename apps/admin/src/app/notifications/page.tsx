@@ -6,11 +6,11 @@ import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { SectionCard } from '@/components/copilot/section-card';
 import { Button } from '@/components/ui/button';
 import {
-  fetchNotifications,
-  markNotificationRead,
-  markAllNotificationsRead,
-  deleteNotification,
-} from '@/lib/copilot-api';
+  loadOperatorNotifications,
+  markOperatorNotificationRead,
+  markAllOperatorNotificationsRead,
+  deleteOperatorNotification,
+} from '@/lib/operator/read-only-data';
 import { useToast } from '@/components/ui/toast';
 
 const TYPE_COLORS: Record<string, string> = {
@@ -28,23 +28,23 @@ export default function NotificationsPage() {
 
   const { data: notifications = [], isLoading } = useQuery({
     queryKey: ['notifications'],
-    queryFn: () => fetchNotifications(),
+    queryFn: () => loadOperatorNotifications({}),
   });
 
   const markReadMutation = useMutation({
-    mutationFn: (id: number) => markNotificationRead(id),
+    mutationFn: (id: number) => markOperatorNotificationRead(id, {}),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['notifications'] }),
     onError: () => toast('Failed to mark as read', 'error'),
   });
 
   const markAllMutation = useMutation({
-    mutationFn: () => markAllNotificationsRead(),
+    mutationFn: () => markAllOperatorNotificationsRead({}),
     onSuccess: () => { toast('All notifications marked as read'); qc.invalidateQueries({ queryKey: ['notifications'] }); },
     onError: () => toast('Failed to mark all as read', 'error'),
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: number) => deleteNotification(id),
+    mutationFn: (id: number) => deleteOperatorNotification(id, {}),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['notifications'] }),
     onError: () => toast('Failed to delete notification', 'error'),
   });
