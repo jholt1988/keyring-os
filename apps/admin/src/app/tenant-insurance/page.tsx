@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { Shield, Plus, AlertTriangle, CheckCircle, FileText, Search } from 'lucide-react';
+import { Shield, Plus, AlertTriangle, CheckCircle, Search } from 'lucide-react';
 import { WorkspaceShell, SectionCard, MetricCard } from '@/components/copilot';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
-import { fetchTenantInsurance, recordTenantInsurance } from '@/lib/copilot-api';
+import { loadOperatorTenantInsurance, recordOperatorTenantInsurance } from '@/lib/operator/read-only-data';
 import { useToast } from '@/components/ui/toast';
 
 export default function TenantInsurancePage() {
@@ -17,14 +17,14 @@ export default function TenantInsurancePage() {
   
   const { data, refetch, isLoading } = useQuery({ 
     queryKey: ['tenant-insurance', leaseId], 
-    queryFn: () => fetchTenantInsurance(leaseId), 
+    queryFn: () => loadOperatorTenantInsurance(leaseId, {}), 
     enabled: !!leaseId 
   });
   
   const policies = Array.isArray(data) ? data : [];
   
   const mutation = useMutation({ 
-    mutationFn: () => recordTenantInsurance(leaseId, { ...form, coverageAmount: Number(form.coverageAmount) || 0 }), 
+    mutationFn: () => recordOperatorTenantInsurance(leaseId, { ...form, coverageAmount: Number(form.coverageAmount) || 0 }, {}), 
     onSuccess: () => { 
       toast('Policy recorded successfully'); 
       setOpen(false);

@@ -14,7 +14,7 @@ import { ArrowUpRight, Banknote, ClipboardList, Inbox, KeyRound, ShieldCheck } f
 
 export function OwnerStatementsView({
   data,
-  loaded,
+  loaded: _loaded,
   token,
   onRefresh,
   workflowFocus,

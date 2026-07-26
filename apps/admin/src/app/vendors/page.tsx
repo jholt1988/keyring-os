@@ -6,7 +6,7 @@ import { Building, Download, Plus, RefreshCw } from 'lucide-react';
 import { WorkspaceShell, SectionCard } from '@/components/copilot';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
-import { createVendor, fetchVendors, getVendors1099ExportUrl } from '@/lib/copilot-api';
+import { createOperatorVendor, loadOperatorVendorsWorkbench, getOperatorVendors1099ExportUrl } from '@/lib/operator/read-only-data';
 import { useToast } from '@/components/ui/toast';
 
 export default function VendorsPage() {
@@ -14,17 +14,17 @@ export default function VendorsPage() {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ name: '', type: '', contact: '' });
-  const { data, isLoading } = useQuery({ queryKey: ['vendors'], queryFn: fetchVendors });
+  const { data, isLoading } = useQuery({ queryKey: ['vendors'], queryFn: () => loadOperatorVendorsWorkbench({}) });
   const vendors = Array.isArray(data) ? data : [];
   const mutation = useMutation({
-    mutationFn: () => createVendor(form),
+    mutationFn: () => createOperatorVendor(form, {}),
     onSuccess: () => { toast('Vendor created'); setOpen(false); setForm({ name: '', type: '', contact: '' }); qc.invalidateQueries({ queryKey: ['vendors'] }); },
     onError: () => toast('Failed to create vendor', 'error'),
   });
 
   return (
     <>
-      <WorkspaceShell title="Vendors" subtitle="Vendor management and 1099 export" icon={Building} actions={<><Button size="sm" variant="outline" onClick={() => window.open(getVendors1099ExportUrl(), '_blank', 'noopener,noreferrer')}><Download size={12} /> Export 1099</Button><Button size="sm" onClick={() => setOpen(true)}><Plus size={12} /> Add Vendor</Button></>}>
+      <WorkspaceShell title="Vendors" subtitle="Vendor management and 1099 export" icon={Building} actions={<><Button size="sm" variant="outline" onClick={() => window.open(getOperatorVendors1099ExportUrl(), '_blank', 'noopener,noreferrer')}><Download size={12} /> Export 1099</Button><Button size="sm" onClick={() => setOpen(true)}><Plus size={12} /> Add Vendor</Button></>}>
         <SectionCard title="Vendor Directory" subtitle="Name, type, and contact coverage">
           {isLoading ? <p className="text-sm text-[#94A3B8]">Loading vendors…</p> : vendors.length === 0 ? <p className="text-sm text-[#94A3B8]">No vendors found.</p> : (
             <div className="space-y-3">{vendors.map((vendor: any) => <div key={vendor.id} className="rounded-[14px] border border-[#1E3350] bg-[#0F1B31] p-3"><p className="text-sm font-medium text-[#F8FAFC]">{vendor.name}</p><p className="text-xs text-[#94A3B8]">{vendor.type ?? 'Vendor'} · {vendor.contact ?? vendor.email ?? vendor.phone ?? 'No contact'}</p></div>)}</div>

@@ -40,7 +40,7 @@ function copyResponseHeaders(response: Response): Headers {
  * empty or not valid JSON, so a malformed backend response can never crash
  * the proxy with an unhandled exception.
  */
-function safeJsonParse(text: string): unknown {
+function safeJsonParse(text: string): any {
   if (!text) return undefined;
   try {
     return JSON.parse(text);
@@ -50,29 +50,29 @@ function safeJsonParse(text: string): unknown {
 }
 
 interface AuthTokenPayload {
-  access_token?: unknown;
-  accessToken?: unknown;
-  refresh_token?: unknown;
-  refreshToken?: unknown;
-  result?: unknown;
+  access_token?: any;
+  accessToken?: any;
+  refresh_token?: any;
+  refreshToken?: any;
+  result?: any;
 }
 
 /** Unwrap an optional `{ result: {...} }` envelope used by some backend routes. */
-function unwrapResult(payload: unknown): Record<string, unknown> {
+function unwrapResult(payload: any): Record<string, unknown> {
   if (!payload || typeof payload !== 'object') return {};
-  const obj = payload as { result?: unknown };
+  const obj = payload as { result?: any };
   if (obj.result && typeof obj.result === 'object') return obj.result as Record<string, unknown>;
   return obj as Record<string, unknown>;
 }
 
-function asToken(value: unknown): string | undefined {
+function asToken(value: any): string | undefined {
   return typeof value === 'string' && value.length > 0 ? value : undefined;
 }
 
-function resolveUserRole(payload: unknown): string | undefined {
+function resolveUserRole(payload: any): string | undefined {
   if (!payload || typeof payload !== 'object') return undefined;
 
-  const obj = payload as { role?: unknown; roles?: unknown; user?: { role?: unknown; roles?: unknown } };
+  const obj = payload as { role?: any; roles?: any; user?: { role?: any; roles?: any } };
 
   // 1. Check direct role at root
   if (typeof obj.role === 'string' && obj.role.trim()) {

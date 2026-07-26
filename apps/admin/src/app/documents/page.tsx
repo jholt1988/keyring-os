@@ -7,7 +7,7 @@ import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { SectionCard } from '@/components/copilot/section-card';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
-import { fetchDocuments, uploadDocument, getDocumentDownloadUrl } from '@/lib/copilot-api';
+import { loadOperatorDocumentsWorkbench, uploadOperatorDocument } from '@/lib/operator/read-only-data';
 import { useToast } from '@/components/ui/toast';
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -27,7 +27,7 @@ export default function DocumentsPage() {
 
   const { data: docs = [], isLoading } = useQuery({
     queryKey: ['documents'],
-    queryFn: () => fetchDocuments(),
+    queryFn: () => loadOperatorDocumentsWorkbench({}),
   });
 
   const uploadMutation = useMutation({
@@ -36,7 +36,7 @@ export default function DocumentsPage() {
       const fd = new FormData();
       fd.append('file', uploadFile);
       fd.append('category', uploadCategory);
-      return uploadDocument(fd);
+      return uploadOperatorDocument(fd, {});
     },
     onSuccess: () => {
       toast('Document uploaded');
@@ -143,7 +143,7 @@ export default function DocumentsPage() {
                               {CATEGORY_LABELS[doc.category?.toUpperCase()] ?? doc.category ?? 'Other'}
                             </span>
                           )}
-                          <a href={getDocumentDownloadUrl(doc.id)} target="_blank" rel="noopener noreferrer"
+                          <a href={`/api/v2/operator-documents/${doc.id}/download`} target="_blank" rel="noopener noreferrer"
                             className="flex h-7 w-7 items-center justify-center rounded-md border border-[#1E3350] bg-[#07111F] text-[#94A3B8] transition-all hover:border-[#3B82F6] hover:text-[#3B82F6]">
                             <Download size={13} />
                           </a>

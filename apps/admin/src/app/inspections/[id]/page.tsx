@@ -6,7 +6,8 @@ import { ClipboardList, CheckCircle2, Play, AlertCircle, RefreshCw } from 'lucid
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { SectionCard } from '@/components/copilot/section-card';
 import { Button } from '@/components/ui/button';
-import { fetchInspection, completeInspection, startInspection } from '@/lib/copilot-api';
+import { loadOperatorInspectionDetail, startOperatorInspection, completeOperatorInspection } from '@/lib/operator/read-only-data';
+import { useOperatorData } from '@/features/operator';
 import { useToast } from '@/components/ui/toast';
 
 const TYPE_LABELS: Record<string, string> = {
@@ -26,20 +27,21 @@ export default function InspectionDetailPage() {
   const { id } = useParams<{ id: string }>();
   const qc = useQueryClient();
   const { toast } = useToast();
+  const { token } = useOperatorData();
 
   const { data: inspection, isLoading } = useQuery({
     queryKey: ['inspection', id],
-    queryFn: () => fetchInspection(Number(id)),
+    queryFn: () => loadOperatorInspectionDetail(Number(id), { token: token || undefined }),
   });
 
   const startMutation = useMutation({
-    mutationFn: () => startInspection(Number(id)),
+    mutationFn: () => startOperatorInspection(Number(id), { token: token || undefined }),
     onSuccess: () => { toast('Inspection started'); qc.invalidateQueries({ queryKey: ['inspection', id] }); },
     onError: () => toast('Failed to start inspection', 'error'),
   });
 
   const completeMutation = useMutation({
-    mutationFn: () => completeInspection(Number(id)),
+    mutationFn: () => completeOperatorInspection(Number(id), { token: token || undefined }),
     onSuccess: () => { toast('Inspection completed'); qc.invalidateQueries({ queryKey: ['inspection', id] }); },
     onError: () => toast('Failed to complete inspection', 'error'),
   });

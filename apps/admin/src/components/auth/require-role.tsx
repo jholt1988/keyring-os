@@ -18,7 +18,7 @@ interface RequireRoleProps {
  */
 export function RequireRole({ requiredRoles, fallbackRoute = '/login', children }: RequireRoleProps) {
   const router = useRouter();
-  const { isAuthenticated, hasRole, user, isLoading } = useAuth();
+  const { isAuthenticated, hasRole, isLoading } = useAuth();
 
   useEffect(() => {
     if (!isLoading) {

@@ -2,10 +2,10 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { Bot, Send, User, RefreshCw, Loader2 } from 'lucide-react';
-import { WorkspaceShell, SectionCard } from '@/components/copilot';
+import { Bot, Send, User, Loader2 } from 'lucide-react';
+import { WorkspaceShell } from '@/components/copilot';
 import { Button } from '@/components/ui/button';
-import { fetchChatSession, sendChatMessage } from '@/lib/copilot-api';
+import { loadOperatorChatSession, sendOperatorChatMessage } from '@/lib/operator/read-only-data';
 import { useToast } from '@/components/ui/toast';
 
 export default function ChatbotPage() {
@@ -16,22 +16,22 @@ export default function ChatbotPage() {
   
   const { data, refetch, isLoading } = useQuery({ 
     queryKey: ['chatbot', sessionId], 
-    queryFn: () => fetchChatSession(sessionId), 
+    queryFn: () => loadOperatorChatSession(sessionId, {}), 
     enabled: !!sessionId 
   });
   
-  const thread = data?.messages ?? data?.thread ?? [];
+  const thread = (data as any)?.messages ?? (data as any)?.thread ?? [];
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [thread]);
 
   const mutation = useMutation({
-    mutationFn: () => sendChatMessage(message, sessionId || undefined),
+    mutationFn: () => sendOperatorChatMessage(message, sessionId || undefined, {}),
     onSuccess: (result) => {
       setMessage('');
-      if (!sessionId && result?.sessionId) {
-        setSessionId(result.sessionId);
+      if (!sessionId && (result as any)?.sessionId) {
+        setSessionId((result as any).sessionId);
       } else {
         refetch();
       }

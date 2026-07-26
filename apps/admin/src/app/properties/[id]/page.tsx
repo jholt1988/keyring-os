@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { Building2, XCircle, Clock } from 'lucide-react';
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { Button } from '@/components/ui/button';
-import { fetchPropertyWorkspace, fetchPropertyRepairs, fetchAuditLogs } from '@/lib/copilot-api';
+import { loadPropertyWorkspace, loadPropertyRepairs, loadAuditLogs } from '@/lib/operator/read-only-data';
 import { TimelineRail } from '@/components/copilot/timeline-rail';
 
 export default function PropertyPage() {
@@ -22,9 +22,9 @@ export default function PropertyPage() {
   useEffect(() => {
     if (id) {
       Promise.all([
-        fetchPropertyWorkspace(id),
-        fetchPropertyRepairs(id),
-        fetchAuditLogs({ entityId: id })
+        loadPropertyWorkspace(id),
+        loadPropertyRepairs(id),
+        loadAuditLogs({ entityId: id })
       ]).then(([res, reps, logs]) => {
         setProperty(res.property);
         setRollup(res.rollup);

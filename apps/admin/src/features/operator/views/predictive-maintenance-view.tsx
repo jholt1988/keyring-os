@@ -64,6 +64,8 @@ export function PredictiveMaintenanceView({
       if (summaryResult.status === 'rejected' && scanResult.status === 'rejected') {
         setMessage('Failed to load predictive maintenance data.');
       }
+    } catch {
+      console.error('Failed to load predictive assets.');
     } finally {
       setLoading(false);
     }

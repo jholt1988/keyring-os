@@ -11,7 +11,7 @@ import {
   fetchMessageStats,
   fetchMessagingTenants,
   replyToConversation,
-} from '@/lib/copilot-api';
+} from '@/lib/operator/messaging';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   MessageSquare,
@@ -102,7 +102,7 @@ export default function MessagesPage() {
     queryKey: ['messaging', 'tenants'],
     queryFn: () => fetchMessagingTenants(),
   });
-  const tenants: Tenant[] = Array.isArray(tenantsRaw) ? tenantsRaw : [];
+  const tenants = (Array.isArray(tenantsRaw) ? tenantsRaw : []) as Tenant[];
 
   // Active thread
   const [activeConvId, setActiveConvId] = useState<number | null>(null);
@@ -112,7 +112,7 @@ export default function MessagesPage() {
     enabled: activeConvId != null,
     refetchInterval: 10_000,
   });
-  const messages: Message[] = Array.isArray(threadMessages) ? threadMessages : [];
+  const messages = (Array.isArray(threadMessages) ? threadMessages : []) as Message[];
 
   // Reply
   const [replyBody, setReplyBody] = useState('');
