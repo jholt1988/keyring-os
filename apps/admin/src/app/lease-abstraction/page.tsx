@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { FileText, Upload } from 'lucide-react';
 import { WorkspaceShell, MetricCard, SectionCard } from '@/components/copilot';
 import { Button } from '@/components/ui/button';
-import { bulkExtractLeases, extractLease, fetchLeaseAbstractionAnalytics, fetchLeaseAbstractions, reviewLeaseAbstraction } from '@/lib/copilot-api';
+import { bulkExtractOperatorLeases, extractOperatorLease, loadOperatorLeaseAbstractionAnalytics, loadOperatorLeaseAbstractions, reviewOperatorLeaseAbstraction } from '@/lib/operator/read-only-data';
 import { useToast } from '@/components/ui/toast';
 
 export default function LeaseAbstractionPage() {
@@ -13,21 +13,21 @@ export default function LeaseAbstractionPage() {
   const { toast } = useToast();
   const [single, setSingle] = useState<File | null>(null);
   const [bulk, setBulk] = useState<FileList | null>(null);
-  const { data: analytics } = useQuery({ queryKey: ['lease-abstraction-analytics'], queryFn: fetchLeaseAbstractionAnalytics });
-  const { data } = useQuery({ queryKey: ['lease-abstractions'], queryFn: fetchLeaseAbstractions });
+  const { data: analytics } = useQuery({ queryKey: ['lease-abstraction-analytics'], queryFn: () => loadOperatorLeaseAbstractionAnalytics({}) });
+  const { data } = useQuery({ queryKey: ['lease-abstractions'], queryFn: () => loadOperatorLeaseAbstractions({}) });
   const abstractions = Array.isArray(data) ? data : [];
   const refresh = () => qc.invalidateQueries({ queryKey: ['lease-abstractions'] });
-  const extractM = useMutation({ mutationFn: async () => { const fd = new FormData(); if (single) fd.append('file', single); return extractLease(fd); }, onSuccess: () => { toast('Lease uploaded for extraction'); refresh(); } });
-  const bulkM = useMutation({ mutationFn: async () => { return bulkExtractLeases(); }, onSuccess: () => { toast('Bulk extraction started'); refresh(); } });
-  const reviewM = useMutation({ mutationFn: (id: string) => reviewLeaseAbstraction(id, { reviewed: true, approved: true }), onSuccess: () => { toast('Abstraction reviewed'); refresh(); } });
+  const extractM = useMutation({ mutationFn: async () => { const fd = new FormData(); if (single) fd.append('file', single); return extractOperatorLease(fd as unknown as Record<string, unknown>, {}); }, onSuccess: () => { toast('Lease uploaded for extraction'); refresh(); } });
+  const bulkM = useMutation({ mutationFn: async () => { return bulkExtractOperatorLeases({}); }, onSuccess: () => { toast('Bulk extraction started'); refresh(); } });
+  const reviewM = useMutation({ mutationFn: (id: string) => reviewOperatorLeaseAbstraction(id, { reviewed: true, approved: true }, {}), onSuccess: () => { toast('Abstraction reviewed'); refresh(); } });
 
   return (
     <WorkspaceShell title="Lease Abstraction" subtitle="AI extraction and review of lease documents" icon={FileText}>
       <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4">
-        <MetricCard value={analytics?.totalAbstractions ?? 0} label="Abstractions" variant="info" />
-        <MetricCard value={analytics?.reviewedCount ?? 0} label="Reviewed" variant="success" />
-        <MetricCard value={analytics?.pendingCount ?? 0} label="Pending" variant="warning" />
-        <MetricCard value={analytics?.accuracyScore ?? 'n/a'} label="Accuracy" variant="info" />
+        <MetricCard value={(analytics as any)?.totalAbstractions ?? 0} label="Abstractions" variant="info" />
+        <MetricCard value={(analytics as any)?.reviewedCount ?? 0} label="Reviewed" variant="success" />
+        <MetricCard value={(analytics as any)?.pendingCount ?? 0} label="Pending" variant="warning" />
+        <MetricCard value={(analytics as any)?.accuracyScore ?? 'n/a'} label="Accuracy" variant="info" />
       </div>
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <SectionCard title="Upload" subtitle="Single or bulk lease extraction">

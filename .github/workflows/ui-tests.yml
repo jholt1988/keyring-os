@@ -3,10 +3,15 @@ name: UI/UX Tests
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
-# No cancel-in-progress — see ci.yml for rationale.
-# No pull_request trigger — see ci.yml for rationale.
+# Runs on PRs targeting main (merge gate) and on push to main; the concurrency
+# group cancels superseded in-progress runs.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 
 jobs:

@@ -6,7 +6,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { MessageSquare, Send, RefreshCw } from 'lucide-react';
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { Button } from '@/components/ui/button';
-import { fetchMessages, sendMessage } from '@/lib/copilot-api';
+import { loadOperatorMessages, sendOperatorMessage } from '@/lib/operator/read-only-data';
 import { useToast } from '@/components/ui/toast';
 
 export default function ConversationPage() {
@@ -18,12 +18,12 @@ export default function ConversationPage() {
 
   const { data: messages = [], isLoading } = useQuery({
     queryKey: ['messages', id],
-    queryFn: () => fetchMessages(Number(id)),
+    queryFn: () => loadOperatorMessages(Number(id), {}),
     refetchInterval: 10_000,
   });
 
   const sendMutation = useMutation({
-    mutationFn: () => sendMessage(Number(id), content),
+    mutationFn: () => sendOperatorMessage(Number(id), content, {}),
     onSuccess: () => {
       setContent('');
       qc.invalidateQueries({ queryKey: ['messages', id] });

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import type { TenantFeedItem } from '@keyring/types';
 import { fetchTenantFeed } from '@/lib/tenant-api';
+import type { TenantFeedItem } from '@keyring/types';
 
 function getDismissed(): Set<string> {
   try {

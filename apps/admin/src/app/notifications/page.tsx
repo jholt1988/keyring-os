@@ -10,7 +10,7 @@ import {
   markNotificationRead,
   markAllNotificationsRead,
   deleteNotification,
-} from '@/lib/copilot-api';
+} from '@/lib/operator/notifications';
 import { useToast } from '@/components/ui/toast';
 
 const TYPE_COLORS: Record<string, string> = {

@@ -1,19 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-function getBackendBase(): string {
-  const configured = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL;
-  if (!configured) {
-    if (process.env.NODE_ENV === 'production') {
-      throw new Error('API_URL, NEXT_PUBLIC_API_URL, or NEXT_PUBLIC_API_BASE_URL must be configured in production');
-    }  
-    return 'http://localhost:3001/api';
-  }
-
-  const trimmed = configured.replace(/\/+$/, '');
-  if (trimmed.endsWith('/api/v2')) return trimmed.slice(0, -3);
-  if (trimmed.endsWith('/api')) return trimmed;
-  return `${trimmed}/api`;
-}
+import {
+  AUTH_COOKIE,
+  BACKEND_TIMEOUT_MS,
+  copyResponseHeaders,
+  getBackendBase,
+  maskError,
+} from '@/lib/proxy/backend-proxy';
 
 async function proxyAuthRequest(
   request: NextRequest,
@@ -21,7 +13,7 @@ async function proxyAuthRequest(
 ) {
   const path = (await params).path.join('/');
   const method = request.method.toUpperCase();
-  const token = request.cookies.get('auth_token')?.value;
+  const token = request.cookies.get(AUTH_COOKIE)?.value;
   const body = method === 'GET' || method === 'HEAD' ? undefined : await request.text();
   const headers = new Headers();
   const contentType = request.headers.get('content-type');
@@ -35,15 +27,15 @@ async function proxyAuthRequest(
       headers,
       body,
       cache: 'no-store',
+      signal: AbortSignal.timeout(BACKEND_TIMEOUT_MS),
     });
     const responseText = await backendResponse.text();
-    const responseHeaders = new Headers();
-    const responseContentType = backendResponse.headers.get('content-type');
-    if (responseContentType) responseHeaders.set('content-type', responseContentType);
-    return new NextResponse(responseText, { status: backendResponse.status, headers: responseHeaders });
+    return new NextResponse(responseText, {
+      status: backendResponse.status,
+      headers: copyResponseHeaders(backendResponse),
+    });
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Backend unreachable';
-    return NextResponse.json({ statusMessage: message }, { status: 502 });
+    return NextResponse.json({ statusMessage: maskError(error) }, { status: 502 });
   }
 }
 
