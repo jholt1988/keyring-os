@@ -4,7 +4,7 @@ import { FeedApiError, fetchFeed } from './feed-api';
 describe('fetchFeed', () => {
   it('throws when api base env is missing', async () => {
     vi.stubEnv('NEXT_PUBLIC_API_URL', '');
-    await expect(fetchFeed('ADMIN' as any)).rejects.toThrow('BACKEND_URL is not set');
+    await expect(fetchFeed('ADMIN' as unknown)).rejects.toThrow('BACKEND_URL is not set');
   });
 
   it('returns json on success', async () => {
@@ -18,7 +18,7 @@ describe('fetchFeed', () => {
       }),
     );
 
-    await expect(fetchFeed('ADMIN' as any)).resolves.toEqual(payload);
+    await expect(fetchFeed('ADMIN' as unknown)).resolves.toEqual(payload);
   });
 
   it('throws FeedApiError on non-2xx', async () => {
@@ -32,6 +32,6 @@ describe('fetchFeed', () => {
       }),
     );
 
-    await expect(fetchFeed('OWNER' as any)).rejects.toBeInstanceOf(FeedApiError);
+    await expect(fetchFeed('OWNER' as unknown)).rejects.toBeInstanceOf(FeedApiError);
   });
 });

@@ -5,11 +5,11 @@ import { ApprovalGate } from '@/features/operator';
 import { useQuery } from '@tanstack/react-query';
 import { Shield } from 'lucide-react';
 import { WorkspaceShell, SectionCard } from '@/components/copilot';
-import { fetchSecurityEvents } from '@/lib/copilot-api';
+import { loadOperatorSecurityWorkbench } from '@/lib/operator/read-only-data';
 
 export default function SecuritySettingsPage() {
   const [filters, setFilters] = useState({ userId: '', type: '', from: '', to: '' });
-  const { data } = useQuery({ queryKey: ['security-events', filters], queryFn: () => fetchSecurityEvents(filters) });
+  const { data } = useQuery({ queryKey: ['security-events', filters], queryFn: () => loadOperatorSecurityWorkbench(filters, {}) });
   const events = Array.isArray(data) ? data : [];
   return (
     <ApprovalGate requiredRoles="ADMIN">

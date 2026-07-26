@@ -6,7 +6,7 @@ import { Gauge, Plus } from 'lucide-react';
 import { WorkspaceShell, SectionCard } from '@/components/copilot';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
-import { allocateMasterBill, recordMasterBill } from '@/lib/copilot-api';
+import { allocateOperatorMasterBill, recordOperatorMasterBill } from '@/lib/operator/read-only-data';
 import { useToast } from '@/components/ui/toast';
 
 export default function UtilityBillingPage() {
@@ -14,8 +14,8 @@ export default function UtilityBillingPage() {
   const [bills, setBills] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ propertyId: '', period: '', amount: '', utilityType: '' });
-  const recordM = useMutation({ mutationFn: () => recordMasterBill({ ...form, amount: Number(form.amount) || 0 }), onSuccess: (result) => { toast('Master bill recorded'); setBills((current) => [result, ...current]); setOpen(false); } });
-  const allocM = useMutation({ mutationFn: (id: string) => allocateMasterBill(id), onSuccess: () => toast('Master bill allocated') });
+  const recordM = useMutation({ mutationFn: () => recordOperatorMasterBill({ ...form, amount: Number(form.amount) || 0 }, {}), onSuccess: (result) => { toast('Master bill recorded'); setBills((current) => [result, ...current]); setOpen(false); } });
+  const allocM = useMutation({ mutationFn: (id: string) => allocateOperatorMasterBill(id, {}), onSuccess: () => toast('Master bill allocated') });
 
   return (
     <>

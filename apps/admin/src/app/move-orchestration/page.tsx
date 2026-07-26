@@ -6,7 +6,7 @@ import { ArrowRightLeft } from 'lucide-react';
 import { WorkspaceShell, SectionCard } from '@/components/copilot';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
-import { startMoveIn, startMoveOut } from '@/lib/copilot-api';
+import { startOperatorMoveIn, startOperatorMoveOut } from '@/lib/operator/read-only-data';
 import { useToast } from '@/components/ui/toast';
 
 export default function MoveOrchestrationPage() {
@@ -14,7 +14,7 @@ export default function MoveOrchestrationPage() {
   const [mode, setMode] = useState<'move-in' | 'move-out' | null>(null);
   const [form, setForm] = useState({ leaseId: '', tenantId: '' });
   const mutation = useMutation({
-    mutationFn: () => mode === 'move-in' ? startMoveIn(form) : startMoveOut(form),
+    mutationFn: () => mode === 'move-in' ? startOperatorMoveIn(form, {}) : startOperatorMoveOut(form, {}),
     onSuccess: () => { toast(mode === 'move-in' ? 'Move-in started' : 'Move-out started'); setMode(null); },
     onError: () => toast('Failed to start move workflow', 'error'),
   });

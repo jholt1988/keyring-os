@@ -13,7 +13,7 @@ import {
 import { MetricTile } from '../components/metric-tile';
 import { WorkflowFocusBanner, workflowFocusMatchesEntity, useFocusedRowScroll } from '../components/workflow-focus-banner';
 import { cents, formatCurrency, formatNumber } from '../utils';
-import { CalendarClock, ClipboardList, Inbox, KeyRound, Loader2, PenLine, ShieldCheck } from 'lucide-react';
+import { CalendarClock, ClipboardList, Inbox, KeyRound, PenLine, ShieldCheck } from 'lucide-react';
 
 export function RenewalsView({
   data,

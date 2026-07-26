@@ -5,7 +5,7 @@ import type { FeedItem, MutationAction } from '@keyring/types';
 export interface FeedDomainActionResponse {
   success: boolean;
   message?: string;
-  data?: unknown;
+  data?: any;
 }
 
 function requireBackendUrl(): string {
