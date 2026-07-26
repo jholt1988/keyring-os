@@ -183,7 +183,7 @@ function SettingCard({
 export default function SettingsPage() {
   return (
     <ApprovalGate requiredRoles="ADMIN">
-      <WorkspaceShell title="Settings" subtitle="System Configuration" icon={Settings}>
+      <WorkspaceShell title="Settings" icon={Settings}>
         <div className="space-y-8">
           {/* Header summary */}
           <div className="glass-panel rounded-[30px] p-6">

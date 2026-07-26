@@ -32,7 +32,6 @@ export default function NewEstimatePage() {
     <ApprovalGate requiredRoles={['ADMIN', 'PROPERTY_MANAGER']}>
       <WorkspaceShell
         title="New Estimate"
-        subtitle="Create a repair estimate"
         icon={DollarSign}
       >
         <div className="max-w-3xl mx-auto">

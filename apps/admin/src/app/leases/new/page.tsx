@@ -50,7 +50,7 @@ export default function NewLeasePage() {
   const isValid = form.tenantId && form.unitId && form.startDate && form.endDate && form.rentAmount;
 
   return (
-    <WorkspaceShell title="New Lease" subtitle="Create a lease agreement" icon={FileText}>
+    <WorkspaceShell title="New Lease" icon={FileText}>
       <div className="mx-auto max-w-2xl space-y-6">
         <SectionCard title="Parties">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

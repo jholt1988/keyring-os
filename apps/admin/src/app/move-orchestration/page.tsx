@@ -20,10 +20,10 @@ export default function MoveOrchestrationPage() {
   });
   return (
     <>
-      <WorkspaceShell title="Move Orchestration" subtitle="Move-in and move-out workflows" icon={ArrowRightLeft}>
+      <WorkspaceShell title="Move Orchestration" icon={ArrowRightLeft}>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <SectionCard title="Move-In" subtitle="Launch move-in wizard"><Button size="sm" onClick={() => setMode('move-in')}>Start Move-In</Button></SectionCard>
-          <SectionCard title="Move-Out" subtitle="Launch move-out wizard"><Button size="sm" variant="outline" onClick={() => setMode('move-out')}>Start Move-Out</Button></SectionCard>
+          <SectionCard title="Move-In"><Button size="sm" onClick={() => setMode('move-in')}>Start Move-In</Button></SectionCard>
+          <SectionCard title="Move-Out"><Button size="sm" variant="outline" onClick={() => setMode('move-out')}>Start Move-Out</Button></SectionCard>
         </div>
       </WorkspaceShell>
       <Modal open={!!mode} onClose={() => setMode(null)} title={mode === 'move-in' ? 'Start Move-In' : 'Start Move-Out'} footer={<><Button variant="outline" size="sm" onClick={() => setMode(null)}>Cancel</Button><Button size="sm" onClick={() => mutation.mutate()}>Start</Button></>}>

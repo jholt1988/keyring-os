@@ -52,7 +52,7 @@ export default function AuditLogPage() {
   const modules = Object.keys(MODULE_COLORS);
 
   return (
-    <WorkspaceShell title="Audit Log" subtitle="System Activity & Change History" icon={ScrollText}>
+    <WorkspaceShell title="Audit Log" icon={ScrollText}>
       <SectionCard title="Activity Log">
         {/* Filters */}
         <div className="mb-4 flex flex-wrap gap-3">

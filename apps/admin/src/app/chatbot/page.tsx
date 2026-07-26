@@ -40,7 +40,7 @@ export default function ChatbotPage() {
   });
 
   return (
-    <WorkspaceShell title="AI Assistant" subtitle="Chat session with context" icon={Bot}>
+    <WorkspaceShell title="AI Assistant" icon={Bot}>
       <div className="flex h-[calc(100vh-140px)] flex-col rounded-[20px] border border-[#1E3350] bg-[#0B1628]">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[#1E3350] p-4">
@@ -50,7 +50,6 @@ export default function ChatbotPage() {
             </div>
             <div>
               <h3 className="text-sm font-medium text-[#F8FAFC]">Copilot Assistant</h3>
-              <p className="text-xs text-[#94A3B8]">Powered by AI</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -73,10 +72,7 @@ export default function ChatbotPage() {
           {thread.length === 0 && !isLoading && (
             <div className="flex h-full flex-col items-center justify-center text-center">
               <Bot className="mb-4 h-12 w-12 text-[#1E3350]" />
-              <h4 className="text-lg font-medium text-[#F8FAFC]">How can I help you today?</h4>
-              <p className="mt-2 text-sm text-[#94A3B8] max-w-md">
-                I can assist with property summaries, tenant inquiries, maintenance analysis, and general system operations.
-              </p>
+              <h4 className="text-lg font-medium text-[#F8FAFC]">New conversation</h4>
             </div>
           )}
           
@@ -139,9 +135,7 @@ export default function ChatbotPage() {
               <Send size={16} />
             </Button>
           </form>
-          <div className="mt-2 text-center text-[10px] text-[#8A99AD]">
-            AI can make mistakes. Verify important information.
-          </div>
+
         </div>
       </div>
     </WorkspaceShell>

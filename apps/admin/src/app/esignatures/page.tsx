@@ -90,7 +90,7 @@ export default function ESignaturesPage() {
   };
 
   return (
-    <WorkspaceShell title="E-Signatures" subtitle="Document Signing Queue" icon={FileSignature}>
+    <WorkspaceShell title="E-Signatures" icon={FileSignature}>
       {isLoading ? (
         <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-16 animate-pulse rounded-[24px] bg-[#0F1B31]" />)}</div>
       ) : (envelopes as any[]).length === 0 ? (
@@ -103,14 +103,14 @@ export default function ESignaturesPage() {
       ) : (
         <div className="space-y-6">
           {active.length > 0 && (
-            <SectionCard title={`Pending Signatures (${active.length})`} subtitle="Awaiting signer action">
+            <SectionCard title={`Pending Signatures (${active.length})`}>
               <div className="space-y-2">
                 {active.map((env: any) => <EnvelopeRow key={env.id} env={env} />)}
               </div>
             </SectionCard>
           )}
           {archived.length > 0 && (
-            <SectionCard title={`Archived (${archived.length})`} subtitle="Completed, voided, and declined">
+            <SectionCard title={`Archived (${archived.length})`}>
               <div className="space-y-2">
                 {archived.map((env: any) => <EnvelopeRow key={env.id} env={env} />)}
               </div>

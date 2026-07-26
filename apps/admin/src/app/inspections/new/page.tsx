@@ -43,7 +43,7 @@ export default function NewInspectionPage() {
   const set = (k: string, v: string) => setForm(p => ({ ...p, [k]: v }));
 
   return (
-    <WorkspaceShell title="New Inspection" subtitle="Schedule a property inspection" icon={ClipboardList}>
+    <WorkspaceShell title="New Inspection" icon={ClipboardList}>
       <SectionCard title="Inspection Details">
         <div className="space-y-4">
           <div>

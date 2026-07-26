@@ -24,8 +24,8 @@ export default function VendorsPage() {
 
   return (
     <>
-      <WorkspaceShell title="Vendors" subtitle="Vendor management and 1099 export" icon={Building} actions={<><Button size="sm" variant="outline" onClick={() => window.open(getOperatorVendors1099ExportUrl(), '_blank', 'noopener,noreferrer')}><Download size={12} /> Export 1099</Button><Button size="sm" onClick={() => setOpen(true)}><Plus size={12} /> Add Vendor</Button></>}>
-        <SectionCard title="Vendor Directory" subtitle="Name, type, and contact coverage">
+      <WorkspaceShell title="Vendors" icon={Building} actions={<><Button size="sm" variant="outline" onClick={() => window.open(getOperatorVendors1099ExportUrl(), '_blank', 'noopener,noreferrer')}><Download size={12} /> Export 1099</Button><Button size="sm" onClick={() => setOpen(true)}><Plus size={12} /> Add Vendor</Button></>}>
+        <SectionCard title="Vendor Directory">
           {isLoading ? <p className="text-sm text-[#94A3B8]">Loading vendors…</p> : vendors.length === 0 ? <p className="text-sm text-[#94A3B8]">No vendors found.</p> : (
             <div className="space-y-3">{vendors.map((vendor: any) => <div key={vendor.id} className="rounded-[14px] border border-[#1E3350] bg-[#0F1B31] p-3"><p className="text-sm font-medium text-[#F8FAFC]">{vendor.name}</p><p className="text-xs text-[#94A3B8]">{vendor.type ?? 'Vendor'} · {vendor.contact ?? vendor.email ?? vendor.phone ?? 'No contact'}</p></div>)}</div>
           )}

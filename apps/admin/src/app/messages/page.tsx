@@ -181,7 +181,7 @@ export default function MessagesPage() {
   }, [tenants, tenantSearch]);
 
   return (
-    <WorkspaceShell title="Messages" subtitle="Tenant Communication Center" icon={MessageSquare}>
+    <WorkspaceShell title="Messages" icon={MessageSquare}>
       {/* Stats row */}
       <div className="glass-panel rounded-[30px] p-6 mb-6">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">

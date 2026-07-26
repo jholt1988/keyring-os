@@ -53,7 +53,7 @@ export default function NotificationsPage() {
   const read = (notifications as any[]).filter(n => n.readAt);
 
   return (
-    <WorkspaceShell title="Notifications" subtitle="Alerts & System Messages" icon={Bell}
+    <WorkspaceShell title="Notifications" icon={Bell}
       actions={
         unread.length > 0 ? (
           <Button size="sm" variant="outline" onClick={() => markAllMutation.mutate()} disabled={markAllMutation.isPending}>

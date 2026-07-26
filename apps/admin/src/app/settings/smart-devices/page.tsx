@@ -23,8 +23,8 @@ export default function SmartDevicesPage() {
   const createCodeM = useMutation({ mutationFn: () => createOperatorAccessCode(selectedDevice!, codeForm, {}), onSuccess: () => { toast('Access code created'); qc.invalidateQueries({ queryKey: ['access-codes', selectedDevice] }); } });
   return (
     <>
-      <WorkspaceShell title="Smart Devices" subtitle="Device registration and access code management" icon={Cpu} actions={<Button size="sm" onClick={() => setOpen(true)}><Plus size={12} /> Register Device</Button>}>
-        <SectionCard title="Devices" subtitle="Property and unit device status">
+      <WorkspaceShell title="Smart Devices" icon={Cpu} actions={<Button size="sm" onClick={() => setOpen(true)}><Plus size={12} /> Register Device</Button>}>
+        <SectionCard title="Devices">
           <div className="space-y-3">
             {devices.map((device: any) => <div key={device.id} className="rounded-[14px] border border-[#1E3350] bg-[#0F1B31] p-3"><p className="text-sm font-medium text-[#F8FAFC]">{device.name ?? device.id}</p><p className="text-xs text-[#94A3B8]">{device.propertyId} · {device.unitId} · {device.status ?? 'unknown'}</p><div className="mt-3"><Button size="sm" variant="outline" onClick={() => setSelectedDevice(device.id)}>Access Codes</Button></div></div>)}
           </div>
