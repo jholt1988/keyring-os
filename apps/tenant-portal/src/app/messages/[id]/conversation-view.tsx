@@ -18,15 +18,11 @@ import {
 } from '@/lib/tenant-api';
 import { formatRelative } from '@/lib/utils';
 
-// SECURITY STOPGAP: ownership ("is this my message?") is derived from the shared auth
-// helper, which returns the dev mock id ONLY when mock auth is explicitly enabled in dev
-// and undefined otherwise. This avoids trusting a build-time mock identity in production.
-// Replace with the real authenticated user id once cookie-based auth is wired (see
-// apps/admin/src/app/api/v2/[...path]/route.ts for the pattern).
-const CURRENT_USER_ID = getCurrentUserId();
+// Resolved on mount via /api/v2/auth/me (httpOnly cookie session).
+// Falls back to undefined if unauthenticated — messages render as "not mine".
 
-function MessageBubble({ msg }: { msg: Message }) {
-  const isMine = CURRENT_USER_ID !== undefined && msg.senderId === CURRENT_USER_ID;
+function MessageBubble({ msg, currentUserId }: { msg: Message; currentUserId?: string }) {
+  const isMine = currentUserId !== undefined && msg.senderId === currentUserId;
   return (
     <div className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
       <div
@@ -54,7 +50,12 @@ export default function ConversationView() {
   const convId = Number(id);
   const qc = useQueryClient();
   const [draft, setDraft] = useState('');
+  const [currentUserId, setCurrentUserId] = useState<string | undefined>(undefined);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    getCurrentUserId().then(setCurrentUserId);
+  }, []);
 
   const { data: conversations = [] } = useQuery({
     queryKey: ['conversations'],
@@ -108,7 +109,7 @@ export default function ConversationView() {
               No messages yet. Start the conversation below.
             </p>
           ) : (
-            sorted.map((msg: Message) => <MessageBubble key={msg.id} msg={msg} />)
+            sorted.map((msg: Message) => <MessageBubble key={msg.id} msg={msg} currentUserId={currentUserId} />)
           )}
           <div ref={bottomRef} />
         </CardContent>

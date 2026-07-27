@@ -433,20 +433,26 @@ export async function markNotificationRead(id: number): Promise<void> {
   await api(`/notifications/${id}/read`, { method: 'PUT' });
 }
 
-// ── Current User (auth stopgap) ───────────────────────────────────────────────
+// ── Current User ─────────────────────────────────────────────────────────────
 
 /**
  * Returns the current user's ID for message ownership checks.
  *
- * Dev (mock auth enabled): returns the mock user ID.
- * Production: returns undefined — real auth is handled server-side via httpOnly cookie.
- *
- * This is a security stopgap. Replace with real authenticated user ID once
- * cookie-based session is wired (see apps/admin/src/app/api/v2/[...path]/route.ts).
+ * Fetches from /api/v2/auth/me (httpOnly cookie session). Returns undefined
+ * if unauthenticated. Callers should handle the null case gracefully.
  */
-export function getCurrentUserId(): string | undefined {
-  if (USE_MOCK_AUTH) return MOCK_USER_ID;
-  return undefined;
+export async function getCurrentUserId(): Promise<string | undefined> {
+  try {
+    const res = await fetch(`${PROXY_BASE}/auth/me`, {
+      cache: 'no-store',
+      credentials: 'include',
+    });
+    if (!res.ok) return undefined;
+    const data = await res.json();
+    return data?.user?.id ?? data?.id ?? data?.sub;
+  } catch {
+    return undefined;
+  }
 }
 
 // ── Messages ──────────────────────────────────────────────────────────────────
