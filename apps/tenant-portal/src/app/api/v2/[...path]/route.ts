@@ -1,52 +1,120 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-/**
- * Tenant-portal BFF proxy.
- *
- * Browser calls to `/api/v2/*` are proxied to the pms-master backend's `/api/*`
- * with the httpOnly `auth_token` cookie forwarded as a Bearer token — so the
- * token never reaches client JS and there is no cross-origin CORS. This mirrors
- * the admin app's `/api/v2` proxy.
- *
- * NOTE: tenant-portal has no login flow of its own, so this proxy does not set
- * session cookies (unlike admin's, which rotates them on auth/login|refresh).
- * If a tenant login flow is added, adopt admin's cookie-rotating proxy (ideally
- * by extracting a shared @keyring proxy package used by both apps).
- */
-
 const AUTH_COOKIE = 'auth_token';
+const REFRESH_COOKIE = 'refresh_token';
+const ROLE_COOKIE = 'user_role'; // non-httpOnly: readable by middleware for UX-layer role guards
+const ONE_DAY_SECONDS = 60 * 60 * 24;
+const THIRTY_DAYS_SECONDS = ONE_DAY_SECONDS * 30;
 const BACKEND_TIMEOUT_MS = 10_000;
 
 function isDev(): boolean {
   return process.env.NODE_ENV !== 'production';
 }
 
-/** Backend base, normalized to end with `/api`. Throws in prod when unset. */
 function getBackendBase(): string {
-  const configured =
-    process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL;
+  const configured = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL;
   if (!configured) {
     if (process.env.NODE_ENV === 'production') {
-      throw new Error(
-        'API_URL, NEXT_PUBLIC_API_URL, or NEXT_PUBLIC_API_BASE_URL must be configured in production',
-      );
+      throw new Error('API_URL, NEXT_PUBLIC_API_URL, or NEXT_PUBLIC_API_BASE_URL must be configured in production');
     }
     return 'http://localhost:3001/api';
   }
+
   const trimmed = configured.replace(/\/+$/, '');
   if (trimmed.endsWith('/api/v2')) return trimmed.slice(0, -3);
   if (trimmed.endsWith('/api')) return trimmed;
   return `${trimmed}/api`;
 }
 
+function copyResponseHeaders(response: Response): Headers {
+  const headers = new Headers();
+  const contentType = response.headers.get('content-type');
+  if (contentType) headers.set('content-type', contentType);
+  return headers;
+}
+
+function safeJsonParse(text: string): any {
+  if (!text) return undefined;
+  try {
+    return JSON.parse(text);
+  } catch {
+    return undefined;
+  }
+}
+
+interface AuthTokenPayload {
+  access_token?: any;
+  accessToken?: any;
+  refresh_token?: any;
+  refreshToken?: any;
+  result?: any;
+}
+
+function unwrapResult(payload: any): Record<string, unknown> {
+  if (!payload || typeof payload !== 'object') return {};
+  const obj = payload as { result?: any };
+  if (obj.result && typeof obj.result === 'object') return obj.result as Record<string, unknown>;
+  return obj as Record<string, unknown>;
+}
+
+function asToken(value: any): string | undefined {
+  return typeof value === 'string' && value.length > 0 ? value : undefined;
+}
+
+function resolveUserRole(payload: any): string | undefined {
+  if (!payload || typeof payload !== 'object') return undefined;
+
+  const obj = payload as { role?: any; roles?: any; user?: { role?: any; roles?: any } };
+
+  if (typeof obj.role === 'string' && obj.role.trim()) {
+    return obj.role;
+  }
+
+  if (Array.isArray(obj.roles)) {
+    const firstRole = obj.roles.find((value) => typeof value === 'string' && value.trim());
+    if (typeof firstRole === 'string') return firstRole;
+  }
+
+  const user = obj.user;
+  if (user && typeof user === 'object') {
+    if (typeof user.role === 'string' && user.role.trim()) {
+      return user.role;
+    }
+    if (Array.isArray(user.roles)) {
+      const firstRole = user.roles.find((value) => typeof value === 'string' && value.trim());
+      if (typeof firstRole === 'string') return firstRole;
+    }
+  }
+
+  return undefined;
+}
+
+function setSessionCookie(
+  response: NextResponse,
+  name: string,
+  value: string,
+  maxAge: number,
+  secure: boolean,
+) {
+  response.cookies.set(name, value, {
+    httpOnly: true,
+    secure,
+    sameSite: 'lax',
+    path: '/',
+    maxAge,
+  });
+}
+
 async function proxyRequest(
   request: NextRequest,
-  { params }: { params: Promise<{ path: string[] }> },
+  { params }: { params: Promise<{ path: string[] }> }
 ) {
   const path = (await params).path.join('/');
   const method = request.method.toUpperCase();
   const body = method === 'GET' || method === 'HEAD' ? undefined : await request.text();
   const token = request.cookies.get(AUTH_COOKIE)?.value;
+  const refreshToken = request.cookies.get(REFRESH_COOKIE)?.value;
+  const secure = request.nextUrl.protocol === 'https:';
 
   const headers = new Headers();
   const contentType = request.headers.get('content-type');
@@ -54,29 +122,88 @@ async function proxyRequest(
   headers.set('accept', request.headers.get('accept') ?? 'application/json');
   if (token) headers.set('authorization', `Bearer ${token}`);
 
+  if (path === 'auth/me' && !token) {
+    return NextResponse.json({ statusMessage: 'Not authenticated' }, { status: 401 });
+  }
+
+  let finalBody = body;
+  if (refreshToken && path === 'auth/refresh') {
+    headers.set('content-type', 'application/json');
+    finalBody = JSON.stringify({ refreshToken });
+  }
+
   let backendResponse: Response;
   try {
     backendResponse = await fetch(`${getBackendBase()}/${path}${request.nextUrl.search}`, {
       method,
       headers,
-      body,
+      body: finalBody,
       cache: 'no-store',
       signal: AbortSignal.timeout(BACKEND_TIMEOUT_MS),
     });
   } catch (error) {
-    // Surface the upstream failure reason only in development.
     const message = isDev() && error instanceof Error ? error.message : 'Backend unreachable';
     return NextResponse.json({ statusMessage: message }, { status: 502 });
   }
 
   const responseText = await backendResponse.text();
-  const responseHeaders = new Headers();
-  const responseContentType = backendResponse.headers.get('content-type');
-  if (responseContentType) responseHeaders.set('content-type', responseContentType);
-  return new NextResponse(responseText, {
+  const nextResponse = new NextResponse(responseText, {
     status: backendResponse.status,
-    headers: responseHeaders,
+    headers: copyResponseHeaders(backendResponse),
   });
+
+  if ((path === 'auth/login' || path === 'auth/refresh') && backendResponse.ok) {
+    const data = unwrapResult(safeJsonParse(responseText)) as AuthTokenPayload;
+    const access = asToken(data.access_token) ?? asToken(data.accessToken);
+    const refresh = asToken(data.refresh_token) ?? asToken(data.refreshToken);
+
+    if (!access && path === 'auth/login') {
+      const detail = isDev() ? ` Body: ${responseText}` : '';
+      return NextResponse.json(
+        { statusMessage: `Login succeeded but no access token was returned.${detail}` },
+        { status: 502 },
+      );
+    }
+
+    const role = resolveUserRole(data);
+    if (access) {
+      setSessionCookie(nextResponse, AUTH_COOKIE, access, ONE_DAY_SECONDS, secure);
+    }
+    if (refresh) {
+      setSessionCookie(nextResponse, REFRESH_COOKIE, refresh, THIRTY_DAYS_SECONDS, secure);
+    }
+    if (role) {
+      nextResponse.cookies.set(ROLE_COOKIE, role, {
+        httpOnly: false,
+        secure,
+        sameSite: 'lax',
+        path: '/',
+        maxAge: ONE_DAY_SECONDS,
+      });
+    }
+  }
+
+  if (path === 'auth/me' && backendResponse.ok) {
+    const data = unwrapResult(safeJsonParse(responseText));
+    const role = resolveUserRole(data);
+    if (role) {
+      nextResponse.cookies.set(ROLE_COOKIE, role, {
+        httpOnly: false,
+        secure,
+        sameSite: 'lax',
+        path: '/',
+        maxAge: ONE_DAY_SECONDS,
+      });
+    }
+  }
+
+  if (path === 'auth/logout') {
+    nextResponse.cookies.delete(AUTH_COOKIE);
+    nextResponse.cookies.delete(REFRESH_COOKIE);
+    nextResponse.cookies.delete(ROLE_COOKIE);
+  }
+
+  return nextResponse;
 }
 
 export const GET = proxyRequest;
