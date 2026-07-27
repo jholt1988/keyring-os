@@ -1,7 +1,8 @@
 'use client';
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { Bell, BellOff, CheckCheck, Trash2, Circle } from 'lucide-react';
+import NotificationsView from './notifications-view';
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { SectionCard } from '@/components/copilot/section-card';
 import { Button } from '@/components/ui/button';

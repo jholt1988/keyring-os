@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/button';
 import { loadOperatorInspectionDetail, startOperatorInspection, completeOperatorInspection } from '@/lib/operator/read-only-data';
 import { useOperatorData } from '@/features/operator';
 import { useToast } from '@/components/ui/toast';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import InspectionDetailView  from './inspection-detail-view';
 
 const TYPE_LABELS: Record<string, string> = {
   MOVE_IN: 'Move-In', MOVE_OUT: 'Move-Out', ROUTINE: 'Routine', ANNUAL: 'Annual', DRIVE_BY: 'Drive-By',
@@ -59,7 +61,7 @@ export default function InspectionDetailPage() {
   );
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <HydrationBoundary state={dehydrate(useQueryClient())}>
       <InspectionDetailView />
     </HydrationBoundary>
   );
