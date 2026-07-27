@@ -21,7 +21,7 @@ const publicPaths = [
 // user_role is a non-httpOnly cookie set during login alongside auth_token.
 // Backend guards remain the authoritative enforcement layer; this is a UX-layer guard.
 const ROLE_PROTECTED_ROUTES: Array<{ prefix: string; roles: string[] }> = [
-  { prefix: '/settings',   roles: ['ADMIN', 'PROPERTY_MANAGER', 'LEASING_AGENT', 'BOOKKEEPER'] },
+  { prefix: '/settings',   roles: ['ADMIN', 'PROPERTY_MANAGER', 'LEASING_AGENT', 'BOOKKEEPER', 'OWNER', 'TENANT'] },
   { prefix: '/financials', roles: ['ADMIN', 'PROPERTY_MANAGER'] },
   { prefix: '/reports',    roles: ['ADMIN', 'PROPERTY_MANAGER'] },
   { prefix: '/billing',    roles: ['ADMIN', 'PROPERTY_MANAGER'] },

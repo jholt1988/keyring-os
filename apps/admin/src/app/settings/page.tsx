@@ -17,7 +17,6 @@ import {
   Users,
   Zap,
 } from 'lucide-react';
-import { ApprovalGate } from '@/features/operator';
 import { WorkspaceShell } from '@/components/copilot';
 
 interface SettingsSection {
@@ -182,8 +181,7 @@ function SettingCard({
 
 export default function SettingsPage() {
   return (
-    <ApprovalGate requiredRoles="ADMIN">
-      <WorkspaceShell title="Settings" icon={Settings}>
+    <WorkspaceShell title="Settings" icon={Settings}>
         <div className="space-y-8">
           {/* Header summary */}
           <div className="glass-panel rounded-[30px] p-6">
@@ -194,7 +192,7 @@ export default function SettingsPage() {
                   System, integrations, and access control in one place.
                 </h2>
                 <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#8DA4C5]">
-                  Changes here affect the entire organization. Only admins can access this area.
+                  Manage your organization's security, integrations, and system configuration.
                 </p>
               </div>
             </div>
@@ -213,6 +211,5 @@ export default function SettingsPage() {
           ))}
         </div>
       </WorkspaceShell>
-    </ApprovalGate>
   );
 }
