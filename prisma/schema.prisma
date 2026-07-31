@@ -1,0 +1,21 @@
+[ORIGINAL_CONTENT_PLACEHOLDER]
+
+model InspectionProject {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  propertyId  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  runs        InspectionRun[]
+}
+
+model InspectionRun {
+  id          String   @id @default(uuid())
+  projectId   String
+  status      String   @default("pending")
+  resultJson  Json?
+  startedAt   DateTime?
+  finishedAt  DateTime?
+  project     InspectionProject @relation(fields: [projectId], references: [id])
+}
