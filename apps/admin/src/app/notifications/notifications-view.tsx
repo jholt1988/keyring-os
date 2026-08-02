@@ -12,6 +12,7 @@ import {
   deleteNotification,
 } from '@/lib/copilot-api';
 import { useToast } from '@/components/ui/toast';
+import { NotificationFeed } from '@keyring/shared-ui/components';
 
 const TYPE_COLORS: Record<string, string> = {
   PAYMENT: 'text-[#10B981]',
@@ -62,6 +63,12 @@ export default function NotificationsView() {
         ) : undefined
       }
     >
+      <div className="mb-6">
+        <SectionCard title="Real-Time Feed" subtitle="Socket events streamed in real-time">
+          <NotificationFeed />
+        </SectionCard>
+      </div>
+
       {isLoading ? (
         <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-16 animate-pulse rounded-[24px] bg-[#0F1B31]" />)}</div>
       ) : (notifications as any[]).length === 0 ? (
