@@ -1,8 +1,10 @@
 packages:
   - apps/*
   - packages/*
+  - shared-ui
 
 onlyBuiltDependencies:
+  - esbuild
   - msw
   - sharp
   - unrs-resolver

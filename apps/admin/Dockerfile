@@ -1,7 +1,7 @@
 # ─── Stage 1: Install dependencies ────────────────────────────────────────────
 #   Build context MUST be the monorepo root:
-#     docker build -f apps/admin/Dockerfile -t jholt1988/keyring_os:1.0 .
-# ──────────────────────────────────────────────────────────────────────────────
+#     
+# ─────────────────────────────────────docker build -f apps/admin/Dockerfile -t jholt1988/keyring_os:1.0 .─────────────────────────────────────────
 FROM node:20-alpine AS deps
 RUN corepack enable && corepack prepare pnpm@10.30.3 --activate
 WORKDIR /app
