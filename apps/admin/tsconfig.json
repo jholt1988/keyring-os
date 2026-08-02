@@ -24,7 +24,18 @@
     ],
     "paths": {
       "@/*": [
-        "./src/*"
+        "./src/*",
+         "@keyring/shared-ui/*": [
+-        "../../shared-ui/*"
+-      ],
+-      "@shared-ui/*": [
+-        "../../shared-ui/*"
+-      ]
++      "@keyring/shared-ui/*": [
++        "../../packages/shared-ui/*"
++      ],
++      "@shared-ui/*": [
++        "../../packages/shared-ui/*"
       ]
     }
   },

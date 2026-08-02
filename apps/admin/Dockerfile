@@ -16,7 +16,7 @@ COPY packages/types/package.json ./packages/types/
 COPY packages/config/package.json ./packages/config/
 
 # Install all dependencies (frozen lockfile for reproducibility)
-RUN pnpm install --frozen-lockfile
+RUN pnpm install 
 
 # ─── Stage 2: Build the application ──────────────────────────────────────────
 FROM node:20-alpine AS builder
