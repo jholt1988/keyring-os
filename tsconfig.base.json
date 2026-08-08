@@ -14,6 +14,9 @@
       "@keyring/types/*": ["./packages/types/src/*"],
       "@keyring/config/*": ["./packages/config/*"],
       "@keyring/shared-ui/*": ["./shared-ui/*"]
-    }
+    }, 
+    "types": [
+      "node"
+    ]
   }
 }
