@@ -1,7 +1,7 @@
 # ─── Stage 1: Install dependencies ────────────────────────────────────────────
 #   Build context MUST be the monorepo root:
 #     
-# ─────────────────────────────────────docker build -f apps/admin/Dockerfile -t jholt1988/keyring_os:1.0 .─────────────────────────────────────────
+# docker build -f apps/admin/Dockerfile -t jholt1988/keyring_os:1.0 .─────────────────────────────────────────
 FROM node:20-alpine AS deps
 RUN corepack enable && corepack prepare pnpm@10.30.3 --activate
 WORKDIR /app
@@ -29,9 +29,11 @@ COPY --from=deps /app/ ./
 
 # Copy source code for workspace packages (needed at build time)
 COPY packages/ ./packages/
+COPY shared-ui/ ./shared-ui/
 COPY apps/admin/ ./apps/admin/
 
 # Copy root-level config files needed by turbo / ts
+COPY tsconfig.base.json ./
 COPY apps/admin/tsconfig.json ./apps/admin/
 
 # Build the admin app via turbo (respects dependsOn for workspace packages)
