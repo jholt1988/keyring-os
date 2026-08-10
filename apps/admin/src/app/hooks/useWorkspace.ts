@@ -3,7 +3,11 @@ import { useState, useEffect } from 'react';
 type Workspace = {
   id: string;
   name: string;
-  // add other fields as needed
+  description?: string; // optional description
+  ownerId?: string; // owner identifier
+  createdAt?: string; // ISO timestamp
+  updatedAt?: string; // ISO timestamp of last update
+  settings?: Record<string, any>; // additional settings
 };
 
 /**
