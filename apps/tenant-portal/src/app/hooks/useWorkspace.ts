@@ -7,9 +7,8 @@ type Workspace = {
 };
 
 /**
- * Simple hook to fetch the current workspace for the admin app.
- * It calls the `/api/workspace` endpoint which is already proxied in the admin backend.
- * Returns `null` while loading or if an error occurs.
+ * Hook for the tenant‑portal to fetch the current workspace.
+ * It uses the same `/api/workspace` endpoint which the backend proxies for the tenant context.
  */
 export function useWorkspace(): Workspace | null {
   const [workspace, setWorkspace] = useState<Workspace | null>(null);
@@ -18,7 +17,7 @@ export function useWorkspace(): Workspace | null {
     let cancelled = false;
     fetch('/api/workspace')
       .then((res) => {
-        if (!res.ok) throw new Error('Network response was not ok');
+        if (!res.ok) throw new Error('Network error');
         return res.json();
       })
       .then((data) => {
