@@ -8,7 +8,7 @@ on:
 jobs:
   gitleaks:
     name: Secret scan (gitleaks)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -20,7 +20,7 @@ jobs:
 
   large-files:
     name: Reject files larger than 5 MB
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - name: Check for oversized tracked files
@@ -45,7 +45,7 @@ jobs:
 
   mock-auth:
     name: No unconditional mock-auth headers
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - name: Guard against mock-auth header leakage
