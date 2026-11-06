@@ -41,7 +41,7 @@ export default function MaintenanceDetailScreen() {
   const route = useRoute<Route>();
   const { id } = route.params;
 
-  const [request, setRequest] = useState<MaintenanceItem | null>(null);
+  const [request, setRequest] = useState<MobileMaintenanceItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
