@@ -3,18 +3,13 @@ import { useState, useEffect } from 'react';
 type Workspace = {
   id: string;
   name: string;
-  description?: string; // optional description
-  ownerId?: string; // owner identifier
-  createdAt?: string; // ISO timestamp
-  updatedAt?: string; // ISO timestamp of last update
-  settings?: Record<string, any>; // additional settings
+  description?: string;
+  ownerId?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  settings?: Record<string, unknown>;
 };
 
-/**
- * Simple hook to fetch the current workspace for the admin app.
- * It calls the `/api/workspace` endpoint which is already proxied in the admin backend.
- * Returns `null` while loading or if an error occurs.
- */
 export function useWorkspace(): Workspace | null {
   const [workspace, setWorkspace] = useState<Workspace | null>(null);
 

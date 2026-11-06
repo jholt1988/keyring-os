@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react';
 import { motion, HTMLMotionProps } from 'framer-motion';
 
-interface FloatingOrbProps extends Omit<HTMLMotionProps<'div'>, 'className'> {
+interface FloatingOrbProps extends Omit<HTMLMotionProps<'div'>, 'className' | 'children'> {
   severity: 'critical' | 'high' | 'medium' | 'low';
   label: string;
   pulse?: boolean;
@@ -29,7 +29,6 @@ export function FloatingOrb({ severity, label, pulse = false, children, classNam
   return (
     <motion.div
       className={`relative inline-flex flex-col items-center gap-1 ${className ?? ''}`.trim()}
-      {...props}
     >
       <div
         className={`relative inline-flex items-center justify-center rounded-full border bg-[radial-gradient(circle_at_30%_30%,rgba(96,165,250,0.45),rgba(23,48,78,0.95))] text-white backdrop-blur-md transition-all duration-[180ms] ${severityClasses(severity)} ${pulse ? 'animate-pulse' : ''}`.trim()}

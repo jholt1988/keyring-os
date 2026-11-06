@@ -73,8 +73,8 @@ export async function fetchFinancialsWorkspace() {
     api('/bookkeeping/chart-of-accounts'),
   ]);
   return {
-    ...(workspace.status === 'fulfilled'
-      ? (workspace.value as unknown)
+    ...(workspace.status === 'fulfilled' && workspace.value && typeof workspace.value === 'object'
+      ? workspace.value as Record<string, unknown>
       : {
           pendingTransactions: [],
           exceptions: [],

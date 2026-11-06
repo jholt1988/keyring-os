@@ -18,7 +18,8 @@ interface Props {
 export const ActuarialFeedCard = ({ item, onAction }: Props) => {
     const confidence = item.metadata?.confidence as InternalConfidenceV16 | undefined;
     const isCritical = item.kind === 'critical_signal';
-    const pmNotes = (item.metadata as unknown)?.pmNotes;
+    const pmNotes = item.metadata as { pmNotes?: { lastUpdated?: string; narrative?: string } } | undefined;
+    const notes = pmNotes?.pmNotes;
 
     return (
         <div className={`relative overflow-hidden rounded-[24px] border bg-[#13233C] text-[#F8FAFC] shadow-[0_8px_30px_rgba(2,6,23,0.20)] transition-all duration-[180ms] hover:border-[#2B4A73] ${isCritical ? 'border-[#F43F5E]/40' : 'border-[#1E3350]'
@@ -81,14 +82,14 @@ export const ActuarialFeedCard = ({ item, onAction }: Props) => {
                     style={{ width: `${item.priority}%` }}
                 />
             </div>
-            {pmNotes && (
+            {notes && (
                 <div className="mt-2 border-t border-dashed border-[#1E3350] p-5 pt-3">
                     <div className="flex items-center gap-1 text-[10px] font-bold uppercase text-[#94A3B8]">
                         <MessageSquare size={10} />
-                        PM Notes &mdash; {new Date(pmNotes.lastUpdated).toLocaleDateString()}
+                        PM Notes &mdash; {notes.lastUpdated ? new Date(notes.lastUpdated).toLocaleDateString() : ''}
                     </div>
                     <p className="mt-1 text-[11px] italic leading-relaxed text-[#CBD5E1]">
-                        &ldquo;{pmNotes.narrative}&rdquo;
+                        &ldquo;{notes.narrative}&rdquo;
                     </p>
                 </div>
             )}

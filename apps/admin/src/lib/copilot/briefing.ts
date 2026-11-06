@@ -1,6 +1,26 @@
 import type { BriefingData, Decision, Signal } from '@keyring/types';
 import { api } from './core';
 
+type Json = null | boolean | number | string | Json[] | { [key: string]: Json };
+
+function rec(value: unknown): Record<string, Json> {
+  return value !== null && typeof value === "object" && !Array.isArray(value)
+    ? (value as Record<string, Json>)
+    : {};
+}
+
+function str(value: unknown, fallback = ""): string {
+  return typeof value === "string" ? value : fallback;
+}
+
+function num(value: unknown, fallback = 0): number {
+  return typeof value === "number" ? value : fallback;
+}
+
+function list(value: unknown): Json[] {
+  return Array.isArray(value) ? value : [];
+}
+
 export function computeSeverity(daysOverdue: number): Signal['severity'] {
   if (daysOverdue > 30) return 'critical';
   if (daysOverdue > 7) return 'high';
@@ -16,23 +36,24 @@ export function computeUrgency(priorityScore: number): Decision['urgency'] {
 export function mapDelinquencyToSignals(input: unknown): { signals: Signal[]; atRiskAmount: number } {
   const signals: Signal[] = [];
   let atRiskAmount = 0;
-  const buckets = input?.buckets ?? input;
+  const buckets = rec(input).buckets ?? input;
   if (!Array.isArray(buckets)) return { signals, atRiskAmount };
 
   for (const b of buckets) {
-    for (const item of b.items ?? []) {
-      const amount = item.outstandingAmount ?? item.amount ?? 0;
+    for (const item of list(rec(b).items)) {
+      const itemRec = rec(item);
+      const amount = num(itemRec.outstandingAmount ?? itemRec.amount);
       atRiskAmount += amount;
       signals.push({
-        id: `delinq-${item.leaseId ?? item.id}`,
-        severity: computeSeverity(item.daysOverdue ?? 0),
+        id: `delinq-${str(itemRec.leaseId ?? itemRec.id)}`,
+        severity: computeSeverity(num(itemRec.daysOverdue)),
         domain: 'payments',
-        title: `${item.tenantName ?? 'Tenant'} - $${amount.toLocaleString()} overdue`,
-        summary: `${item.daysOverdue ?? 0} days past due. ${item.noticeStatus ?? 'No notice sent'}.`,
+        title: `${str(itemRec.tenantName, 'Tenant')} - $${amount.toLocaleString()} overdue`,
+        summary: `${num(itemRec.daysOverdue)} days past due. ${str(itemRec.noticeStatus, 'No notice sent')}.`,
         monetaryImpact: amount,
         actionUrl: '/payments',
         actionLabel: 'Review Payment',
-        createdAt: item.createdAt ?? new Date().toISOString(),
+        createdAt: str(itemRec.createdAt, new Date().toISOString()),
       });
     }
   }
@@ -41,27 +62,39 @@ export function mapDelinquencyToSignals(input: unknown): { signals: Signal[]; at
 
 export function mapFeedToDecisions(input: unknown): Decision[] {
   const decisions: Decision[] = [];
-  const items = input?.items ?? input ?? [];
+  const items = rec(input).items ?? input ?? [];
   for (const item of (Array.isArray(items) ? items : []).slice(0, 10)) {
-    if (item.actions?.length) {
+    const itemRec = rec(item);
+    const actions = list(itemRec.actions);
+    if (actions.length) {
       decisions.push({
-        id: item.id ?? `feed-${Math.random().toString(36).slice(2)}`,
-        domain: item.domain ?? 'payments',
-        entityType: item.type ?? 'unknown',
-        entityId: item.entityId ?? item.id ?? '',
-        title: item.title ?? 'Action Required',
-        context: item.summary ?? item.description ?? '',
-        aiRecommendation: item.aiRecommendation,
-        actions: (item.actions ?? []).map((a: unknown) => ({
-          label: a.label ?? 'Take Action',
-          endpoint: a.endpoint ?? '#',
-          method: a.method ?? (a.type === 'navigation' ? 'GET' : 'POST'),
-          body: a.body,
-          variant: a.variant ?? 'primary',
-          confirmRequired: Boolean(a.confirmRequired || a.requiresConfirm),
-          confirmation: a.confirmation,
-        })),
-        urgency: computeUrgency(item.priorityScore ?? 0),
+        id: str(itemRec.id, `feed-${Math.random().toString(36).slice(2)}`),
+        domain: (str(itemRec.domain, 'payments') as Decision['domain']),
+        entityType: str(itemRec.type, 'unknown'),
+        entityId: str(itemRec.entityId ?? itemRec.id),
+        title: str(itemRec.title, 'Action Required'),
+        context: str(itemRec.summary ?? itemRec.description),
+        aiRecommendation: typeof itemRec.aiRecommendation === 'string' ? itemRec.aiRecommendation : undefined,
+        actions: actions.map((a) => {
+          const action = rec(a);
+          return ({
+          label: str(action.label, 'Take Action'),
+          endpoint: str(action.endpoint, '#'),
+          method: (action.method === 'PUT' || action.method === 'PATCH' || action.method === 'DELETE' ? action.method : 'POST'),
+          body: rec(action.body) as Record<string, unknown>,
+          variant: (action.variant === 'danger' || action.variant === 'neutral' || action.variant === 'secondary' ? action.variant : 'primary'),
+          confirmRequired: Boolean(action.confirmRequired || action.requiresConfirm),
+          confirmation: typeof action.confirmation === 'object' && action.confirmation !== null && !Array.isArray(action.confirmation)
+            ? {
+                title: str(action.confirmation.title, 'Confirm'),
+                message: str(action.confirmation.message),
+                confirmLabel: typeof action.confirmation.confirmLabel === 'string' ? action.confirmation.confirmLabel : undefined,
+                cancelLabel: typeof action.confirmation.cancelLabel === 'string' ? action.confirmation.cancelLabel : undefined,
+              }
+            : undefined,
+        });
+        }),
+        urgency: computeUrgency(num(itemRec.priorityScore)),
       });
     }
   }
@@ -70,15 +103,16 @@ export function mapFeedToDecisions(input: unknown): Decision[] {
 
 export function mapScheduleToEvents(input: unknown, today: string): BriefingData['events'] {
   const events: BriefingData['events'] = [];
-  const evts = input?.events ?? input ?? [];
-  for (const e of (Array.isArray(evts) ? evts : []).filter((ev: unknown) => (ev.date ?? ev.scheduledAt ?? '').startsWith(today)).slice(0, 8)) {
+  const evts = rec(input).events ?? input ?? [];
+  for (const e of list(evts).filter((ev) => str(rec(ev).date ?? rec(ev).scheduledAt).startsWith(today)).slice(0, 8)) {
+    const event = rec(e);
     events.push({
-      id: e.id ?? `evt-${Math.random().toString(36).slice(2)}`,
-      type: (e.type ?? 'maintenance').toLowerCase() as unknown,
-      title: e.title ?? e.type ?? 'Event',
-      scheduledAt: e.date ?? e.scheduledAt ?? '',
-      propertyName: e.propertyName ?? e.property?.name ?? '',
-      unitName: e.unitName ?? e.unit?.name,
+      id: str(event.id, `evt-${Math.random().toString(36).slice(2)}`),
+      type: str(event.type, 'maintenance').toLowerCase() as BriefingData['events'][number]['type'],
+      title: str(event.title ?? event.type, 'Event'),
+      scheduledAt: str(event.date ?? event.scheduledAt),
+      propertyName: str(event.propertyName ?? rec(event.property).name),
+      unitName: str(event.unitName ?? rec(event.unit).name) || undefined,
     });
   }
   return events;

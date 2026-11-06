@@ -114,8 +114,9 @@ function ReportContent({ tab }: { tab: TabId }) {
   if (!data) return <p className="pt-4 text-sm text-[#94A3B8]">No data available for this report.</p>;
 
   // Normalise: data may be { summary, rows } or a flat object or an array
-  const summary = (data as any).summary ?? (Array.isArray(data) ? null : data);
-  const rows: any[] = (data as any).rows ?? data.items ?? data.data ?? (Array.isArray(data) ? data : null);
+  const dataRec = (data !== null && typeof data === 'object') ? data as Record<string, unknown> : {};
+  const summary = dataRec.summary ?? (Array.isArray(data) ? null : data);
+  const rows = dataRec.rows ?? dataRec.items ?? dataRec.data ?? (Array.isArray(data) ? data : []);
 
   return (
     <div className="pt-2">
@@ -125,7 +126,7 @@ function ReportContent({ tab }: { tab: TabId }) {
       {Array.isArray(rows) && rows.length > 0 && (
         <TableSection rows={rows} title="Detail" />
       )}
-      {!summary && (!rows || rows.length === 0) && (
+      {!summary && !(Array.isArray(rows) && rows.length > 0) && (
         <p className="text-sm text-[#94A3B8]">No data returned.</p>
       )}
     </div>
