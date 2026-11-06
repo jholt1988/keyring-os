@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use client';
 
 import { Calendar, Clock, DollarSign, Activity, Home, Users, Wrench, ShieldCheck } from 'lucide-react';

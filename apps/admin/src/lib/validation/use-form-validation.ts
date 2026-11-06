@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Reusable form validation hooks for Keyring-OS
  */

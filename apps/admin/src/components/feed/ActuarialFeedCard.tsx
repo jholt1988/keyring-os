@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { FeedItem } from '@keyring/types';
 import { ArrowRight,Gauge,MessageSquare,ShieldAlert } from 'lucide-react';
 import React from 'react';

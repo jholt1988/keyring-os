@@ -1,4 +1,3 @@
-// @ts-nocheck
 import type { BriefingData, Decision, Signal } from '@keyring/types';
 import { api } from './core';
 
