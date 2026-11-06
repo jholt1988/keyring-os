@@ -3,6 +3,7 @@ import { View, Text, ActivityIndicator, ScrollView, StyleSheet } from 'react-nat
 import { useFocusEffect, useRoute } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
 import { getMaintenanceRequests } from '../lib/api';
+import type { MobileMaintenanceItem } from '@keyring/types';
 import type { MaintenanceStackParamList } from '../navigation/RootNavigator';
 
 type Route = RouteProp<MaintenanceStackParamList, 'MaintenanceDetail'>;
@@ -23,16 +24,6 @@ const STATUS_LABELS: Record<string, string> = {
   CANCELLED: 'Cancelled',
 };
 
-interface MaintenanceItem {
-  id: string;
-  title: string;
-  description: string;
-  status: Status;
-  priority: string;
-  category: string;
-  createdAt: string;
-}
-
 function formatDate(iso: string): string {
   try {
     return new Date(iso).toLocaleDateString('en-US', {
@@ -50,14 +41,14 @@ export default function MaintenanceDetailScreen() {
   const route = useRoute<Route>();
   const { id } = route.params;
 
-  const [request, setRequest] = useState<MaintenanceItem | null>(null);
+  const [request, setRequest] = useState<MobileMaintenanceItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchDetail = useCallback(async () => {
     try {
       const all = await getMaintenanceRequests();
-      const items: MaintenanceItem[] = Array.isArray(all) ? all : [];
+      const items: MobileMaintenanceItem[] = Array.isArray(all) ? all : [];
       const found = items.find((r) => String(r.id) === id);
       if (found) {
         setRequest(found);

@@ -9,15 +9,7 @@ import {
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { getCurrentLease } from '../lib/api';
-
-interface Lease {
-  unitNumber: string;
-  status: string;
-  rentAmount: number;
-  deposit: number;
-  startDate: string;
-  endDate: string;
-}
+import type { MobileLease } from '@keyring/types';
 
 function formatDate(iso: string): string {
   try {
@@ -32,7 +24,7 @@ function formatDate(iso: string): string {
 }
 
 export default function LeaseScreen() {
-  const [lease, setLease] = useState<Lease | null>(null);
+  const [lease, setLease] = useState<MobileLease | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

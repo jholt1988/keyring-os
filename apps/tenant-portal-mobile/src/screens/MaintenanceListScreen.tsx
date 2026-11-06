@@ -11,6 +11,7 @@ import {
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { getMaintenanceRequests } from '../lib/api';
+import type { MobileMaintenanceItem } from '@keyring/types';
 import type { MaintenanceStackParamList } from '../navigation/RootNavigator';
 
 type Nav = NativeStackNavigationProp<MaintenanceStackParamList, 'MaintenanceList'>;
@@ -43,19 +44,9 @@ function formatDate(iso: string): string {
   }
 }
 
-interface MaintenanceItem {
-  id: string;
-  title: string;
-  description: string;
-  status: Status;
-  priority: string;
-  category: string;
-  createdAt: string;
-}
-
 export default function MaintenanceListScreen() {
   const navigation = useNavigation<Nav>();
-  const [requests, setRequests] = useState<MaintenanceItem[]>([]);
+  const [requests, setRequests] = useState<MobileMaintenanceItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
