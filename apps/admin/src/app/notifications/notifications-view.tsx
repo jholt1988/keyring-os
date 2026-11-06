@@ -12,7 +12,7 @@ import {
   deleteNotification,
 } from '@/lib/copilot-api';
 import { useToast } from '@/components/ui/toast';
-import { NotificationFeed } from '@keyring/shared-ui/components';
+import { NotificationFeed } from '@keyring/ui/components';
 
 const TYPE_COLORS: Record<string, string> = {
   PAYMENT: 'text-[#10B981]',

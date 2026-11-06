@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChatWindow, NotificationFeed } from '../../../../../shared-ui/components';
+import { ChatWindow, NotificationFeed } from '@keyring/ui/components';
 
 const TenantChatPage: React.FC = () => {
   const user = 'tenant';

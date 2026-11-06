@@ -4,7 +4,7 @@ import React from 'react';
 import { MessageSquare } from 'lucide-react';
 import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { SectionCard } from '@/components/copilot/section-card';
-import { ChatWindow, NotificationFeed } from '@keyring/shared-ui/components';
+import { ChatWindow, NotificationFeed } from '@keyring/ui/components';
 
 const AdminChatPage: React.FC = () => {
   const user = 'admin';
