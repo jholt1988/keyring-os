@@ -35,7 +35,7 @@ const apiRoot = path.join(process.cwd(), 'pages', 'api');
 const apiRoutes = walk(apiRoot, e => e.endsWith('.ts') || e.endsWith('.js'));
 
 // ── Shared‑UI exported components (used as surfaces) ───────────────
-const sharedUI = path.join(process.cwd(), 'packages', 'shared-ui', 'components');
+const sharedUI = path.join(process.cwd(), 'packages', 'ui', 'src', 'components');
 const sharedComponents = fs.existsSync(sharedUI)
   ? fs.readdirSync(sharedUI).filter(f => f.endsWith('.tsx') || f.endsWith('.ts'))
   : [];

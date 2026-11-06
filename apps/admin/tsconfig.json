@@ -23,13 +23,7 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@keyring/shared-ui/*": [
-        "../../packages/shared-ui/*"
-      ],
-      "@shared-ui/*": [
-        "../../packages/shared-ui/*"
-      ]
+      "@/*": ["./src/*"]
     }
   },
   "include": [

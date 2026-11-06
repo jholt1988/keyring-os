@@ -14,7 +14,6 @@ COPY apps/admin/package.json ./apps/admin/
 COPY packages/ui/package.json ./packages/ui/
 COPY packages/types/package.json ./packages/types/
 COPY packages/config/package.json ./packages/config/
-COPY shared-ui/package.json ./shared-ui/
 
 # Install all dependencies (frozen lockfile for reproducibility)
 RUN pnpm install 
@@ -29,7 +28,6 @@ COPY --from=deps /app/ ./
 
 # Copy source code for workspace packages (needed at build time)
 COPY packages/ ./packages/
-COPY shared-ui/ ./shared-ui/
 COPY apps/admin/ ./apps/admin/
 
 # Copy root-level config files needed by turbo / ts
