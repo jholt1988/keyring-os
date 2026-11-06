@@ -80,7 +80,9 @@ export function mapFeedToDecisions(input: unknown): Decision[] {
           return ({
           label: str(action.label, 'Take Action'),
           endpoint: str(action.endpoint, '#'),
-          method: (action.method === 'PUT' || action.method === 'PATCH' || action.method === 'DELETE' ? action.method : 'POST'),
+          method: (action.method === 'PUT' || action.method === 'PATCH' || action.method === 'DELETE' || action.method === 'GET'
+            ? action.method
+            : action.type === 'navigation' ? 'GET' : 'POST'),
           body: rec(action.body) as Record<string, unknown>,
           variant: (action.variant === 'danger' || action.variant === 'neutral' || action.variant === 'secondary' ? action.variant : 'primary'),
           confirmRequired: Boolean(action.confirmRequired || action.requiresConfirm),

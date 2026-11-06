@@ -47,7 +47,7 @@ export interface DecisionWorkflow {
 export interface DecisionAction {
   label: string;
   endpoint: string;
-  method: 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   body?: Record<string, unknown>;
   variant: 'primary' | 'danger' | 'neutral' | 'secondary';
   confirmRequired?: boolean;
