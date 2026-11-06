@@ -7,7 +7,7 @@ type Workspace = {
   ownerId?: string; // owner identifier
   createdAt?: string; // ISO timestamp
   updatedAt?: string; // ISO timestamp of last update
-  settings?: Record<string, any>; // additional settings
+  settings?: Record<string, unknown>; // additional settings
 };
 
 /**

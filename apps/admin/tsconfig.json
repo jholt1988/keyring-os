@@ -23,7 +23,7 @@
       }
     ],
     "paths": {
-      "@/": ["./src/"],                     // unchanged
+      "@/*": ["./src/*"],
       "@keyring/shared-ui/*": [
         "../../packages/shared-ui/*"
       ],

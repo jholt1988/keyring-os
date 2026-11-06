@@ -33,38 +33,38 @@ function copyResponseHeaders(response: Response): Headers {
   return headers;
 }
 
-function safeJsonParse(text: string): any {
+function safeJsonParse(text: string): unknown {
   if (!text) return undefined;
   try {
-    return JSON.parse(text);
+    return JSON.parse(text) as unknown;
   } catch {
     return undefined;
   }
 }
 
 interface AuthTokenPayload {
-  access_token?: any;
-  accessToken?: any;
-  refresh_token?: any;
-  refreshToken?: any;
-  result?: any;
+  access_token?: unknown;
+  accessToken?: unknown;
+  refresh_token?: unknown;
+  refreshToken?: unknown;
+  result?: unknown;
 }
 
-function unwrapResult(payload: any): Record<string, unknown> {
+function unwrapResult(payload: unknown): Record<string, unknown> {
   if (!payload || typeof payload !== 'object') return {};
-  const obj = payload as { result?: any };
+  const obj = payload as { result?: unknown };
   if (obj.result && typeof obj.result === 'object') return obj.result as Record<string, unknown>;
   return obj as Record<string, unknown>;
 }
 
-function asToken(value: any): string | undefined {
+function asToken(value: unknown): string | undefined {
   return typeof value === 'string' && value.length > 0 ? value : undefined;
 }
 
-function resolveUserRole(payload: any): string | undefined {
+function resolveUserRole(payload: unknown): string | undefined {
   if (!payload || typeof payload !== 'object') return undefined;
 
-  const obj = payload as { role?: any; roles?: any; user?: { role?: any; roles?: any } };
+  const obj = payload as { role?: unknown; roles?: unknown; user?: { role?: unknown; roles?: unknown } };
 
   if (typeof obj.role === 'string' && obj.role.trim()) {
     return obj.role;
