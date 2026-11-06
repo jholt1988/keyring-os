@@ -3,8 +3,8 @@ import { defineConfig, devices } from '@playwright/test';
 const isCI = !!process.env.CI;
 
 export default defineConfig({
-  testDir: './',
-  testMatch: '**/*.spec.ts',
+  testDir: './e2e',
+  testMatch: '**/*.e2e.spec.ts',
   fullyParallel: true,
   forbidOnly: isCI,
   // Keep retries snappy in CI — slow tests that need 3 tries shouldn't block the run
