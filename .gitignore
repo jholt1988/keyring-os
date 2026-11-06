@@ -40,3 +40,7 @@ venv/
 
 # OS / editor
 .DS_Store
+
+# pnpm is the package manager — do not commit npm lockfiles
+package-lock.json
+npm-shrinkwrap.json
