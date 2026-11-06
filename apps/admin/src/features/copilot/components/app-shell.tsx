@@ -1,6 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
+import { usePathname } from 'next/navigation';
 import { AmbientSignalCluster } from './ambient-signal-cluster';
 import { BriefingProvider, useBriefingContext } from './briefing-context';
 import { CommandComposer } from './command-composer';
@@ -76,6 +77,13 @@ function ShellInner({ children }: { children: ReactNode }) {
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+  const bare = pathname === '/login' || pathname === '/register' || pathname === '/landing' || pathname === '/unauthorized';
+
+  if (bare) {
+    return <>{children}</>;
+  }
+
   return (
     <OperatorDataProvider>
       <BriefingProvider>

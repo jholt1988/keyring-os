@@ -23,7 +23,21 @@ test('tenant portal boots and renders the app shell', async ({ page }) => {
   await expect(page.locator('nav a[href="/feed"]').first()).toBeAttached();
 });
 
-test('root redirects to the feed', async ({ page }) => {
+test('a cold visit to root lands on the landing page', async ({ page }) => {
+  // No auth_token and no return-visit cookie. Middleware sends that visit to
+  // /landing, not /feed. /feed is not a public path.
+  await page.goto(`${BASE}/`, { waitUntil: 'domcontentloaded' });
+  await expect(page).toHaveURL(/\/landing$/);
+});
+
+test('an authenticated visit to root reaches the feed', async ({ page }) => {
+  await page.context().addCookies([
+    {
+      name: 'auth_token',
+      value: 'access-token-e2e',
+      url: BASE,
+    },
+  ]);
   await page.goto(`${BASE}/`, { waitUntil: 'domcontentloaded' });
   await expect(page).toHaveURL(/\/feed$/);
 });
