@@ -1,8 +1,6 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment -- untyped API payloads; a typed client replaces this, not a cast sweep
-// @ts-nocheck
 'use client';
 
-import { useTenantsIndex } from '@/app/hooks/useWorkspace';
+import { useTenantsIndex, type TenantListItem } from '@/app/hooks/useWorkspace';
 import { MetricCard,WorkspaceShell } from '@/components/copilot';
 import { TenantCard,TenantHealthBadge } from '@/components/tenant';
 import { Button } from '@/components/ui/button';
@@ -66,14 +64,14 @@ export default function TenantsPage() {
   }, [activeTab, searchQuery]);
 
   const { data, isLoading } = useTenantsIndex(params);
-  const tenants = (data as any)?.data ?? [];
-  const total = (data as any)?.total ?? 0;
+  const tenants = data?.data ?? [];
+  const total = data?.total ?? 0;
 
-  const selectedTenant = tenants.find((t: any) => t.id === selectedTenantId);
+  const selectedTenant = tenants.find((t: TenantListItem) => t.id === selectedTenantId);
 
-  const atRiskCount = tenants.filter((t: any) => t.healthClass === 'AT_RISK' || t.healthClass === 'HIGH_TOUCH').length;
-  const delinquentCount = tenants.filter((t: any) => t.status === 'DELINQUENT').length;
-  const renewalCount = tenants.filter((t: any) => t.daysUntilLeaseEnd != null && t.daysUntilLeaseEnd <= 90 && t.daysUntilLeaseEnd > 0).length;
+  const atRiskCount = tenants.filter((t: TenantListItem) => t.healthClass === 'AT_RISK' || t.healthClass === 'HIGH_TOUCH').length;
+  const delinquentCount = tenants.filter((t: TenantListItem) => t.status === 'DELINQUENT').length;
+  const renewalCount = tenants.filter((t: TenantListItem) => t.daysUntilLeaseEnd != null && t.daysUntilLeaseEnd <= 90 && t.daysUntilLeaseEnd > 0).length;
 
   const messageMutation = useMutation({
     mutationFn: () =>
@@ -92,12 +90,14 @@ export default function TenantsPage() {
   });
 
   const noticeMutation = useMutation({
-    mutationFn: () =>
-      recordTenantLeaseNotice(selectedTenant?.leaseId, {
+    mutationFn: () => {
+      if (!selectedTenant?.leaseId) throw new Error('No active lease');
+      return recordTenantLeaseNotice(selectedTenant.leaseId, {
         type: noticeType,
         deliveryMethod: noticeMethod,
         message: noticeMessage || undefined,
-      }, {}),
+      }, {});
+    },
     onSuccess: () => {
       toast('Notice recorded');
       setNoticeOpen(false);
@@ -167,10 +167,15 @@ export default function TenantsPage() {
             </div>
           ) : (
             <div className="space-y-2">
-              {tenants.map((tenant: any) => (
+              {tenants.map((tenant: TenantListItem) => (
                 <TenantCard
                   key={tenant.id}
-                  tenant={tenant}
+                  tenant={{
+                    ...tenant,
+                    status: tenant.status ?? 'ACTIVE',
+                    healthClass: tenant.healthClass ?? 'STABLE',
+                    currentBalance: tenant.currentBalance ?? undefined,
+                  }}
                   isSelected={selectedTenantId === tenant.id}
                   onClick={() => setSelectedTenantId(tenant.id)}
                 />
@@ -191,8 +196,8 @@ export default function TenantsPage() {
                   {selectedTenant.property} · {selectedTenant.unit}
                 </p>
                 <div className="mt-2 flex items-center gap-2">
-                  <TenantHealthBadge classification={selectedTenant.healthClass} />
-                  <span className="text-xs text-[#8A99AD]">{selectedTenant.status.replace(/_/g, ' ')}</span>
+                  <TenantHealthBadge classification={selectedTenant.healthClass ?? 'STABLE'} />
+                  <span className="text-xs text-[#8A99AD]">{(selectedTenant.status ?? 'ACTIVE').replace(/_/g, ' ')}</span>
                 </div>
               </div>
 

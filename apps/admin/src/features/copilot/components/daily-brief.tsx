@@ -1,9 +1,9 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment -- untyped API payloads; a typed client replaces this, not a cast sweep
-// @ts-nocheck
 'use client';
 
 import { Calendar, Clock, DollarSign, Activity, Home, Users, Wrench, ShieldCheck } from 'lucide-react';
 import type { ReactElement } from 'react';
+import type { Decision, ScheduledEvent, Severity, Signal } from '@keyring/types';
+import type { BriefingSignal } from '@/lib/operator/read-only-data';
 import { useBriefingContext } from './briefing-context';
 import { DecisionCard, SignalCard, SectionCard } from '@/components/copilot';
 import { useOperatorData } from '@/features/operator/context/operator-data-context';
@@ -25,6 +25,47 @@ const eventTypeIcon: Record<string, () => ReactElement> = {
   lease_expiration: () => <Clock size={15} className="text-[#F59E0B]" />,
   signing: () => <DollarSign size={15} className="text-[#10B981]" />,
 };
+
+function severityOf(value: string | undefined): Severity {
+  return value === 'critical' || value === 'high' || value === 'low' ? value : 'medium';
+}
+
+function toSignal(signal: BriefingSignal): Signal {
+  return {
+    id: signal.id,
+    severity: severityOf(signal.severity),
+    domain: 'portfolio',
+    title: signal.title,
+    summary: signal.summary ?? '',
+    monetaryImpact: signal.monetaryImpact,
+    actionUrl: '#',
+    actionLabel: signal.actionLabel ?? 'Review',
+    createdAt: signal.createdAt ?? '',
+  };
+}
+
+function toDecision(item: BriefingSignal): Decision {
+  return {
+    id: item.id,
+    domain: 'portfolio',
+    entityType: 'briefing',
+    entityId: item.id,
+    title: item.title,
+    context: item.summary ?? '',
+    actions: [],
+    urgency: 'today',
+  };
+}
+
+function toEvent(item: BriefingSignal): ScheduledEvent {
+  return {
+    id: item.id,
+    type: 'maintenance',
+    title: item.title,
+    scheduledAt: item.createdAt ?? '',
+    propertyName: item.summary ?? '',
+  };
+}
 
 export function DailyBrief() {
   const { data: opData, loaded } = useOperatorData();
@@ -86,7 +127,9 @@ export function DailyBrief() {
           <div className="grid gap-6 lg:grid-cols-3">
             <SectionCard title="Critical Signals" subtitle="Top 3 risks worth attention now">
               <div className="space-y-3">
-                {topSignals.length ? topSignals.map((signal) => <SignalCard key={signal.id} signal={{...signal, severity: (signal.severity as unknown) || 'medium', actionUrl: (signal as unknown).actionUrl || '#'} as unknown} />) : (
+                {topSignals.length ? topSignals.map((signal) => (
+                  <SignalCard key={signal.id} signal={toSignal(signal)} />
+                )) : (
                   <p className="text-sm text-[#94A3B8]">No critical signals right now.</p>
                 )}
               </div>
@@ -94,17 +137,20 @@ export function DailyBrief() {
 
             <SectionCard title="Needs Your Decision" subtitle="Judgment-first actions only">
               <div className="space-y-3">
-                {topDecisions.length ? topDecisions.map((decision) => (
+                {topDecisions.length ? topDecisions.map((item) => {
+                  const decision = toDecision(item);
+                  return (
                   <DecisionCard
                     key={decision.id}
-                    decision={decision as unknown}
+                    decision={decision}
                     onExecute={async (endpoint, method, body) => {
                       console.log('Execute:', endpoint, method, body);
                     }}
                     onDismiss={() => {}}
-                    onInspect={() => openPanel(decision as unknown)}
+                    onInspect={() => openPanel(decision)}
                   />
-                )) : (
+                  );
+                }) : (
                   <p className="text-sm text-[#94A3B8]">No active decisions. System is clear.</p>
                 )}
               </div>
@@ -112,7 +158,8 @@ export function DailyBrief() {
 
             <SectionCard title="Scheduled Events" subtitle="Upcoming commitments with operational weight">
               <div className="space-y-3">
-                {topEvents.length ? topEvents.map((event: unknown) => {
+                {topEvents.length ? topEvents.map((item) => {
+                  const event = toEvent(item);
                   const Icon = eventTypeIcon[event.type] ?? (() => <Activity size={15} className="text-[#60A5FA]" />);
                   return (
                     <div key={event.id} className="rounded-[18px] border border-white/8 bg-white/[0.03] p-4 transition-all duration-[180ms] hover:border-white/12 hover:bg-white/[0.04]">
