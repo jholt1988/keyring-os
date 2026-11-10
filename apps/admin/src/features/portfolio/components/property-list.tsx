@@ -142,7 +142,7 @@ export function PropertyList({ properties, onSelectProperty, onViewUnits }: Prop
                   <Button 
                     size="sm" 
                     variant="outline"
-                    onClick={(e) => {
+                    onClick={(e: any) => {
                       e.stopPropagation();
                       onViewUnits?.(property.id);
                     }}

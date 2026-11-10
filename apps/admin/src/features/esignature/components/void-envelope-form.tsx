@@ -14,7 +14,7 @@ interface VoidEnvelopeFormProps {
 }
 
 export function VoidEnvelopeForm({ onSave, onCancel }: VoidEnvelopeFormProps) {
-  const [form, setForm] = useState<VoidEnvelopeFormData>({ reason: '' });
+  const [form, setForm] = useState({ reason: '' });
 
   return (
     <form onSubmit={(e) => { e.preventDefault(); onSave(form); }} className="space-y-4">

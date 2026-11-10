@@ -13,10 +13,10 @@ export default function PropertyPage() {
   const id = params.id as string;
   const router = useRouter();
   
-  const [property, setProperty] = useState<any>(null);
-  const [rollup, setRollup] = useState<any>(null);
-  const [repairs, setRepairs] = useState<any[]>([]);
-  const [auditLogs, setAuditLogs] = useState<any[]>([]);
+  const [property, setProperty] = useState(null as any);
+  const [rollup, setRollup] = useState(null as any);
+  const [repairs, setRepairs] = useState([] as any[]);
+  const [auditLogs, setAuditLogs] = useState([] as any[]);
   const [showRepairsOverlay, setShowRepairsOverlay] = useState(false);
 
   useEffect(() => {
@@ -52,7 +52,7 @@ export default function PropertyPage() {
 
       <div className="mb-8">
         <h4 className="mb-4 font-mono text-[10px] uppercase tracking-widest text-[#94A3B8]">Audit Timeline</h4>
-        <TimelineRail events={auditLogs.map(log => ({
+        <TimelineRail events={auditLogs.map((log: any) => ({
           id: log.id,
           label: log.action,
           date: new Date(log.date).toLocaleDateString(),

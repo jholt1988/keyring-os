@@ -22,7 +22,7 @@ interface RenewalOfferFormProps {
 }
 
 export function RenewalOfferForm({ initialData, onSave, onCancel }: RenewalOfferFormProps) {
-  const [form, setForm] = useState<RenewalOfferFormData>(initialData || {
+  const [form, setForm] = useState(initialData || {
     proposedRent: 0,
     proposedStart: '',
     proposedEnd: '',

@@ -108,7 +108,7 @@ export default function LoginPage() {
                   type="text"
                   placeholder="admin"
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={(e: any) => setUsername(e.target.value)}
                   className="h-11 border-white/10 bg-[#0F1B31] pl-10 text-[#F8FAFC] placeholder:text-[#8A99AD] focus:border-[#3B82F6] focus:ring-[#3B82F6]"
                   autoComplete="username"
                 />
@@ -139,7 +139,7 @@ export default function LoginPage() {
                   type="password"
                   placeholder="••••••••"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e: any) => setPassword(e.target.value)}
                   className="h-11 border-white/10 bg-[#0F1B31] pl-10 text-[#F8FAFC] placeholder:text-[#8A99AD] focus:border-[#3B82F6] focus:ring-[#3B82F6]"
                   autoComplete="current-password"
                 />

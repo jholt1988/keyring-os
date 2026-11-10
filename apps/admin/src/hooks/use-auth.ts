@@ -19,7 +19,7 @@ function userRoles(user: AuthUser | null): UserRole[] {
 }
 
 export function useAuth() {
-  const [user, setUser] = useState<AuthUser | null>(null);
+  const [user, setUser] = useState(null as AuthUser | null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

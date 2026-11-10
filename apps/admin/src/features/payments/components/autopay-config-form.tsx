@@ -27,7 +27,7 @@ export function AutopayConfigForm({
   onSave, 
   onCancel 
 }: AutopayConfigFormProps) {
-  const [form, setForm] = useState<AutopayConfigFormData>(initialData || {
+  const [form, setForm] = useState(initialData || {
     leaseId: '',
     paymentMethodId: 0,
     active: true,

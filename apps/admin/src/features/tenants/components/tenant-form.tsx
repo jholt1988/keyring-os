@@ -28,7 +28,7 @@ interface TenantFormProps {
 }
 
 export function TenantForm({ initialData, propertyOptions = [], onSave, onCancel }: TenantFormProps) {
-  const [form, setForm] = useState<TenantFormData>(() => initialData || {
+  const [form, setForm] = useState(() => (initialData || {
     firstName: '',
     lastName: '',
     email: '',
@@ -40,13 +40,13 @@ export function TenantForm({ initialData, propertyOptions = [], onSave, onCancel
     leaseEnd: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
     rentAmount: 0,
     status: 'pending',
-  });
+  }) as TenantFormData);
 
   const handleChange = (field: keyof TenantFormData, value: string | number) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
+    setForm((prev: any) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     onSave(form);
   };

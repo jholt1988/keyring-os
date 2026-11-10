@@ -27,17 +27,17 @@ export function MFAForm({
   onSave, 
   onCancel 
 }: MFAFormProps) {
-  const [form, setForm] = useState<MFAFormData>({
+  const [form, setForm] = useState({
     action: currentMfaEnabled ? 'disable' : 'activate',
     code: '',
     confirmCode: '',
-  });
+  } as MFAFormData);
   const [mfaSetupData, setMfaSetupData] = useState(() => 
     generateMFASetupData(accountName)
   );
-  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
-  const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
-  const [step, setStep] = useState<'setup' | 'verify' | 'recovery'>('setup');
+  const [formErrors, setFormErrors] = useState({} as Record<string, string>);
+  const [touchedFields, setTouchedFields] = useState(new Set() as Set<string>);
+  const [step, setStep] = useState('setup' as 'setup' | 'verify' | 'recovery');
   const [loading, setLoading] = useState(false);
 
   const isActivating = form.action === 'activate';

@@ -92,7 +92,7 @@ export function TenantCard({ tenant, isSelected, onClick }: TenantCardProps) {
         </div>
         <Link
           href={`/tenants/${tenant.id}`}
-          onClick={(e) => e.stopPropagation()}
+          onClick={(e: any) => e.stopPropagation()}
           className="text-[#94A3B8] transition-colors hover:text-[#F8FAFC]"
         >
           <ChevronRight size={14} />

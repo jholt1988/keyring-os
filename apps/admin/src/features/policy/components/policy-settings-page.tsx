@@ -115,7 +115,7 @@ export function PolicySettingsPage() {
   const propertyId = params.id as string;
   const queryClient = useQueryClient();
 
-  const [localBundle, setLocalBundle] = useState<ExtendedPolicyBundle | null>(null);
+  const [localBundle, setLocalBundle] = useState(null as ExtendedPolicyBundle | null);
 
   // Fetch policy bundle
   const { data: bundle, isLoading, isError, refetch } = useQuery({

@@ -105,7 +105,7 @@ export default function MessagesView() {
   const tenants: Tenant[] = Array.isArray(tenantsRaw) ? tenantsRaw : [];
 
   // Active thread
-  const [activeConvId, setActiveConvId] = useState<number | null>(null);
+  const [activeConvId, setActiveConvId] = useState(null as number | null);
   const { data: threadMessages, isLoading: msgsLoading } = useQuery({
     queryKey: ['messaging', 'messages', activeConvId],
     queryFn: () => fetchConversationMessages(activeConvId!),
@@ -128,11 +128,11 @@ export default function MessagesView() {
 
   // Search
   const [search, setSearch] = useState('');
-  const filteredConvs = useMemo(() => {
+  const filteredConvs: Conversation[] = useMemo(() => {
     if (!search.trim()) return conversations;
     const q = search.toLowerCase();
     return conversations.filter(
-      (c) =>
+      (c: Conversation) =>
         participantName(c).toLowerCase().includes(q) ||
         (c.subject ?? '').toLowerCase().includes(q),
     );
@@ -167,14 +167,14 @@ export default function MessagesView() {
     onError: () => toast('Failed to send message', 'error'),
   });
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef(null as HTMLDivElement | null);
   const activeConv = conversations.find((c) => c.id === activeConvId);
 
-  const filteredTenants = useMemo(() => {
+  const filteredTenants: Tenant[] = useMemo(() => {
     if (!tenantSearch.trim()) return tenants.slice(0, 8);
     const q = tenantSearch.toLowerCase();
     return tenants
-      .filter((t) =>
+      .filter((t: Tenant) =>
         [t.firstName, t.lastName, t.username].some((s) => s?.toLowerCase().includes(q)),
       )
       .slice(0, 8);
@@ -238,7 +238,7 @@ export default function MessagesView() {
               <div className="py-10 text-center text-sm text-[#8A99AD]">No conversations yet</div>
             ) : (
               <div className="max-h-[520px] space-y-1.5 overflow-y-auto pr-1">
-                {filteredConvs.map((conv) => (
+                {filteredConvs.map((conv: Conversation) => (
                   <button
                     key={conv.id}
                     onClick={() => setActiveConvId(conv.id)}
@@ -391,7 +391,7 @@ export default function MessagesView() {
             </div>
             {tenantSearch && !composeTenantId && filteredTenants.length > 0 && (
               <div className="mt-1 max-h-36 overflow-y-auto rounded-lg border border-[#1E3350] bg-[#0F1B31]">
-                {filteredTenants.map((t) => (
+                {filteredTenants.map((t: Tenant) => (
                   <button
                     key={t.id}
                     onClick={() => {

@@ -1,4 +1,4 @@
-import React from 'react';
-export const Button: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = (props) => {
+import React, { type ButtonHTMLAttributes } from 'react';
+export const Button = (props: ButtonHTMLAttributes<HTMLButtonElement>) => {
   return <button {...props} />;
 };

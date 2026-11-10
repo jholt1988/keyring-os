@@ -15,7 +15,7 @@ interface RecipientViewFormProps {
 }
 
 export function RecipientViewForm({ onSave, onCancel }: RecipientViewFormProps) {
-  const [form, setForm] = useState<RecipientViewFormData>({ returnUrl: '' });
+  const [form, setForm] = useState({ returnUrl: '' });
 
   return (
     <form onSubmit={(e) => { e.preventDefault(); onSave(form); }} className="space-y-4">

@@ -1,4 +1,3 @@
-import React from 'react';
 import { cn } from '@/lib/utils';
 
 interface TimelineEvent {
@@ -14,7 +13,7 @@ export function TimelineRail({ events }: { events: TimelineEvent[] }) {
   return (
     <div className="flex items-center gap-0 overflow-x-auto pb-2">
       {events.map((event, i) => (
-        <React.Fragment key={event.id}>
+        <div key={event.id} className="flex items-center">
           <div className="flex min-w-[80px] flex-col items-center">
             <div className={cn(
               'h-2.5 w-2.5 rounded-full',
@@ -28,7 +27,7 @@ export function TimelineRail({ events }: { events: TimelineEvent[] }) {
           {i < events.length - 1 && (
             <div className={cn('h-px min-w-[20px] flex-1', event.status === 'completed' ? 'bg-[#10B981]/50' : 'bg-[#1E3350]')} />
           )}
-        </React.Fragment>
+        </div>
       ))}
     </div>
   );

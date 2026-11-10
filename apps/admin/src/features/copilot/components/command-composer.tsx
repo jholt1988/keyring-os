@@ -5,6 +5,7 @@ import { Search, Sparkles } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { commandDomains, getOrderedCommandDomains } from '../config/command-menu';
 import { useCommandSurface } from '../state/command-surface';
+import type { Domain } from '@keyring/types';
 
 export function CommandComposer() {
   const pathname = usePathname();
@@ -12,10 +13,11 @@ export function CommandComposer() {
   const { setActiveContext, startExecuting, setPanelVisible } = useCommandSurface();
   const [query, setQuery] = useState('');
 
-  const intents = useMemo(() => getOrderedCommandDomains(pathname).flatMap((domain) => [
-    { label: domain.label, route: domain.route, domain: domain.id },
-    ...domain.actions.map((action) => ({ label: action.label, route: action.route, domain: domain.id })),
-  ]), [pathname]);
+  type Intent = { label: string; route: string; domain: Domain };
+const intents: Intent[] = useMemo(() => getOrderedCommandDomains(pathname).flatMap((domain) => [
+  { label: domain.label, route: domain.route, domain: domain.id },
+  ...domain.actions.map((action) => ({ label: action.label, route: action.route, domain: domain.id })),
+]), [pathname]);
 
   const submit = (value: string) => {
     const normalized = value.toLowerCase().trim();
@@ -28,7 +30,10 @@ export function CommandComposer() {
 
     startExecuting(match.label);
     setPanelVisible(true);
-    setActiveContext({ domain: 'domain' in match ? match.domain : match.id });
+    setActiveContext({
+      domain: 'domain' in match ? match.domain : (match.id as Domain),
+    });
+;
     router.push(match.route);
     setQuery('');
   };

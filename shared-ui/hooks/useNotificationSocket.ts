@@ -8,14 +8,14 @@ export interface Notification {
 }
 
 export function useNotificationSocket() {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notifications, setNotifications] = useState([] as Notification[]);
   const socketRef = useRef<ReturnType<typeof io> | null>(null);
 
   useEffect(() => {
     const socket = io({ path: '/api/socket.io' });
     socketRef.current = socket;
     socket.on('notification', (note: Notification) => {
-      setNotifications((prev) => [...prev, note]);
+      setNotifications((prev: Notification[]) => [...prev, note]);
     });
     return () => {
       socket.disconnect();
@@ -25,7 +25,7 @@ export function useNotificationSocket() {
   const sendNotification = (note: Omit<Notification, 'timestamp'>) => {
     const full = { ...note, timestamp: Date.now() };
     socketRef.current?.emit('notification', full);
-    setNotifications((prev) => [...prev, full]);
+    setNotifications((prev: Notification[]) => [...prev, full]);
   };
 
   return { notifications, sendNotification };

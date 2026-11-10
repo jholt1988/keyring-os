@@ -32,7 +32,7 @@ interface LeaseFormProps {
 }
 
 export function LeaseForm({ initialData, tenantOptions = [], propertyOptions = [], onSave, onCancel }: LeaseFormProps) {
-  const [form, setForm] = useState<LeaseFormData>(() => initialData || {
+  const [form, setForm] = useState((initialData ?? {
     tenantId: '',
     propertyId: '',
     unitId: '',
@@ -42,7 +42,7 @@ export function LeaseForm({ initialData, tenantOptions = [], propertyOptions = [
     depositAmount: 0,
     leaseType: 'fixed-term',
     status: 'draft',
-  });
+  }) as LeaseFormData);
 
   const handleChange = (field: keyof LeaseFormData, value: string | number | boolean | undefined) => {
     setForm((prev) => ({ ...prev, [field]: value }));

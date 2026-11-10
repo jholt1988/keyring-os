@@ -7,8 +7,7 @@
  */
 
 import type { Decision, Signal } from '@keyring/types';
-import { createContext, useCallback, useContext, useState } from 'react';
-import type { ReactNode } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { useBriefing } from '@/app/hooks/useBriefing';
 
 interface BriefingContextValue {
@@ -21,11 +20,11 @@ interface BriefingContextValue {
   isLoading: boolean;
 }
 
-const BriefingContext = createContext<BriefingContextValue | null>(null);
+const BriefingContext = (React as any).createContext(null);
 
-export function BriefingProvider({ children }: { children: ReactNode }) {
+export function BriefingProvider({ children }: { children: any }) {
   const { data, isLoading } = useBriefing();
-  const [selectedDecision, setSelectedDecision] = useState<Decision | null>(null);
+  const [selectedDecision, setSelectedDecision] = useState(null as Decision | null);
   const [panelOpen, setPanelOpen] = useState(false);
 
   const selectDecision = useCallback((d: Decision | null) => {

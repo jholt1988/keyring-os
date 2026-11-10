@@ -32,7 +32,7 @@ interface PropertyFormProps {
 }
 
 export function PropertyForm({ initialData, onSave, onCancel }: PropertyFormProps) {
-  const [form, setForm] = useState<PropertyFormData>(initialData || {
+  const [form, setForm] = useState((initialData || {
     name: '',
     address: '',
     city: '',
@@ -49,14 +49,14 @@ export function PropertyForm({ initialData, onSave, onCancel }: PropertyFormProp
     maxRent: undefined,
     yearBuilt: undefined,
     tags: [],
-  });
+  }) as PropertyFormData);
   const [tagInput, setTagInput] = useState((initialData?.tags || []).join(', '));
 
   const handleChange = (field: keyof PropertyFormData, value: string | number | string[] | undefined) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
+    setForm((prev: any) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     onSave({
       ...form,

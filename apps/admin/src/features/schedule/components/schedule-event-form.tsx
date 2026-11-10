@@ -22,19 +22,19 @@ interface ScheduleEventFormProps {
 }
 
 export function ScheduleEventForm({ onSave, onCancel }: ScheduleEventFormProps) {
-  const [form, setForm] = useState<ScheduleEventFormData>({
+  const [form, setForm] = useState({
     type: 'TOUR',
     title: '',
     date: '',
     priority: 'MEDIUM',
-  });
+  } as ScheduleEventFormData);
 
   const handleChange = (field: keyof ScheduleEventFormData, value: string | undefined) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
+    setForm((prev: any) => ({ ...prev, [field]: value }));
   };
 
   return (
-    <form onSubmit={(e) => { e.preventDefault(); onSave(form); }} className="space-y-4">
+    <form onSubmit={(e: any) => { e.preventDefault(); onSave(form); }} className="space-y-4">
       <div className="mb-4 flex items-center justify-between">
         <h3 className="text-lg font-semibold text-[#F8FAFC]">Schedule Event</h3>
         <Button type="button" variant="ghost" size="sm" onClick={onCancel}><X size={16} /></Button>

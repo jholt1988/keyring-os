@@ -15,10 +15,10 @@ interface RenewalResponseFormProps {
 }
 
 export function RenewalResponseForm({ onSave, onCancel }: RenewalResponseFormProps) {
-  const [form, setForm] = useState<RenewalResponseFormData>({
+  const [form, setForm] = useState({
     decision: 'ACCEPTED',
     message: '',
-  });
+  } as RenewalResponseFormData);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

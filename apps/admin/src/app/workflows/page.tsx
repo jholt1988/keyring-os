@@ -17,7 +17,7 @@ const ROUTE_BY_WORKFLOW_PREFIX: Record<string, string> = {
 export default function WorkflowsPage() {
   const { data, loaded, token, refresh } = useOperatorData();
   const router = useRouter();
-  const [selectedWorkflowId, setSelectedWorkflowId] = useState<string | null>(null);
+  const [selectedWorkflowId, setSelectedWorkflowId] = useState(null as string | null);
 
   const handleOpenWorkflow = useCallback((item: OperatorWorkflowItem) => {
     const prefix = Object.keys(ROUTE_BY_WORKFLOW_PREFIX).find((key) =>

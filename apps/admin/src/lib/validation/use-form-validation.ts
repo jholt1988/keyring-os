@@ -29,9 +29,9 @@ export function useFormValidation<T extends Record<string, unknown>>(
 ) {
   const { validateOnChange = true, validateOnBlur = true } = options;
   
-  const [values, setValues] = useState<T>(initialValues);
-  const [errors, setErrors] = useState<Partial<Record<keyof T, string>>>({});
-  const [touched, setTouched] = useState<Set<keyof T>>(new Set());
+  const [values, setValues] = useState(initialValues);
+  const [errors, setErrors] = useState>>({});
+  const [touched, setTouched] = useState>(new Set());
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const validateField = useCallback((field: keyof T, value: unknown): string | null => {

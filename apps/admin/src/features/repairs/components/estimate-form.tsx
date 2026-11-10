@@ -43,7 +43,7 @@ const CATEGORIES = [
 ];
 
 export function EstimateForm({ onSave, onCancel, isSubmitting }: EstimateFormProps) {
-  const [formData, setFormData] = useState<EstimateFormData>({
+  const [formData, setFormData] = useState({
     propertyId: '',
     unitId: '',
     description: '',
@@ -51,7 +51,7 @@ export function EstimateForm({ onSave, onCancel, isSubmitting }: EstimateFormPro
       { id: crypto.randomUUID(), category: 'General', description: '', cost: 0 },
     ],
     notes: '',
-  });
+  } as EstimateFormData);
 
   const addLineItem = () => {
     setFormData({

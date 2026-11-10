@@ -34,7 +34,7 @@ const statusConfig = {
 
 export function TenantList({ tenants, onSelectTenant, onFilterChange }: TenantListProps) {
   const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [statusFilter, setStatusFilter] = useState('all');
 
   const filteredTenants = tenants.filter((tenant) => {
     const matchesSearch = !search || 

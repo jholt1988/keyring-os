@@ -8,7 +8,7 @@ import { Loader2 } from 'lucide-react';
 interface RequireRoleProps {
   requiredRoles: UserRole | UserRole[];
   fallbackRoute?: string;
-  children: React.ReactNode;
+  children: any;
 }
 
 /**

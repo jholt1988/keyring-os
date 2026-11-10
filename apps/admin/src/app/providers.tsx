@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { ToastProvider } from '@/components/ui/toast';
 import { CommandSurfaceProvider } from '@/features/copilot/state/command-surface';
 
-export default function Providers({ children }: { children: React.ReactNode }) {
+export default function Providers({ children }: { children: any }) {
   const [queryClient] = useState(() => new QueryClient({
     defaultOptions: {
       queries: {

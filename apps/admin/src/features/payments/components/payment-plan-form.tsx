@@ -25,7 +25,7 @@ export function PaymentPlanForm({
   onSave, 
   onCancel 
 }: PaymentPlanFormProps) {
-  const [form, setForm] = useState<PaymentPlanFormData>(initialData || {
+  const [form, setForm] = useState(initialData || {
     invoiceId: 0,
     installments: 3,
     amountPerInstallment: 0,

@@ -12,7 +12,7 @@ export default function ChatbotPage() {
   const { toast } = useToast();
   const [sessionId, setSessionId] = useState('');
   const [message, setMessage] = useState('');
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef(null as HTMLDivElement | null);
   
   const { data, refetch, isLoading } = useQuery({ 
     queryKey: ['chatbot', sessionId], 

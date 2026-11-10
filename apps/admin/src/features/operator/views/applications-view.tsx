@@ -34,10 +34,10 @@ export function ApplicationsView({
   onClearWorkflowFocus: () => void;
 }) {
   const workbench = data.applications;
-  const [selectedId, setSelectedId] = useState<number | null>(workbench?.applications?.[0]?.id ?? null);
-  const [detail, setDetail] = useState<OperatorApplicationDetail | null>(null);
-  const [pending, setPending] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState(workbench?.applications?.[0]?.id ?? null);
+  const [detail, setDetail] = useState(null as OperatorApplicationDetail | null);
+  const [pending, setPending] = useState(null as string | null);
+  const [message, setMessage] = useState(null as string | null);
   const [reviewAction, setReviewAction] = useState('APPROVE');
   const [reviewNote, setReviewNote] = useState('');
   const [denialReasonCode, setDenialReasonCode] = useState('');

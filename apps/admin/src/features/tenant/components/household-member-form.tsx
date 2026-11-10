@@ -24,7 +24,7 @@ interface HouseholdMemberFormProps {
 }
 
 export function HouseholdMemberForm({ initialData, onSave, onCancel }: HouseholdMemberFormProps) {
-  const [form, setForm] = useState<HouseholdMemberFormData>(initialData || {
+  const [form, setForm] = useState((initialData || {
     name: '',
     relationship: '',
     phone: '',
@@ -33,13 +33,13 @@ export function HouseholdMemberForm({ initialData, onSave, onCancel }: Household
     isOnLease: false,
     dateOfBirth: '',
     notes: '',
-  });
+  }) as HouseholdMemberFormData);
 
   const handleChange = (field: keyof HouseholdMemberFormData, value: string | boolean | undefined) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
+    setForm((prev: any) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     onSave(form);
   };

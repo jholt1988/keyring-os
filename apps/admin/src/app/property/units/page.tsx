@@ -39,7 +39,7 @@ const statusConfig = {
 
 export function UnitList({ units, propertyId, propertyName, onSelectUnit, onBack }: UnitListProps) {
   const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [statusFilter, setStatusFilter] = useState('all');
 
   const filteredUnits = units.filter((unit) => {
     const matchesSearch = !search || 
@@ -106,7 +106,7 @@ export function UnitList({ units, propertyId, propertyName, onSelectUnit, onBack
           <Input
             placeholder="Search units..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e: any) => setSearch(e.target.value)}
             className="pl-10"
           />
         </div>

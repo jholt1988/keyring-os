@@ -35,7 +35,7 @@ export function ManualPaymentForm({
   onSave, 
   onCancel 
 }: ManualPaymentFormProps) {
-  const [form, setForm] = useState<ManualPaymentFormData>(initialData || {
+  const [form, setForm] = useState(initialData || {
     leaseId: '',
     propertyId: '',
     unitId: '',
@@ -46,7 +46,7 @@ export function ManualPaymentForm({
     receivedAt: new Date().toISOString().split('T')[0],
     appliedTo: 'CURRENT_RENT',
     memo: '',
-  });
+  } as ManualPaymentFormData);
 
   const handleChange = (field: keyof ManualPaymentFormData, value: string | undefined) => {
     setForm((prev) => ({ ...prev, [field]: value }));

@@ -17,13 +17,13 @@ interface TenantNoticeFormProps {
 }
 
 export function TenantNoticeForm({ onSave, onCancel }: TenantNoticeFormProps) {
-  const [form, setForm] = useState<TenantNoticeFormData>({
+  const [form, setForm] = useState({
     type: 'LEASE_END',
     moveOutAt: '',
     message: '',
-  });
+  } as TenantNoticeFormData);
 
-  const handleChange = (field: keyof TenantNoticeFormData, value: string | undefined) => {
+  const handleChange = (field: keyof TenantNoticeFormData, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 

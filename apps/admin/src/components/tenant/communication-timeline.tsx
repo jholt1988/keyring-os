@@ -3,7 +3,7 @@
 import { cn } from '@/lib/utils';
 import { Bell,FileText,Mail,MessageSquare } from 'lucide-react';
 
-const typeIcons: Record<string, React.ElementType> = {
+const typeIcons: Record<string, any> = {
   payment: FileText,
   maintenance: Bell,
   communication: MessageSquare,

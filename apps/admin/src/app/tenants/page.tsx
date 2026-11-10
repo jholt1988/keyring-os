@@ -36,7 +36,7 @@ const filterTabs = [
 export default function TenantsPage() {
   const [activeTab, setActiveTab] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedTenantId, setSelectedTenantId] = useState<string | null>(null);
+  const [selectedTenantId, setSelectedTenantId] = useState(null as string | null);
 
   // Message modal
   const [msgOpen, setMsgOpen] = useState(false);

@@ -33,9 +33,9 @@ export function InspectionEstimatesView({
   onClearWorkflowFocus: () => void;
 }) {
   const workbench = data.inspectionEstimates;
-  const [pending, setPending] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
-  const [noteByEstimate, setNoteByEstimate] = useState<Record<string, string>>({});
+  const [pending, setPending] = useState(null as string | null);
+  const [message, setMessage] = useState(null as string | null);
+  const [noteByEstimate, setNoteByEstimate] = useState({} as Record<string, string>);
 
   async function run(item: OperatorInspectionEstimateItem, action: 'generate' | 'approve' | 'reject' | 'repair') {
     const estimate = item.latestEstimate;

@@ -15,7 +15,7 @@ export default function ConversationPage() {
   const qc = useQueryClient();
   const { toast } = useToast();
   const [content, setContent] = useState('');
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef(null as HTMLDivElement | null);
 
   const { data: messages = [], isLoading } = useQuery({
     queryKey: ['messages', id],

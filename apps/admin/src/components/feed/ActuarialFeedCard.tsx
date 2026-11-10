@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { FeedItem } from '@keyring/types';
 import { ArrowRight,Gauge,MessageSquare,ShieldAlert } from 'lucide-react';
-import React from 'react';
+import * as React from 'react';
 
 interface InternalConfidenceV16 {
     overall: number;

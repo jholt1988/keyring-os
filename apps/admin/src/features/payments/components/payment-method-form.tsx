@@ -23,7 +23,7 @@ interface PaymentMethodFormProps {
 }
 
 export function PaymentMethodForm({ initialData, onSave, onCancel }: PaymentMethodFormProps) {
-  const [form, setForm] = useState<PaymentMethodFormData>(initialData || {
+  const [form, setForm] = useState(initialData || {
     type: 'CREDIT_CARD',
     provider: 'STRIPE',
     providerCustomerId: '',
@@ -32,7 +32,7 @@ export function PaymentMethodForm({ initialData, onSave, onCancel }: PaymentMeth
     brand: '',
     expMonth: undefined,
     expYear: undefined,
-  });
+  } as PaymentMethodFormData);
 
   const handleChange = (field: keyof PaymentMethodFormData, value: string | number | undefined) => {
     setForm((prev) => ({ ...prev, [field]: value }));

@@ -1,13 +1,13 @@
 'use client';
 
-import type { ReactNode } from 'react';
+
 import { motion, HTMLMotionProps } from 'framer-motion';
 
-interface FloatingOrbProps extends Omit<HTMLMotionProps<'div'>, 'className'> {
+interface FloatingOrbProps extends Omit<HTMLMotionProps<'div'>, 'className' | 'children' | 'key'> {
   severity: 'critical' | 'high' | 'medium' | 'low';
   label: string;
   pulse?: boolean;
-  children?: ReactNode;
+  children?: any;
   className?: string;
 }
 

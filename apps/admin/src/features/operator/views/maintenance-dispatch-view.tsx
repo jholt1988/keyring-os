@@ -34,11 +34,11 @@ export function MaintenanceDispatchView({
   onClearWorkflowFocus: () => void;
 }) {
   const workbench = data.maintenanceDispatch;
-  const [selectedVendorByRequest, setSelectedVendorByRequest] = useState<Record<string, string>>({});
-  const [notifyByRequest, setNotifyByRequest] = useState<Record<string, boolean>>({});
-  const [noteByRequest, setNoteByRequest] = useState<Record<string, string>>({});
-  const [pending, setPending] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
+  const [selectedVendorByRequest, setSelectedVendorByRequest] = useState({} as Record<string, string>);
+  const [notifyByRequest, setNotifyByRequest] = useState({} as Record<string, boolean>);
+  const [noteByRequest, setNoteByRequest] = useState({} as Record<string, string>);
+  const [pending, setPending] = useState(null as string | null);
+  const [message, setMessage] = useState(null as string | null);
 
 
 

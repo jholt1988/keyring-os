@@ -49,7 +49,7 @@ export function PredictiveMaintenanceView({
   const [message, setMessage] = useState<string | null>(null);
 
   const [expandedAssetId, setExpandedAssetId] = useState<number | null>(null);
-  const [assetRisk, setAssetRisk] = useState<Record<number, AssetRisk>>({});
+  const [assetRisk, setAssetRisk] = useState<Record<string, AssetRisk>>({});
   const [assetRiskLoading, setAssetRiskLoading] = useState<number | null>(null);
 
   const load = useCallback(async () => {

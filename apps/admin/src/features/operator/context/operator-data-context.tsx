@@ -9,8 +9,7 @@
  * data from this context instead of managing their own fetch lifecycle.
  */
 
-import { createContext, useCallback, useContext, useMemo } from 'react';
-import type { ReactNode } from 'react';
+import React, { createContext, useCallback,useState, useContext, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   loadReadOnlyOperatorData,
@@ -45,7 +44,7 @@ export interface OperatorDataContextValue {
   setToken: (token: string) => void;
 }
 
-const OperatorDataContext = createContext<OperatorDataContextValue | null>(null);
+const OperatorDataContext = createContext<OperatorDataContextValue | undefined>(undefined);
 
 function computeTotals(data: ReadOnlyOperatorData): OperatorTotals {
   // Be tolerant of shape drift: portfolio may arrive as { data, meta } or, if an
@@ -74,9 +73,11 @@ export function OperatorDataProvider({
   children,
   initialToken = '',
 }: {
-  children: ReactNode;
+  children: any;
   initialToken?: string;
 }) {
+  const [noteByRequest, setNoteByRequest] = useState({} as Record<string, string>);
+  const [notifyByRequest, setNotifyByRequest] = useState({} as Record<string, boolean>);
   const queryClient = useQueryClient();
   const { isAuthenticated } = useAuth();
 
@@ -101,6 +102,7 @@ export function OperatorDataProvider({
     await queryClient.invalidateQueries({ queryKey: ['operator-data'] });
   }, [queryClient]);
 
+  const [pending, setPending] = useState(null as string | null);
   const setToken = useCallback((nextToken: string) => {
     if (typeof window !== 'undefined') {
       window.localStorage.setItem('operator_api_token', nextToken);
@@ -110,6 +112,13 @@ export function OperatorDataProvider({
     // Force a page-level re-render by refetching
     void queryClient.refetchQueries({ queryKey: ['operator-data', nextToken] });
   }, [queryClient]);
+
+  const [selectedVendorByRequest, setSelectedVendorByRequest] = useState({} as Record<string, string>);
+  const [form, setForm] = useState({
+    type: 'LEASE_END',
+    moveOutAt: '',
+    message: '',
+  } as { type: 'LEASE_END'; moveOutAt: string; message: string });
 
   const value: OperatorDataContextValue = useMemo(() => ({
     data,
@@ -140,6 +149,10 @@ export function useOperatorData(): OperatorDataContextValue {
  */
 export function useOperatorSignals() {
   const { data } = useOperatorData();
+  const [form, setForm] = useState({
+    decision: 'ACCEPTED' as const,
+    message: '',
+  });
   return useMemo(() => {
     const signals = data.briefing?.signals ?? [];
     return signals.slice(0, 6).map((signal) => ({

@@ -166,7 +166,7 @@ export default function TenantInsurancePage() {
                 <input 
                   type={type}
                   value={(form as any)[key]} 
-                  onChange={(e) => setForm((current) => ({ ...current, [key]: e.target.value }))} 
+                  onChange={(e) => setForm((current: any) => ({ ...current, [key]: e.target.value }))} 
                   placeholder={placeholder}
                   className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]" 
                 />

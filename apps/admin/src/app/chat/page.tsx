@@ -6,7 +6,7 @@ import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { SectionCard } from '@/components/copilot/section-card';
 import { ChatWindow, NotificationFeed } from '@keyring/shared-ui/components';
 
-const AdminChatPage: React.FC = () => {
+export default function AdminChatPage() {
   const user = 'admin';
 
   return (
@@ -30,6 +30,4 @@ const AdminChatPage: React.FC = () => {
     </WorkspaceShell>
   );
 };
-
-export default AdminChatPage;
 

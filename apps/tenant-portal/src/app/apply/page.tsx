@@ -61,13 +61,13 @@ const INITIAL_DOCUMENTS: DocumentsValues = {
 export default function ApplicationPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
-  const [applicationId, setApplicationId] = useState<string | null>(null);
-  const [identity, setIdentity] = useState<IdentityValues>(INITIAL_IDENTITY);
-  const [housing, setHousing] = useState<HousingValues>(INITIAL_HOUSING);
-  const [employment, setEmployment] = useState<EmploymentValues>(INITIAL_EMPLOYMENT);
-  const [occupants, setOccupants] = useState<OccupantsValues>(INITIAL_OCCUPANTS);
-  const [background, setBackground] = useState<BackgroundValues>(INITIAL_BACKGROUND);
-  const [documents, setDocuments] = useState<DocumentsValues>(INITIAL_DOCUMENTS);
+  const [applicationId, setApplicationId] = useState(null);
+  const [identity, setIdentity] = useState(INITIAL_IDENTITY);
+  const [housing, setHousing] = useState(INITIAL_HOUSING);
+  const [employment, setEmployment] = useState(INITIAL_EMPLOYMENT);
+  const [occupants, setOccupants] = useState(INITIAL_OCCUPANTS);
+  const [background, setBackground] = useState(INITIAL_BACKGROUND);
+  const [documents, setDocuments] = useState(INITIAL_DOCUMENTS);
   const [consentAccepted, setConsentAccepted] = useState(false);
 
   const payload = useMemo(

@@ -14,7 +14,7 @@ interface MaintenanceNoteFormProps {
 }
 
 export function MaintenanceNoteForm({ onSave, onCancel }: MaintenanceNoteFormProps) {
-  const [form, setForm] = useState<MaintenanceNoteFormData>({
+  const [form, setForm] = useState({
     body: '',
   });
 

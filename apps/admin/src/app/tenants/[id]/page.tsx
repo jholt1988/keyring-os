@@ -80,7 +80,7 @@ export default function TenantWorkspacePage() {
 
   // Profile edit state
   const [editingProfile, setEditingProfile] = useState(false);
-  const [profileForm, setProfileForm] = useState<Record<string, string>>({});
+  const [profileForm, setProfileForm] = useState({} as Record<string, string>);
 
   // Household member state
   const [householdOpen, setHouseholdOpen] = useState(false);

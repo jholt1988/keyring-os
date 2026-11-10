@@ -15,10 +15,10 @@ export function ApprovalQueueView({
   token: string;
   onRefresh: () => Promise<void>;
 }) {
-  const [pendingTaskId, setPendingTaskId] = useState<string | null>(null);
-  const [rejectTaskId, setRejectTaskId] = useState<string | null>(null);
-  const [reasonByTask, setReasonByTask] = useState<Record<string, string>>({});
-  const [message, setMessage] = useState<string | null>(null);
+  const [pendingTaskId, setPendingTaskId] = useState(null as string | null);
+  const [rejectTaskId, setRejectTaskId] = useState(null as string | null);
+  const [reasonByTask, setReasonByTask] = useState({} as Record<string, string>);
+  const [message, setMessage] = useState(null as string | null);
 
   async function decide(taskId: string, decision: 'APPROVE' | 'REJECT') {
     const reason = reasonByTask[taskId] ?? '';

@@ -134,7 +134,7 @@ function ReportContent({ tab }: { tab: TabId }) {
 }
 
 export default function ReportsPage() {
-  const [activeTab, setActiveTab] = useState<TabId>('rent-roll');
+  const [activeTab, setActiveTab] = useState('rent-roll' as TabId);
 
   return (
     <WorkspaceShell title="Reports" icon={BarChart3}>

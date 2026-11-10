@@ -66,7 +66,7 @@ function offerStatusBadge(status: string) {
 // ── Signing Panel ─────────────────────────────────────────────────────────────
 
 function SigningPanel({ leaseId }: { leaseId: string }) {
-  const [signingId, setSigningId] = useState<number | null>(null);
+  const [signingId, setSigningId] = useState(null);
 
   const { data: envelopes = [], isLoading } = useQuery({
     queryKey: ['esign-envelopes', leaseId],
@@ -155,7 +155,7 @@ function SigningPanel({ leaseId }: { leaseId: string }) {
 
 function RenewalPanel({ leaseId, currentRent }: { leaseId: string; currentRent: number }) {
   const qc = useQueryClient();
-  const [responded, setResponded] = useState<Record<number, 'ACCEPTED' | 'DECLINED'>>({});
+    const [responded, setResponded] = useState({} as Record<string, string>);
 
   const { data: offers = [], isLoading } = useQuery({
     queryKey: ['renewal-offers', leaseId],

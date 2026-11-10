@@ -40,7 +40,7 @@ export default function NewInspectionPage() {
     onError: () => toast('Failed to create inspection', 'error'),
   });
 
-  const set = (k: string, v: string) => setForm(p => ({ ...p, [k]: v }));
+  const set = (k: string, v: string) => setForm((p: any) => ({ ...p, [k]: v }));
 
   return (
     <WorkspaceShell title="New Inspection" icon={ClipboardList}>

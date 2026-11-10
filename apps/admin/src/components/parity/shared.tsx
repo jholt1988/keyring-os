@@ -50,8 +50,8 @@ export function ToursSection({ embeddedLeadId, title = 'Tours', subtitle = 'Sche
   const qc = useQueryClient();
   const { toast } = useToast();
   const [scheduleOpen, setScheduleOpen] = useState(false);
-  const [assignTarget, setAssignTarget] = useState<unknown>(null);
-  const [rescheduleTarget, setRescheduleTarget] = useState<unknown>(null);
+  const [assignTarget, setAssignTarget] = useState(null as unknown);
+  const [rescheduleTarget, setRescheduleTarget] = useState(null as unknown);
   const [agentId, setAgentId] = useState('');
   const [form, setForm] = useState({ leadId: embeddedLeadId ?? '', propertyId: '', date: '', time: '', agentId: '' });
   const [rescheduleAt, setRescheduleAt] = useState('');
@@ -231,7 +231,7 @@ export function PaymentOperationsSection({ delinquentItems = [], invoices = [], 
 }) {
   const qc = useQueryClient();
   const { toast } = useToast();
-  const [trackerLeaseId, setTrackerLeaseId] = useState<string | null>(null);
+  const [trackerLeaseId, setTrackerLeaseId] = useState(null as string | null);
   const [planOpen, setPlanOpen] = useState(false);
   const [chargeOpen, setChargeOpen] = useState(false);
   const [legalDate, setLegalDate] = useState('');

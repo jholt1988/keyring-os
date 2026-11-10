@@ -27,11 +27,11 @@ export function CommandCenterView({
   token: string;
   onRefresh: () => Promise<void>;
 }) {
-  const [selectedDecisionId, setSelectedDecisionId] = useState<string | null>(null);
-  const [detail, setDetail] = useState<CommandCenterDecisionDetail | null>(null);
+  const [selectedDecisionId, setSelectedDecisionId] = useState(null as string | null);
+  const [detail, setDetail] = useState(null as CommandCenterDecisionDetail | null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [actionNote, setActionNote] = useState('');
-  const [actionMessage, setActionMessage] = useState<string | null>(null);
+  const [actionMessage, setActionMessage] = useState(null as string | null);
   const [actionPending, setActionPending] = useState(false);
   const [filters, setFilters] = useState({ type: 'ALL', priority: 'ALL', status: 'ALL', due: 'ALL', propertyId: '' });
   const briefingDecisionItems: FeedItem[] = (data.briefing?.signals ?? []).slice(0, 6).map((signal) => ({

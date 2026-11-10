@@ -17,7 +17,7 @@ export function RecoveryCodesDisplay({
   className = ''
 }: RecoveryCodesDisplayProps) {
   const [showCodes, setShowCodes] = useState(false);
-  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+  const [copiedIndex, setCopiedIndex] = useState(null as number | null);
 
   const handleCopyCode = async (code: string, index: number) => {
     try {

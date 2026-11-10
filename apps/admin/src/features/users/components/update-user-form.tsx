@@ -17,14 +17,14 @@ interface UpdateUserFormProps {
 }
 
 export function UpdateUserForm({ onSave, onCancel }: UpdateUserFormProps) {
-  const [form, setForm] = useState<UpdateUserFormData>({});
+  const [form, setForm] = useState({} as UpdateUserFormData);
 
   const handleChange = (field: keyof UpdateUserFormData, value: string | undefined) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
+    setForm((prev: any) => ({ ...prev, [field]: value }));
   };
 
   return (
-    <form onSubmit={(e) => { e.preventDefault(); onSave(form); }} className="space-y-4">
+    <form onSubmit={(e: any) => { e.preventDefault(); onSave(form); }} className="space-y-4">
       <div className="mb-4 flex items-center justify-between">
         <h3 className="text-lg font-semibold text-[#F8FAFC]">Update User</h3>
         <Button type="button" variant="ghost" size="sm" onClick={onCancel}><X size={16} /></Button>

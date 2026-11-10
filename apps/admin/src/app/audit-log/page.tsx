@@ -122,10 +122,10 @@ export default function AuditLogPage() {
               {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, total)} of {total}
             </p>
             <div className="flex gap-2">
-              <Button size="sm" variant="outline" onClick={() => setPage(p => p - 1)} disabled={page === 0}>
+              <Button size="sm" variant="outline" onClick={() => setPage((p: number) => p - 1)} disabled={page === 0}>
                 <ChevronLeft size={13} /> Prev
               </Button>
-              <Button size="sm" variant="outline" onClick={() => setPage(p => p + 1)} disabled={page >= totalPages - 1}>
+              <Button size="sm" variant="outline" onClick={() => setPage((p: number) => p + 1)} disabled={page >= totalPages - 1}>
                 Next <ChevronRight size={13} />
               </Button>
             </div>

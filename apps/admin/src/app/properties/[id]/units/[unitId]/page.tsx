@@ -18,11 +18,11 @@ export default function UnitPage() {
   const router = useRouter();
   const { toast } = useToast();
 
-  const [unit, setUnit] = useState<any>(null);
-  const [rollup, setRollup] = useState<any>(null);
-  const [ledger, setLedger] = useState<any>(null);
-  const [repairs, setRepairs] = useState<any[]>([]);
-  const [auditLogs, setAuditLogs] = useState<any[]>([]);
+  const [unit, setUnit] = useState(null as any);
+  const [rollup, setRollup] = useState(null as any);
+  const [ledger, setLedger] = useState(null as any);
+  const [repairs, setRepairs] = useState([] as any[]);
+  const [auditLogs, setAuditLogs] = useState([] as any[]);
   const [loading, setLoading] = useState(true);
   const [showRepairsOverlay, setShowRepairsOverlay] = useState(false);
 
@@ -132,7 +132,7 @@ export default function UnitPage() {
 
         <div>
           <h4 className="mb-4 font-mono text-[10px] uppercase tracking-widest text-[#94A3B8]">Audit Timeline</h4>
-          <TimelineRail events={auditLogs.map(log => ({
+          <TimelineRail events={auditLogs.map((log: any) => ({
             id: log.id,
             label: log.action,
             date: new Date(log.date).toLocaleDateString(),

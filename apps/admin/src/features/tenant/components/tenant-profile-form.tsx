@@ -23,7 +23,7 @@ interface TenantProfileFormProps {
 }
 
 export function TenantProfileForm({ initialData, onSave, onCancel }: TenantProfileFormProps) {
-  const [form, setForm] = useState<TenantProfileFormData>(initialData || {
+  const [form, setForm] = useState((initialData || {
     preferredName: '',
     status: '',
     tags: [],
@@ -31,15 +31,15 @@ export function TenantProfileForm({ initialData, onSave, onCancel }: TenantProfi
     vehicles: [],
     idVerified: false,
     notes: '',
-  });
+  }) as TenantProfileFormData);
 
   const [tagInput, setTagInput] = useState(initialData?.tags?.join(', ') || '');
 
-  const handleChange = (field: keyof TenantProfileFormData, value: string | boolean | string[] | undefined) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
+  const handleChange = (field: keyof TenantProfileFormData, value: string | boolean | string[] | any[]) => {
+    setForm((prev: any) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     onSave({
       ...form,

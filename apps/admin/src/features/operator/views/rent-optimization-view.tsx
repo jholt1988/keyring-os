@@ -30,7 +30,7 @@ export function RentOptimizationView({
   token: string;
   initialUnitId?: string;
 }) {
-  const [selectedUnitId, setSelectedUnitId] = useState<string | null>(initialUnitId || null);
+  const [selectedUnitId, setSelectedUnitId] = useState(initialUnitId || null);
   const [pricingMatrix, setPricingMatrix] = useState<PricingMatrix | null>(null);
   const [loadingPricing, setLoadingPricing] = useState(false);
   const [message, setMessage] = useState<string | null>(null);

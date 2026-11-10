@@ -1,7 +1,6 @@
 'use client';
 
 import { Loader2 } from 'lucide-react';
-import { ReactNode } from 'react';
 
 interface LoadingSkeletonProps {
   count?: number;
@@ -27,7 +26,7 @@ export function LoadingSkeleton({ count = 1, className = '', height = 'h-4' }: L
 interface LoadingOverlayProps {
   isLoading: boolean;
   message?: string;
-  children: ReactNode;
+  children: any;
 }
 
 export function LoadingOverlay({ isLoading, message = 'Loading...', children }: LoadingOverlayProps) {
@@ -54,7 +53,7 @@ export function LoadingOverlay({ isLoading, message = 'Loading...', children }: 
 interface ButtonLoadingProps {
   isLoading: boolean;
   loadingText?: string;
-  children: ReactNode;
+  children: any;
   className?: string;
 }
 
@@ -81,7 +80,7 @@ export function ButtonLoading({ isLoading, loadingText = 'Processing...', childr
 interface FormLoadingStateProps {
   isLoading: boolean;
   skeletonCount?: number;
-  children: ReactNode;
+  children: any;
 }
 
 export function FormLoadingState({ isLoading, skeletonCount = 3, children }: FormLoadingStateProps) {
@@ -100,8 +99,8 @@ export function FormLoadingState({ isLoading, skeletonCount = 3, children }: For
 interface EmptyStateProps {
   title: string;
   description?: string;
-  icon?: ReactNode;
-  action?: ReactNode;
+  icon?: any;
+  action?: any;
 }
 
 export function EmptyState({ title, description, icon, action }: EmptyStateProps) {
@@ -147,7 +146,7 @@ export function ErrorState({ title, message, onRetry }: ErrorStateProps) {
 }
 
 // Accessibility helpers
-export function VisuallyHidden({ children }: { children: ReactNode }) {
+export function VisuallyHidden({ children }: { children: any }) {
   return (
     <span className="sr-only">
       {children}

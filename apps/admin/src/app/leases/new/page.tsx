@@ -26,7 +26,7 @@ export default function NewLeasePage() {
     autoRenew: false,
   });
 
-  const set = (k: string, v: string | boolean) => setForm(p => ({ ...p, [k]: v }));
+  const set = (k: string, v: string | boolean) => setForm((p: any) => ({ ...p, [k]: v }));
 
   const mutation = useMutation({
     mutationFn: () => createOperatorLease({

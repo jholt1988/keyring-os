@@ -11,8 +11,8 @@ import { useToast } from '@/components/ui/toast';
 export default function LeaseAbstractionView() {
   const qc = useQueryClient();
   const { toast } = useToast();
-  const [single, setSingle] = useState<File | null>(null);
-  const [bulk, setBulk] = useState<FileList | null>(null);
+  const [single, setSingle] = useState(null as File | null);
+  const [bulk, setBulk] = useState(null as FileList | null);
   const { data: analytics } = useQuery({ queryKey: ['lease-abstraction-analytics'], queryFn: fetchLeaseAbstractionAnalytics });
   const { data } = useQuery({ queryKey: ['lease-abstractions'], queryFn: fetchLeaseAbstractions });
   const abstractions = Array.isArray(data) ? data : [];

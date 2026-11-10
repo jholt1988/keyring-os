@@ -24,18 +24,18 @@ interface CreateUserFormProps {
 }
 
 export function CreateUserForm({ onSave, onCancel }: CreateUserFormProps) {
-  const [form, setForm] = useState<CreateUserFormData>({
+  const [form, setForm] = useState({
     username: '',
     password: '',
     email: '',
     firstName: '',
     lastName: '',
     role: 'TENANT',
-  });
+  } as CreateUserFormData);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordMatch, setPasswordMatch] = useState(true);
-  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
-  const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
+  const [formErrors, setFormErrors] = useState({} as Record<string, string>);
+  const [touchedFields, setTouchedFields] = useState(new Set() as Set<string>);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const passwordStrength = assessPasswordStrength(form.password);

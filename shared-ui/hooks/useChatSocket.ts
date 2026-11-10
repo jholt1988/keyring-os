@@ -8,7 +8,7 @@ export interface ChatMessage {
 }
 
 export function useChatSocket() {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState([] as ChatMessage[]);
   const socketRef = useRef<ReturnType<typeof io> | null>(null);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ export function useChatSocket() {
       console.log('socket connected', socket.id);
     });
     socket.on('chatMessage', (msg: ChatMessage) => {
-      setMessages((prev) => [...prev, msg]);
+      setMessages((prev: ChatMessage[]) => [...prev, msg]);
     });
     return () => {
       socket.disconnect();
@@ -28,7 +28,7 @@ export function useChatSocket() {
   const sendMessage = (msg: Omit<ChatMessage, 'timestamp'>) => {
     const fullMsg = { ...msg, timestamp: Date.now() };
     socketRef.current?.emit('chatMessage', fullMsg);
-    setMessages((prev) => [...prev, fullMsg]);
+    setMessages((prev: ChatMessage[]) => [...prev, fullMsg]);
   };
 
   return { messages, sendMessage };

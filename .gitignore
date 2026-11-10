@@ -3,13 +3,12 @@ node_modules
 .next
 dist
 .turbo
-.env
+
 .env.local
 coverage
 # ---- hardened ignore rules (added during 2026-06 security review) ----
 # Secrets: never commit real env files (keep *.example templates)
-.env
-.env.*
+
 !.env.example
 !.env.*.example
 *.pem

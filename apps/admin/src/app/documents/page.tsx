@@ -18,12 +18,12 @@ const CATEGORY_LABELS: Record<string, string> = {
 export default function DocumentsPage() {
   const qc = useQueryClient();
   const { toast } = useToast();
-  const fileRef = useRef<HTMLInputElement>(null);
+  const fileRef = useRef(null as HTMLInputElement | null);
   const [search, setSearch] = useState('');
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState(null as string | null);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [uploadCategory, setUploadCategory] = useState('OTHER');
-  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploadFile, setUploadFile] = useState(null as File | null);
 
   const { data: docs = [], isLoading } = useQuery({
     queryKey: ['documents'],

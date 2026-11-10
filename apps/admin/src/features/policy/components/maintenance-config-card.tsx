@@ -59,7 +59,7 @@ const priorityColors: Record<MaintenanceCategoryPriority, string> = {
 
 export function MaintenanceConfigCard({ config, onConfigChange, onSave }: MaintenanceConfigCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [categories, setCategories] = useState<MaintenanceCategory[]>(config.categories);
+  const [categories, setCategories] = useState(config.categories);
   const [afterHoursDispatch, setAfterHoursDispatch] = useState(config.afterHoursDispatch);
   
   // New category form state
@@ -72,8 +72,8 @@ export function MaintenanceConfigCard({ config, onConfigChange, onSave }: Mainte
   const [newSubcategory, setNewSubcategory] = useState({ code: '', name: '' });
   
   // Editing state
-  const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
-  const [editingCategory, setEditingCategory] = useState<Partial<MaintenanceCategory>>({});
+  const [editingCategoryId, setEditingCategoryId] = useState(null as string | null);
+  const [editingCategory, setEditingCategory] = useState({} as Partial<MaintenanceCategory>);
 
   const handleSave = () => {
     if (onSave) {

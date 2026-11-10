@@ -22,7 +22,7 @@ export function TechnicianAssignmentForm({
   onSave, 
   onCancel 
 }: TechnicianAssignmentFormProps) {
-  const [form, setForm] = useState<TechnicianAssignmentFormData>(initialData || {
+  const [form, setForm] = useState(initialData || {
     requestId: '',
     technicianId: undefined,
   });

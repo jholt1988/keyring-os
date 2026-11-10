@@ -39,7 +39,7 @@ export function TenantFeedList({
   dismissedCount,
   usingFallback,
 }: TenantFeedListProps) {
-  const [activeFilter, setActiveFilter] = useState<TenantFeedDomain | 'all'>('all');
+  const [activeFilter, setActiveFilter] = useState('all');
 
   const filtered =
     activeFilter === 'all'

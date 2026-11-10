@@ -114,8 +114,8 @@ function buildPopupHtml(p: PropertyMapItem): string {
 }
 
 export function PropertyMap({ properties, className }: PropertyMapProps) {
-  const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<Leaflet.Map | null>(null);
+  const mapRef = useRef(null as HTMLDivElement | null);
+  const mapInstanceRef = useRef(null as Leaflet.Map | null);
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
 
@@ -158,7 +158,7 @@ export function PropertyMap({ properties, className }: PropertyMapProps) {
 
       const markers: Leaflet.Marker[] = [];
 
-      coords.forEach(p => {
+      coords.forEach((p: any) => {
         const hasRisk = (p.repairRiskCount ?? 0) > 0 || (p.overdueAmount ?? 0) > 0;
         const marker = L.marker(p.coords, { icon: createMarkerIcon(L, hasRisk) }).addTo(map);
 
@@ -179,7 +179,7 @@ export function PropertyMap({ properties, className }: PropertyMapProps) {
       });
 
       if (coords.length > 0) {
-        const bounds = L.latLngBounds(coords.map(p => p.coords));
+        const bounds = L.latLngBounds(coords.map((p: any) => p.coords));
         map.fitBounds(bounds, { padding: [50, 50], maxZoom: 12 });
       }
 

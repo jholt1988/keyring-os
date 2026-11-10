@@ -14,7 +14,7 @@ interface MaintenanceCompleteFormProps {
 }
 
 export function MaintenanceCompleteForm({ onSave, onCancel }: MaintenanceCompleteFormProps) {
-  const [form, setForm] = useState<MaintenanceCompleteFormData>({
+  const [form, setForm] = useState({
     note: '',
   });
 

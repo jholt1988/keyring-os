@@ -27,8 +27,8 @@ interface DecisionCardProps {
 }
 
 export function DecisionCard({ decision, onExecute, onDismiss, onInspect }: DecisionCardProps) {
-  const [executing, setExecuting] = useState<string | null>(null);
-  const [result, setResult] = useState<'success' | 'error' | null>(null);
+  const [executing, setExecuting] = useState(null as string | null);
+  const [result, setResult] = useState(null as 'success' | 'error' | null);
   const urg = urgencyStyle[decision.urgency];
 
   const handleAction = async (action: Decision['actions'][0]) => {

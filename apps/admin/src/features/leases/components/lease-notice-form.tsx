@@ -20,12 +20,13 @@ interface LeaseNoticeFormProps {
 }
 
 export function LeaseNoticeForm({ initialData, onSave, onCancel }: LeaseNoticeFormProps) {
-  const [form, setForm] = useState<LeaseNoticeFormData>(initialData || {
+  const [form, setForm] = useState((initialData ?? {
     type: 'LEASE_END',
     deliveryMethod: 'EMAIL',
     message: '',
     acknowledgedAt: '',
-  });
+  }) as LeaseNoticeFormData);
+
 
   const handleChange = (field: keyof LeaseNoticeFormData, value: string | undefined) => {
     setForm((prev) => ({ ...prev, [field]: value }));

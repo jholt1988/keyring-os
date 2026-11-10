@@ -29,7 +29,7 @@ export function PaymentForm({
   onSave, 
   onCancel 
 }: PaymentFormProps) {
-  const [form, setForm] = useState<PaymentFormData>(initialData || {
+  const [form, setForm] = useState(initialData || {
     amount: 0,
     invoiceId: undefined,
     leaseId: '',
@@ -37,7 +37,7 @@ export function PaymentForm({
     status: 'PENDING',
     externalId: '',
     paymentMethodId: undefined,
-  });
+  } as PaymentFormData);
 
   const handleChange = (field: keyof PaymentFormData, value: string | number | undefined) => {
     setForm((prev) => ({ ...prev, [field]: value }));

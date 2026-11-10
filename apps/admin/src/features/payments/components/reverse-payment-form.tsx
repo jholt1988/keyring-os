@@ -14,10 +14,10 @@ interface ReversePaymentFormProps {
 }
 
 export function ReversePaymentForm({ onSave, onCancel }: ReversePaymentFormProps) {
-  const [form, setForm] = useState<ReversePaymentFormData>({ reason: '' });
+  const [form, setForm] = useState({ reason: '' } as ReversePaymentFormData);
 
   return (
-    <form onSubmit={(e) => { e.preventDefault(); onSave(form); }} className="space-y-4">
+    <form onSubmit={(e: any) => { e.preventDefault(); onSave(form); }} className="space-y-4">
       <div className="mb-4 flex items-center justify-between">
         <h3 className="text-lg font-semibold text-[#F8FAFC]">Reverse Manual Payment</h3>
         <Button type="button" variant="ghost" size="sm" onClick={onCancel}><X size={16} /></Button>
@@ -31,7 +31,7 @@ export function ReversePaymentForm({ onSave, onCancel }: ReversePaymentFormProps
         <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Reason</label>
         <textarea
           value={form.reason}
-          onChange={(e) => setForm({ reason: e.target.value })}
+          onChange={(e: any) => setForm({ reason: e.target.value })}
           className="flex min-h-[100px] w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] focus:border-[#3B82F6] focus:outline-none"
           placeholder="Enter reason for reversal (min 2 characters)..."
           required

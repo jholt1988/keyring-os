@@ -1,5 +1,6 @@
 'use client';
 
+import type { CommandDomain, CommandAction } from '../types/command';
 import { useEffect, useMemo } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import {
@@ -47,7 +48,7 @@ export function RadialMenu() {
   } = useCommandSurface();
 
   const domains = useMemo(() => getOrderedCommandDomains(pathname).slice(0, 6), [pathname]);
-  const activeDomain = domains.find((domain) => domain.id === selectedDomain) ?? domains[0];
+  const activeDomain = domains.find((domain: CommandDomain) => domain.id === selectedDomain) ?? domains[0];
   const actions = activeDomain?.actions.slice(0, 5) ?? [];
 
   useEffect(() => {
@@ -62,7 +63,7 @@ export function RadialMenu() {
     <div className="fixed inset-0 z-40 bg-[#020817]/40 backdrop-blur-[2px]" onClick={collapse}>
       {/* Centered on the CommandNode (bottom-6 right-6 + half of size-16 = 56px = 14rem) */}
       <div className="pointer-events-none absolute bottom-14 right-14 md:bottom-[44px] md:right-[44px]">
-        {radialState === 'primary-open' && domains.map((domain, index) => {
+        {radialState === 'primary-open' && domains.map((domain: CommandDomain, index: number) => {
           const Icon = iconMap[domain.icon as keyof typeof iconMap] ?? Wallet;
           return (
             <button
@@ -82,7 +83,7 @@ export function RadialMenu() {
           );
         })}
 
-        {radialState !== 'primary-open' && activeDomain && actions.map((action, index) => (
+        {radialState !== 'primary-open' && activeDomain && actions.map((action: CommandAction, index: number) => (
           <button
             key={action.id}
             type="button"

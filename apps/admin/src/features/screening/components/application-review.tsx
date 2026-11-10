@@ -84,8 +84,8 @@ function SectionCard({
   defaultOpen = true 
 }: { 
   title: string; 
-  icon: React.ElementType;
-  children: React.ReactNode;
+  icon: any;
+  children: any;
   defaultOpen?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
@@ -129,7 +129,7 @@ export function ApplicationReview({
   onApprove,
   onReject,
 }: ApplicationReviewProps) {
-  const [activeTab, setActiveTab] = useState<'overview' | 'applicant' | 'employment' | 'documents'>('overview');
+  const [activeTab, setActiveTab] = useState('overview' as 'overview' | 'applicant' | 'employment' | 'documents');
   const status = STATUS_CONFIG[application.status];
   const StatusIcon = status.icon;
 

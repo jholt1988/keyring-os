@@ -1,19 +1,19 @@
 'use client';
 
 import { ChevronDown, ChevronRight } from 'lucide-react';
-import { useState, ReactNode } from 'react';
+import { useState } from 'react';
 import { Button } from './button';
 
 interface CollapsiblePanelProps {
   title: string;
-  children: ReactNode;
+  children: any;
   defaultExpanded?: boolean;
   className?: string;
-  icon?: ReactNode;
+  icon?: any;
   badge?: string | number;
   variant?: 'default' | 'compact' | 'bordered';
   onToggle?: (expanded: boolean) => void;
-  actions?: ReactNode;
+  actions?: any;
 }
 
 export function CollapsiblePanel({
@@ -63,7 +63,7 @@ export function CollapsiblePanel({
             variant="ghost"
             size="sm"
             className="h-6 w-6 p-0"
-            onClick={(e) => {
+            onClick={(e: any) => {
               e.stopPropagation();
               handleToggle();
             }}
@@ -89,7 +89,7 @@ export function CollapsiblePanel({
           )}
         </div>
         
-        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-2" onClick={(e: any) => e.stopPropagation()}>
           {actions}
         </div>
       </div>

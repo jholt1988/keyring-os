@@ -50,7 +50,7 @@ export default function ConversationView() {
   const convId = Number(id);
   const qc = useQueryClient();
   const [draft, setDraft] = useState('');
-  const [currentUserId, setCurrentUserId] = useState<string | undefined>(undefined);
+  const [currentUserId, setCurrentUserId] = useState(undefined);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

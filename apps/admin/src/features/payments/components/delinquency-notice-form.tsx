@@ -25,12 +25,12 @@ export function DelinquencyNoticeForm({
   onSave, 
   onCancel 
 }: DelinquencyNoticeFormProps) {
-  const [form, setForm] = useState<DelinquencyNoticeFormData>(initialData || {
+  const [form, setForm] = useState(initialData || {
     leaseId: '',
     deliveryMethod: 'EMAIL',
     approvalConfirmed: false,
     message: '',
-  });
+  } as DelinquencyNoticeFormData);
 
   const handleChange = (field: keyof DelinquencyNoticeFormData, value: string | boolean | undefined) => {
     setForm((prev) => ({ ...prev, [field]: value }));

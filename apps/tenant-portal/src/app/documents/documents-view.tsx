@@ -58,7 +58,7 @@ function DocumentRow({ doc }: { doc: Document }) {
 
 export default function DocumentsView() {
   const [search, setSearch] = useState('');
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState(null);
 
   const { data: docs = [], isLoading } = useQuery({
     queryKey: ['documents'],

@@ -33,7 +33,7 @@ function saveDismissed(items: Set<string>): void {
  * prefetched by the Server Component wrapper and served from the hydrated cache.
  */
 export function useTenantFeed() {
-  const [dismissed, setDismissed] = useState<Set<string>>(new Set());
+  const [dismissed, setDismissed] = useState>(new Set());
   const [showDismissed, setShowDismissed] = useState(false);
 
   // Hydrate the dismissed set from localStorage after mount (client-only).

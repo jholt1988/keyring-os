@@ -33,7 +33,7 @@ export function DenialComplianceCard({
   onSave,
 }: DenialComplianceCardProps) {
   const [expanded, setExpanded] = useState(false);
-  const [settings, setSettings] = useState<DenialCompliance>(initialSettings || DEFAULT_SETTINGS);
+  const [settings, setSettings] = useState(initialSettings || DEFAULT_SETTINGS);
 
   const handleToggle = (field: keyof DenialCompliance) => {
     setSettings((prev) => ({ ...prev, [field]: !prev[field] }));

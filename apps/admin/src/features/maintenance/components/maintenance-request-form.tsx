@@ -33,17 +33,7 @@ export function MaintenanceRequestForm({
   onSave, 
   onCancel 
 }: MaintenanceRequestFormProps) {
-  const [form, setForm] = useState<MaintenanceRequestFormData>(initialData || {
-    title: '',
-    description: '',
-    priority: 'MEDIUM',
-    propertyId: '',
-    unitId: '',
-    leaseId: '',
-    dueDate: '',
-    category: '',
-    assetId: undefined,
-  });
+  const [form, setForm] = useState(initialData || { title: '', description: '', priority: 'MEDIUM', propertyId: '', unitId: '', leaseId: '', dueDate: '', category: '', assetId: undefined } as MaintenanceRequestFormData);
 
   const handleChange = (field: keyof MaintenanceRequestFormData, value: string | number | undefined) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -51,7 +41,7 @@ export function MaintenanceRequestForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(form);
+    onSave(form as MaintenanceRequestFormData);
   };
 
   return (

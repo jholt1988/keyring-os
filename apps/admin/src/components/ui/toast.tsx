@@ -1,7 +1,7 @@
 'use client';
 
 import { CheckCircle2,X,XCircle } from 'lucide-react';
-import { createContext,useCallback,useContext,useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -19,7 +19,7 @@ interface ToastContextValue {
 
 // ── Context ───────────────────────────────────────────────────────────────────
 
-const ToastContext = createContext<ToastContextValue>({ toast: () => {} });
+const ToastContext = React.createContext<ToastContextValue>({ toast: () => {} });
 
 export function useToast() {
   return useContext(ToastContext);
@@ -29,16 +29,16 @@ export function useToast() {
 
 let _nextId = 0;
 
-export function ToastProvider({ children }: { children: React.ReactNode }) {
-  const [toasts, setToasts] = useState<Toast[]>([]);
+export function ToastProvider({ children }: { children: any }) {
+  const [toasts, setToasts] = useState([] as Toast[]);
 
   const dismiss = useCallback((id: number) => {
-    setToasts((prev) => prev.filter((t) => t.id !== id));
+    setToasts((prev: any) => prev.filter((t: any) => t.id !== id));
   }, []);
 
   const toast = useCallback((message: string, variant: ToastVariant = 'success') => {
     const id = ++_nextId;
-    setToasts((prev) => [...prev, { id, message, variant }]);
+    setToasts((prev: any) => [...prev, { id, message, variant }]);
     if (variant !== 'error') {
       setTimeout(() => dismiss(id), 4000);
     }
@@ -49,7 +49,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       {children}
       {/* Toast container */}
       <div className="fixed bottom-5 right-5 z-[9999] flex flex-col gap-2 pointer-events-none">
-        {toasts.map((t) => (
+        {toasts.map((t: any) => (
           <ToastItem key={t.id} toast={t} onDismiss={dismiss} />
         ))}
       </div>

@@ -30,7 +30,7 @@ export function PaymentPlanSettingsCard({
   onSave,
 }: PaymentPlanSettingsCardProps) {
   const [expanded, setExpanded] = useState(false);
-  const [settings, setSettings] = useState<PaymentPlanSettings>(
+  const [settings, setSettings] = useState(
     initialSettings || defaultSettings
   );
 

@@ -6,9 +6,9 @@ import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 interface WorkspaceShellProps {
   title: string;
   subtitle?: string;
-  icon: React.ElementType;
-  actions?: React.ReactNode;
-  children: React.ReactNode;
+  icon: any;
+  actions?: any;
+  children: any;
 }
 
 export function WorkspaceShell({ title, subtitle, icon: Icon, actions, children }: WorkspaceShellProps) {

@@ -1,7 +1,7 @@
-import React, { useState, FormEvent } from 'react';
-import { useChatSocket, ChatMessage } from '../hooks/useChatSocket';
+import React, { useState, type FormEvent } from 'react';
+import { useChatSocket } from '../hooks/useChatSocket';
 
-export const ChatWindow: React.FC<{user: string}> = ({ user }) => {
+export const ChatWindow = ({ user }: { user: string }) => {
   const { messages, sendMessage } = useChatSocket();
   const [input, setInput] = useState('');
 
@@ -15,7 +15,7 @@ export const ChatWindow: React.FC<{user: string}> = ({ user }) => {
   return (
     <div style={{ border: '1px solid #ccc', padding: '1rem', maxHeight: '300px', overflowY: 'auto' }}>
       <div>
-        {messages.map((msg, idx) => (
+        {messages.map((msg: any, idx: number) => (
           <div key={idx} style={{ marginBottom: '0.5rem' }}>
             <strong>{msg.user}:</strong> {msg.text}
           </div>

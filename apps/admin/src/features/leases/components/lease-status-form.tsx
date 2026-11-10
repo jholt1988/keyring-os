@@ -28,10 +28,10 @@ interface LeaseStatusFormProps {
 }
 
 export function LeaseStatusForm({ initialData, onSave, onCancel }: LeaseStatusFormProps) {
-  const [form, setForm] = useState<LeaseStatusFormData>(initialData || {
+  const [form, setForm] = useState((initialData ?? {
     status: 'PENDING',
     autoRenew: false,
-  });
+  }) as LeaseStatusFormData);
 
   const handleChange = (field: keyof LeaseStatusFormData, value: string | number | boolean | undefined) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -49,7 +49,7 @@ export function LeaseStatusForm({ initialData, onSave, onCancel }: LeaseStatusFo
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Status</label>
-          <select value={form.status} onChange={(e) => handleChange('status', e.target.value)} className="flex h-11 w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC]">
+          <select value={form.status} onChange={(e) => handleChange('status', e.target.value as LeaseStatusFormData['status'])} className="flex h-11 w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC]">
             <option value="DRAFT">Draft</option>
             <option value="PENDING">Pending</option>
             <option value="ACTIVE">Active</option>

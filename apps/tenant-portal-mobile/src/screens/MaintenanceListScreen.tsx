@@ -55,9 +55,9 @@ interface MaintenanceItem {
 
 export default function MaintenanceListScreen() {
   const navigation = useNavigation<Nav>();
-  const [requests, setRequests] = useState<MaintenanceItem[]>([]);
+  const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchRequests = useCallback(async () => {

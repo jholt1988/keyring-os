@@ -16,7 +16,7 @@ interface MaintenancePhotoFormProps {
 }
 
 export function MaintenancePhotoForm({ onSave, onCancel }: MaintenancePhotoFormProps) {
-  const [form, setForm] = useState<MaintenancePhotoFormData>({
+  const [form, setForm] = useState({
     url: '',
     caption: '',
   });

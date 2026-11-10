@@ -31,11 +31,11 @@ export function RenewalsView({
   onClearWorkflowFocus: () => void;
 }) {
   const workbench = data.renewals;
-  const [pending, setPending] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
-  const [rentByLease, setRentByLease] = useState<Record<string, string>>({});
-  const [noteByLease, setNoteByLease] = useState<Record<string, string>>({});
-  const [moveOutByLease, setMoveOutByLease] = useState<Record<string, string>>({});
+  const [pending, setPending] = useState(null as string | null);
+  const [message, setMessage] = useState(null as string | null);
+  const [rentByLease, setRentByLease] = useState({} as Record<string, string>);
+  const [noteByLease, setNoteByLease] = useState({} as Record<string, string>);
+  const [moveOutByLease, setMoveOutByLease] = useState({} as Record<string, string>);
 
 
 

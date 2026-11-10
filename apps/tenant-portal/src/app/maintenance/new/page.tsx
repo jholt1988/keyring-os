@@ -24,7 +24,7 @@ export default function NewMaintenancePage() {
   const [category, setCategory] = useState('');
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState('LOW');
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState({} as Record<string, string>);
 
   const mutation = useMutation({
     mutationFn: () => createMaintenanceRequest({ title, category, description, priority }),

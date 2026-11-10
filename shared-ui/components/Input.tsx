@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { type InputHTMLAttributes } from 'react';
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {}
 
-export const Input: React.FC<InputProps> = (props) => {
+export const Input = (props: InputProps) => {
   return <input {...props} />;
 };

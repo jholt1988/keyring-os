@@ -83,7 +83,7 @@ export default function UsersSettingsPage() {
   const qc = useQueryClient();
   const { data: users = [], isLoading } = useQuery({ queryKey: ['users'], queryFn: fetchUsers });
   const [showForm, setShowForm] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState(null as string | null);
   const [form, setForm] = useState({
     username: '',
     email: '',
@@ -188,7 +188,7 @@ export default function UsersSettingsPage() {
                 <label className="text-xs font-medium uppercase tracking-wider text-[#94A3B8]">Username</label>
                 <Input
                   value={form.username}
-                  onChange={(e) => setForm((p) => ({ ...p, username: e.target.value }))}
+                  onChange={(e: any) => setForm((p: any) => ({ ...p, username: e.target.value }))}
                   disabled={!!editingId}
                   required
                 />
@@ -198,21 +198,21 @@ export default function UsersSettingsPage() {
                 <Input
                   type="email"
                   value={form.email}
-                  onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))}
+                  onChange={(e: any) => setForm((p: any) => ({ ...p, email: e.target.value }))}
                 />
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-medium uppercase tracking-wider text-[#94A3B8]">First Name</label>
                 <Input
                   value={form.firstName}
-                  onChange={(e) => setForm((p) => ({ ...p, firstName: e.target.value }))}
+                  onChange={(e: any) => setForm((p: any) => ({ ...p, firstName: e.target.value }))}
                 />
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-medium uppercase tracking-wider text-[#94A3B8]">Last Name</label>
                 <Input
                   value={form.lastName}
-                  onChange={(e) => setForm((p) => ({ ...p, lastName: e.target.value }))}
+                  onChange={(e: any) => setForm((p: any) => ({ ...p, lastName: e.target.value }))}
                 />
               </div>
               <div className="space-y-2">
@@ -222,7 +222,7 @@ export default function UsersSettingsPage() {
                 <Input
                   type="password"
                   value={form.password}
-                  onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))}
+                  onChange={(e: any) => setForm((p: any) => ({ ...p, password: e.target.value }))}
                   required={!editingId}
                   minLength={8}
                 />
@@ -231,7 +231,7 @@ export default function UsersSettingsPage() {
                 <label className="text-xs font-medium uppercase tracking-wider text-[#94A3B8]">Role</label>
                 <select
                   value={form.role}
-                  onChange={(e) => setForm((p) => ({ ...p, role: e.target.value }))}
+                  onChange={(e: any) => setForm((p: any) => ({ ...p, role: e.target.value }))}
                   className="flex h-11 w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] focus:border-[#3B82F6] focus:outline-none"
                 >
                   {ROLE_OPTIONS.map((role) => (

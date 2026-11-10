@@ -32,9 +32,9 @@ function formatDate(iso: string): string {
 }
 
 export default function LeaseScreen() {
-  const [lease, setLease] = useState<Lease | null>(null);
+  const [lease, setLease] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
 
   const fetchLease = useCallback(async () => {
     try {

@@ -32,7 +32,7 @@ export default function VendorsView() {
         </SectionCard>
       </WorkspaceShell>
       <Modal open={open} onClose={() => setOpen(false)} title="Add Vendor" footer={<><Button variant="outline" size="sm" onClick={() => setOpen(false)}>Cancel</Button><Button size="sm" onClick={() => mutation.mutate()} disabled={mutation.isPending}>{mutation.isPending ? <RefreshCw size={12} className="animate-spin" /> : <Plus size={12} />} Save</Button></>}>
-        <div className="grid grid-cols-1 gap-3">{[['Name', 'name'], ['Type', 'type'], ['Contact', 'contact']].map(([label, key]) => <label key={key} className="text-sm text-[#94A3B8]"><span className="mb-1 block">{label}</span><input value={(form as any)[key]} onChange={(e) => setForm((current) => ({ ...current, [key]: e.target.value }))} className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC]" /></label>)}</div>
+        <div className="grid grid-cols-1 gap-3">{[['Name', 'name'], ['Type', 'type'], ['Contact', 'contact']].map(([label, key]) => <label key={key} className="text-sm text-[#94A3B8]"><span className="mb-1 block">{label}</span><input value={(form as any)[key]} onChange={(e) => setForm((current: any) => ({ ...current, [key]: e.target.value }))} className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC]" /></label>)}</div>
       </Modal>
     </>
   );

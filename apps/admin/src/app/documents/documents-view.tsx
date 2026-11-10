@@ -7,7 +7,8 @@ import { WorkspaceShell } from '@/components/copilot/workspace-shell';
 import { SectionCard } from '@/components/copilot/section-card';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
-import { fetchDocuments, uploadDocument, getDocumentDownloadUrl } from '@/lib/copilot-api';
+import { fetchDocuments, getDocumentDownloadUrl } from '@/lib/copilot-api';
+import { initiateDocumentUpload, completeDocumentUpload } from '@/lib/msgdoc-client';
 import { useToast } from '@/components/ui/toast';
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -18,12 +19,12 @@ const CATEGORY_LABELS: Record<string, string> = {
 export default function DocumentsView() {
   const qc = useQueryClient();
   const { toast } = useToast();
-  const fileRef = useRef<HTMLInputElement>(null);
+  const fileRef = useRef(null as HTMLInputElement | null);
   const [search, setSearch] = useState('');
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState(null as string | null);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [uploadCategory, setUploadCategory] = useState('OTHER');
-  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploadFile, setUploadFile] = useState(null as File | null);
 
   const { data: docs = [], isLoading } = useQuery({
     queryKey: ['documents'],
@@ -31,13 +32,25 @@ export default function DocumentsView() {
   });
 
   const uploadMutation = useMutation({
-    mutationFn: () => {
-      if (!uploadFile) throw new Error('No file selected');
-      const fd = new FormData();
-      fd.append('file', uploadFile);
-      fd.append('category', uploadCategory);
-      return uploadDocument(fd);
-    },
+      mutationFn: async () => {
+        if (!uploadFile) throw new Error('No file selected');
+        const initiated = await initiateDocumentUpload({
+          owner_id: 'current-user',
+          doc_type: uploadCategory.toLowerCase(),
+          mime: uploadFile.type || 'application/octet-stream',
+          size: uploadFile.size,
+          filename: uploadFile.name,
+        });
+        // PUT bytes directly to storage via presigned URL
+        const putRes = await fetch(initiated.upload_url, {
+          method: 'PUT',
+          headers: { 'Content-Type': uploadFile.type || 'application/octet-stream' },
+          body: uploadFile,
+        });
+        if (!putRes.ok) throw new Error(`upload failed: ${putRes.status}`);
+        await completeDocumentUpload(initiated.document_id);
+        return initiated;
+      },
     onSuccess: () => {
       toast('Document uploaded');
       setUploadOpen(false);

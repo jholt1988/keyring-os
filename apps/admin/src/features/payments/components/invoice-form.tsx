@@ -22,13 +22,13 @@ interface InvoiceFormProps {
 }
 
 export function InvoiceForm({ initialData, leaseOptions = [], onSave, onCancel }: InvoiceFormProps) {
-  const [form, setForm] = useState<InvoiceFormData>(initialData || {
+  const [form, setForm] = useState(initialData || {
     leaseId: '',
     amount: 0,
     dueDate: '',
     description: '',
     type: 'rent',
-  });
+  } as InvoiceFormData);
 
   const handleChange = (field: keyof InvoiceFormData, value: string | number | undefined) => {
     setForm((prev) => ({ ...prev, [field]: value }));

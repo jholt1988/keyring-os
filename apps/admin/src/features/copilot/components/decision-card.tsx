@@ -73,7 +73,7 @@ export function DecisionCard({
   onAction,
   className,
 }: DecisionCardProps) {
-  const [executingAction, setExecutingAction] = useState<string | null>(null);
+  const [executingAction, setExecutingAction] = useState(null as string | null);
 
   const handleAction = async (action: DecisionAction) => {
     if (!entityId) return;

@@ -15,7 +15,7 @@ type Workspace = {
  * It uses the same `/api/workspace` endpoint which the backend proxies for the tenant context.
  */
 export function useWorkspace(): Workspace | null {
-  const [workspace, setWorkspace] = useState<Workspace | null>(null);
+  const [workspace, setWorkspace] = useState(null);
 
   useEffect(() => {
     let cancelled = false;

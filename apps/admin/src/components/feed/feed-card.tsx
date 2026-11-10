@@ -39,7 +39,7 @@ const actionVariant = (
 export function FeedCard({ item, score }: FeedCardProps) {
   const router = useRouter();
   const { mutate, isPending } = useExecuteFeedAction();
-  const [pendingAction, setPendingAction] = useState<MutationAction | null>(null);
+  const [pendingAction, setPendingAction] = useState(null as MutationAction | null);
 
   const handleActionClick = (action: FeedAction) => {
     if (action.type === 'navigation') {

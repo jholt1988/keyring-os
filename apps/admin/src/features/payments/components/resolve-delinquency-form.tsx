@@ -11,16 +11,17 @@ export interface ResolveDelinquencyFormData {
 }
 
 interface ResolveDelinquencyFormProps {
+  initialData?: ResolveDelinquencyFormData;
   onSave: (data: ResolveDelinquencyFormData) => void;
   onCancel: () => void;
 }
 
-export function ResolveDelinquencyForm({ onSave, onCancel }: ResolveDelinquencyFormProps) {
-  const [form, setForm] = useState<ResolveDelinquencyFormData>({
+export function ResolveDelinquencyForm({ initialData, onSave, onCancel }: ResolveDelinquencyFormProps) {
+  const [form, setForm] = useState(initialData || {
     leaseId: '',
     resolutionMode: 'PAID',
     reason: '',
-  });
+  } as ResolveDelinquencyFormData);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

@@ -47,7 +47,7 @@ const amenityOptions: CheckboxOption[] = [
 ];
 
 export function UnitForm({ initialData, propertyOptions = [], onSave, onCancel }: UnitFormProps) {
-  const [form, setForm] = useState<UnitFormData>(initialData || {
+  const [form, setForm] = useState((initialData || {
     propertyId: '',
     unitNumber: '',
     bedrooms: 1,
@@ -61,10 +61,10 @@ export function UnitForm({ initialData, propertyOptions = [], onSave, onCancel }
     hasAC: false,
     isFurnished: false,
     petsAllowed: false,
-  });
+  }) as UnitFormData);
 
   const handleChange = (field: keyof UnitFormData, value: string | number | boolean) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
+    setForm((prev: any) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -88,7 +88,7 @@ export function UnitForm({ initialData, propertyOptions = [], onSave, onCancel }
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Property</label>
           <select
             value={form.propertyId}
-            onChange={(e) => handleChange('propertyId', e.target.value)}
+            onChange={(e: any) => handleChange('propertyId', e.target.value)}
             className="flex h-11 w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] focus:border-[#3B82F6]"
             required
           >
@@ -105,7 +105,7 @@ export function UnitForm({ initialData, propertyOptions = [], onSave, onCancel }
             <Home className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A99AD]" />
             <Input
               value={form.unitNumber}
-              onChange={(e) => handleChange('unitNumber', e.target.value)}
+              onChange={(e: any) => handleChange('unitNumber', e.target.value)}
               className="pl-10"
               placeholder="e.g., 101, A1"
               required
@@ -117,7 +117,7 @@ export function UnitForm({ initialData, propertyOptions = [], onSave, onCancel }
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Status</label>
           <select
             value={form.status}
-            onChange={(e) => handleChange('status', e.target.value)}
+            onChange={(e: any) => handleChange('status', e.target.value)}
             className="flex h-11 w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC]"
           >
             <option value="vacant">Vacant</option>
@@ -136,7 +136,7 @@ export function UnitForm({ initialData, propertyOptions = [], onSave, onCancel }
               min={0}
               max={10}
               value={form.bedrooms}
-              onChange={(e) => handleChange('bedrooms', Number(e.target.value))}
+              onChange={(e: any) => handleChange('bedrooms', Number(e.target.value))}
               className="pl-10"
               required
             />
@@ -153,7 +153,7 @@ export function UnitForm({ initialData, propertyOptions = [], onSave, onCancel }
               max={10}
               step={0.5}
               value={form.bathrooms}
-              onChange={(e) => handleChange('bathrooms', Number(e.target.value))}
+              onChange={(e: any) => handleChange('bathrooms', Number(e.target.value))}
               className="pl-10"
               required
             />
@@ -168,7 +168,7 @@ export function UnitForm({ initialData, propertyOptions = [], onSave, onCancel }
               type="number"
               min={0}
               value={form.sqft}
-              onChange={(e) => handleChange('sqft', Number(e.target.value))}
+              onChange={(e: any) => handleChange('sqft', Number(e.target.value))}
               className="pl-10"
               required
             />
@@ -183,7 +183,7 @@ export function UnitForm({ initialData, propertyOptions = [], onSave, onCancel }
               type="number"
               min={0}
               value={form.rent}
-              onChange={(e) => handleChange('rent', Number(e.target.value))}
+              onChange={(e: any) => handleChange('rent', Number(e.target.value))}
               className="pl-10"
               required
             />
@@ -208,7 +208,7 @@ export function UnitForm({ initialData, propertyOptions = [], onSave, onCancel }
                   <input
                     type="checkbox"
                     checked={isChecked}
-                    onChange={(e) => handleChange(option.key, e.target.checked)}
+                    onChange={(e: any) => handleChange(option.key, e.target.checked)}
                     className="hidden"
                   />
                   <Icon size={16} />

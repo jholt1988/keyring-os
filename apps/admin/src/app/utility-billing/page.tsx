@@ -11,10 +11,10 @@ import { useToast } from '@/components/ui/toast';
 
 export default function UtilityBillingPage() {
   const { toast } = useToast();
-  const [bills, setBills] = useState<any[]>([]);
+  const [bills, setBills] = useState([] as any[]);
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ propertyId: '', period: '', amount: '', utilityType: '' });
-  const recordM = useMutation({ mutationFn: () => recordOperatorMasterBill({ ...form, amount: Number(form.amount) || 0 }, {}), onSuccess: (result) => { toast('Master bill recorded'); setBills((current) => [result, ...current]); setOpen(false); } });
+  const recordM = useMutation({ mutationFn: () => recordOperatorMasterBill({ ...form, amount: Number(form.amount) || 0 }, {}), onSuccess: (result) => { toast('Master bill recorded'); setBills((current: any) => [result, ...current]); setOpen(false); } });
   const allocM = useMutation({ mutationFn: (id: string) => allocateOperatorMasterBill(id, {}), onSuccess: () => toast('Master bill allocated') });
 
   return (
@@ -28,7 +28,7 @@ export default function UtilityBillingPage() {
         </SectionCard>
       </WorkspaceShell>
       <Modal open={open} onClose={() => setOpen(false)} title="Record Master Utility Bill" footer={<><Button variant="outline" size="sm" onClick={() => setOpen(false)}>Cancel</Button><Button size="sm" onClick={() => recordM.mutate()}>Save</Button></>}>
-        <div className="grid grid-cols-1 gap-3">{[['Property ID', 'propertyId'], ['Period', 'period'], ['Amount', 'amount'], ['Utility Type', 'utilityType']].map(([label, key]) => <label key={key} className="text-sm text-[#94A3B8]"><span className="mb-1 block">{label}</span><input value={(form as any)[key]} onChange={(e) => setForm((current) => ({ ...current, [key]: e.target.value }))} className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC]" /></label>)}</div>
+        <div className="grid grid-cols-1 gap-3">{[['Property ID', 'propertyId'], ['Period', 'period'], ['Amount', 'amount'], ['Utility Type', 'utilityType']].map(([label, key]) => <label key={key} className="text-sm text-[#94A3B8]"><span className="mb-1 block">{label}</span><input value={(form as any)[key]} onChange={(e) => setForm((current: any) => ({ ...current, [key]: e.target.value }))} className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC]" /></label>)}</div>
       </Modal>
     </>
   );

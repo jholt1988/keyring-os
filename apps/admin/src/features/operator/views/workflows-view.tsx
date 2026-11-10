@@ -24,7 +24,7 @@ export function WorkflowsView({
   const totalItems = data.workflows?.totals?.items ?? 0;
   const paymentWorkbench = data.paymentWorkbench;
   const allItems = useMemo(() => groups.flatMap((group) => group.items), [groups]);
-  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const [selectedItemId, setSelectedItemId] = useState<any>(null);
   const selectedItem = allItems.find((item) => item.id === selectedItemId) ?? allItems[0] ?? null;
   const relatedDecision = selectedItem
     ? (data.commandCenter?.decisions ?? []).find((decision) => workflowItemMatchesDecision(selectedItem, decision)) ?? null

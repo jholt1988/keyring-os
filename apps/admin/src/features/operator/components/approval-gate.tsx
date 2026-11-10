@@ -5,7 +5,7 @@ import { Loader2, ShieldAlert } from 'lucide-react';
 
 interface ApprovalGateProps {
   requiredRoles: UserRole | UserRole[];
-  children: React.ReactNode;
+  children: any;
 }
 
 export function ApprovalGate({ requiredRoles, children }: ApprovalGateProps) {

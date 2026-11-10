@@ -50,9 +50,9 @@ export default function MaintenanceDetailScreen() {
   const route = useRoute<Route>();
   const { id } = route.params;
 
-  const [request, setRequest] = useState<MaintenanceItem | null>(null);
+  const [request, setRequest] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
 
   const fetchDetail = useCallback(async () => {
     try {

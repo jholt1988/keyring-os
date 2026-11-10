@@ -28,7 +28,7 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
 
   const handleChange = (field: string, value: string) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
+    setForm((prev: any) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -117,7 +117,7 @@ export default function RegisterPage() {
                 <label className="text-xs font-medium uppercase tracking-wider text-[#94A3B8]">First Name</label>
                 <Input
                   value={form.firstName}
-                  onChange={(e) => handleChange('firstName', e.target.value)}
+                  onChange={(e: any) => handleChange('firstName', e.target.value)}
                   placeholder="John"
                   required
                 />
@@ -126,7 +126,7 @@ export default function RegisterPage() {
                 <label className="text-xs font-medium uppercase tracking-wider text-[#94A3B8]">Last Name</label>
                 <Input
                   value={form.lastName}
-                  onChange={(e) => handleChange('lastName', e.target.value)}
+                  onChange={(e: any) => handleChange('lastName', e.target.value)}
                   placeholder="Doe"
                   required
                 />
@@ -138,7 +138,7 @@ export default function RegisterPage() {
               <Input
                 type="email"
                 value={form.email}
-                onChange={(e) => handleChange('email', e.target.value)}
+                onChange={(e: any) => handleChange('email', e.target.value)}
                 placeholder="john.doe@example.com"
                 required
               />
@@ -149,7 +149,7 @@ export default function RegisterPage() {
               <div className="relative">
                 <Input
                   value={form.username}
-                  onChange={(e) => handleChange('username', e.target.value)}
+                  onChange={(e: any) => handleChange('username', e.target.value)}
                   placeholder="john.doe"
                   required
                 />
@@ -160,7 +160,7 @@ export default function RegisterPage() {
               <label className="text-xs font-medium uppercase tracking-wider text-[#94A3B8]">Role</label>
               <select
                 value={form.role}
-                onChange={(e) => handleChange('role', e.target.value)}
+                onChange={(e: any) => handleChange('role', e.target.value)}
                 className="flex h-11 w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] focus:border-[#3B82F6]"
               >
                 <option value="PROPERTY_MANAGER">Property Manager</option>
@@ -173,7 +173,7 @@ export default function RegisterPage() {
               <label className="text-xs font-medium uppercase tracking-wider text-[#94A3B8]">Organization</label>
               <Input
                 value={form.organization}
-                onChange={(e) => handleChange('organization', e.target.value)}
+                onChange={(e: any) => handleChange('organization', e.target.value)}
                 placeholder="Acme Properties"
                 required
               />
@@ -186,7 +186,7 @@ export default function RegisterPage() {
                 <Input
                   type="password"
                   value={form.password}
-                  onChange={(e) => handleChange('password', e.target.value)}
+                  onChange={(e: any) => handleChange('password', e.target.value)}
                   className="pl-10"
                   placeholder="••••••••"
                   required
@@ -202,7 +202,7 @@ export default function RegisterPage() {
                 <Input
                   type="password"
                   value={form.confirmPassword}
-                  onChange={(e) => handleChange('confirmPassword', e.target.value)}
+                  onChange={(e: any) => handleChange('confirmPassword', e.target.value)}
                   className="pl-10"
                   placeholder="••••••••"
                   required

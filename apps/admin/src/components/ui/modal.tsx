@@ -8,13 +8,13 @@ interface ModalProps {
   open: boolean;
   onClose: () => void;
   title: string;
-  children: React.ReactNode;
-  footer?: React.ReactNode;
+  children: any;
+  footer?: any;
   size?: 'sm' | 'md' | 'lg';
 }
 
 export function Modal({ open, onClose, title, children, footer, size = 'md' }: ModalProps) {
-  const overlayRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef(null as HTMLDivElement | null);
 
   // Close on Escape
   useEffect(() => {
@@ -38,7 +38,7 @@ export function Modal({ open, onClose, title, children, footer, size = 'md' }: M
     <div
       ref={overlayRef}
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      onClick={(e) => { if (e.target === overlayRef.current) onClose(); }}
+      onClick={(e: any) => { if (e.target === overlayRef.current) onClose(); }}
     >
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />

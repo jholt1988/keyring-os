@@ -1,4 +1,3 @@
-import React from 'react';
 import { Drawer } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
 
@@ -8,9 +7,9 @@ interface FocusViewProps {
   title: string;
   subtitle?: string;
   entityType?: 'Unit' | 'Tenant' | 'Property' | 'Transaction' | 'Applicant';
-  icon?: React.ElementType;
-  children: React.ReactNode;
-  actions?: React.ReactNode;
+  icon?: any;
+  children: any;
+  actions?: any;
   primaryAction?: {
     label: string;
     onClick: () => void;

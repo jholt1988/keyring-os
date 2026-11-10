@@ -99,9 +99,9 @@ function buildCards(
 }
 
 export default function FeedScreen() {
-  const [cards, setCards] = useState<FeedCard[]>([]);
+  const [cards, setCards] = useState([] as FeedCard[]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null as string | null);
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchAll = useCallback(async () => {
@@ -169,14 +169,14 @@ export default function FeedScreen() {
   }
 
   return (
-    <FlatList
+    <FlatList<FeedCard>
       data={cards}
       keyExtractor={(item) => item.id}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
       contentContainerStyle={styles.list}
-      renderItem={({ item }) => (
+      renderItem={({ item }: { item: FeedCard }) => (
         <View style={styles.card}>
           {/* Domain color bar */}
           <View

@@ -28,9 +28,9 @@ export const DEFAULT_FLAGS: Record<string, boolean> = {
 };
 
 export function useFeatureFlags() {
-  const [flags, setFlags] = useState<Record<string, boolean>>(DEFAULT_FLAGS);
+  const [flags, setFlags] = useState(DEFAULT_FLAGS);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null as string | null);
 
   const isEnabled = useCallback((flagKey: string): boolean => {
     return flags[flagKey] ?? DEFAULT_FLAGS[flagKey] ?? false;
@@ -67,9 +67,9 @@ export function useFeatureFlags() {
 
 // HOC for features
 export function withFeatureFlag<P extends object>(
-  Component: React.ComponentType<P>,
+  Component: (props: P) => any,
   flagKey: string
-): React.FC<P> {
+) {
   const FeatureFlaggedComponent = (props: P) => {
     const { isEnabled } = useFeatureFlags();
     
@@ -79,7 +79,7 @@ export function withFeatureFlag<P extends object>(
     
     return <Component {...props} />;
   };
-  FeatureFlaggedComponent.displayName = `withFeatureFlag(${Component.displayName ?? Component.name ?? 'Component'})`;
+  FeatureFlaggedComponent.displayName = `withFeatureFlag(${(Component as any).displayName ?? (Component as any).name ?? 'Component'})`;
   return FeatureFlaggedComponent;
 }
 

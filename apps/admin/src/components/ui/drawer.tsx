@@ -8,8 +8,8 @@ interface DrawerProps {
   onClose: () => void;
   title?: string;
   subtitle?: string;
-  children: React.ReactNode;
-  footer?: React.ReactNode;
+  children: any;
+  footer?: any;
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
 }
 

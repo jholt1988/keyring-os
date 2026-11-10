@@ -1,11 +1,13 @@
+'use client';
+
 import { cn } from '@/lib/utils';
 
 interface SectionCardProps {
   title: string;
   subtitle?: string;
+  actions?: any;
+  children: any;
   className?: string;
-  actions?: React.ReactNode;
-  children: React.ReactNode;
 }
 
 export function SectionCard({ title, subtitle, className, actions, children }: SectionCardProps) {
