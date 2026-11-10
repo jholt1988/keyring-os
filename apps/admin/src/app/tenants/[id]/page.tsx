@@ -1,7 +1,6 @@
-// @ts-nocheck
 'use client';
 
-import { useTenantActivity,useTenantWorkspace } from '@/app/hooks/useWorkspace';
+import { useTenantActivity, useTenantWorkspace, type CommRow, type DocumentRow, type HouseholdMember, type MaintenanceRow, type NoticeRow, type PaymentRow, type Payments, type TenantHealth, type TenantLease, type TenantProfile, type TimelineEvent, type ViolationRow } from '@/app/hooks/useWorkspace';
 import { RiskMeter,SectionCard } from '@/components/copilot';
 import { CommunicationTimeline,TenantHealthBadge } from '@/components/tenant';
 import { Button } from '@/components/ui/button';
@@ -94,7 +93,10 @@ export default function TenantWorkspacePage() {
 
   const messageMutation = useMutation({
     mutationFn: () => createConversation({ subject: msgSubject, content: msgBody }),
-    onSuccess: (conv: any) => { toast('Message sent'); setMsgOpen(false); setMsgBody(''); router.push(`/messages/${conv.id}`); },
+    onSuccess: (conv: unknown) => {
+      const id = conv && typeof conv === 'object' && 'id' in conv && typeof conv.id === 'string' ? conv.id : '';
+      toast('Message sent'); setMsgOpen(false); setMsgBody(''); router.push(`/messages/${id}`);
+    },
     onError: () => toast('Failed to send message', 'error'),
   });
 
@@ -113,7 +115,7 @@ export default function TenantWorkspacePage() {
       const lease = workspace?.lease;
       if (!lease) throw new Error('No active lease');
       return logManualPayment({
-        leaseId: lease.id,
+        leaseId: lease.id ?? '',
         propertyId: lease.propertyId ?? '',
         unitId: lease.unitId ?? undefined,
         tenantId: id,
@@ -209,7 +211,7 @@ export default function TenantWorkspacePage() {
             </div>
           </div>
         </div>
-        <TenantHealthBadge classification={health.classification} />
+        <TenantHealthBadge classification={health.classification ?? 'STABLE'} />
       </div>
 
       {/* Primary Action Bar */}
@@ -384,14 +386,14 @@ export default function TenantWorkspacePage() {
     >
       <div className="space-y-3">
         {[
-          { label: 'Amount ($) *', key: 'amountDollars', type: 'number', placeholder: '1200' },
-          { label: 'Reference number', key: 'reference', type: 'text', placeholder: 'CHK-1234' },
-          { label: 'Date received', key: 'receivedAt', type: 'date', placeholder: '' },
-          { label: 'Memo', key: 'memo', type: 'text', placeholder: 'Optional note' },
+          { label: 'Amount ($) *', key: 'amountDollars' as const, type: 'number', placeholder: '1200' },
+          { label: 'Reference number', key: 'reference' as const, type: 'text', placeholder: 'CHK-1234' },
+          { label: 'Date received', key: 'receivedAt' as const, type: 'date', placeholder: '' },
+          { label: 'Memo', key: 'memo' as const, type: 'text', placeholder: 'Optional note' },
         ].map(({ label, key, type, placeholder }) => (
           <div key={key}>
             <label className="mb-1 block text-xs font-medium text-[#94A3B8]">{label}</label>
-            <input type={type} value={(payForm as any)[key]} placeholder={placeholder}
+            <input type={type} value={payForm[key]} placeholder={placeholder}
               onChange={(e) => setPayForm((p) => ({ ...p, [key]: e.target.value }))}
               className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6] [color-scheme:dark]" />
           </div>
@@ -465,21 +467,21 @@ export default function TenantWorkspacePage() {
     >
       <div className="space-y-3">
         {[
-          { label: 'Full name *', key: 'name', placeholder: 'Jane Smith' },
-          { label: 'Relationship *', key: 'relationship', placeholder: 'Spouse, Child, Roommate…' },
-          { label: 'Phone', key: 'phone', placeholder: '+1 555 000 0000' },
+          { label: 'Full name *', key: 'name' as const, placeholder: 'Jane Smith' },
+          { label: 'Relationship *', key: 'relationship' as const, placeholder: 'Spouse, Child, Roommate…' },
+          { label: 'Phone', key: 'phone' as const, placeholder: '+1 555 000 0000' },
         ].map(({ label, key, placeholder }) => (
           <div key={key}>
             <label className="mb-1 block text-xs font-medium text-[#94A3B8]">{label}</label>
-            <input value={(householdForm as any)[key]} placeholder={placeholder}
+            <input value={householdForm[key]} placeholder={placeholder}
               onChange={(e) => setHouseholdForm((p) => ({ ...p, [key]: e.target.value }))}
               className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] placeholder:text-[#8A99AD] outline-none focus:border-[#3B82F6]" />
           </div>
         ))}
         <div className="flex gap-4">
-          {[{ key: 'isOnLease', label: 'On lease' }, { key: 'isEmergency', label: 'Emergency contact' }].map(({ key, label }) => (
+          {[{ key: 'isOnLease' as const, label: 'On lease' }, { key: 'isEmergency' as const, label: 'Emergency contact' }].map(({ key, label }) => (
             <label key={key} className="flex items-center gap-2 cursor-pointer text-sm text-[#94A3B8]">
-              <input type="checkbox" checked={(householdForm as any)[key]}
+              <input type="checkbox" checked={householdForm[key]}
                 onChange={(e) => setHouseholdForm((p) => ({ ...p, [key]: e.target.checked }))}
                 className="accent-[#3B82F6]" />
               {label}
@@ -534,7 +536,7 @@ export default function TenantWorkspacePage() {
 }
 
 function ProfileSection({ profile, editingProfile, profileForm, onEditStart, onEditCancel, onProfileChange, onProfileSave, profileSaving, onAddHousehold }: {
-  profile: any; editingProfile: boolean; profileForm: Record<string, string>;
+  profile: TenantProfile; editingProfile: boolean; profileForm: Record<string, string>;
   onEditStart: () => void; onEditCancel: () => void;
   onProfileChange: (k: string, v: string) => void; onProfileSave: () => void;
   profileSaving: boolean; onAddHousehold: () => void;
@@ -596,7 +598,7 @@ function ProfileSection({ profile, editingProfile, profileForm, onEditStart, onE
           <p className="py-4 text-center text-xs text-[#8A99AD]">No household members recorded</p>
         ) : (
           <div className="space-y-2">
-            {(profile.householdMembers ?? []).map((m: any) => (
+            {(profile.householdMembers ?? []).map((m: HouseholdMember) => (
               <div key={m.id} className="flex items-center justify-between rounded-[10px] border border-[#1E3350]/50 bg-[#0B1628] px-3 py-2">
                 <div>
                   <p className="text-xs font-medium text-[#F8FAFC]">{m.name}</p>
@@ -615,32 +617,32 @@ function ProfileSection({ profile, editingProfile, profileForm, onEditStart, onE
           </div>
         )}
 
-        {(profile.pets || profile.vehicles) && (
+        {profile.pets != null || profile.vehicles != null ? (
           <div className="mt-4 space-y-2">
-            {profile.pets && (
+            {profile.pets != null ? (
               <div className="flex items-center gap-2 rounded-[10px] border border-[#1E3350]/50 bg-[#0B1628] px-3 py-2">
                 <PawPrint size={14} className="text-[#F59E0B]" />
                 <span className="text-xs text-[#F8FAFC]">
                   {Array.isArray(profile.pets) ? `${profile.pets.length} pet(s)` : 'Pets on file'}
                 </span>
               </div>
-            )}
-            {profile.vehicles && (
+            ) : null}
+            {profile.vehicles != null ? (
               <div className="flex items-center gap-2 rounded-[10px] border border-[#1E3350]/50 bg-[#0B1628] px-3 py-2">
                 <Car size={14} className="text-[#60A5FA]" />
                 <span className="text-xs text-[#F8FAFC]">
                   {Array.isArray(profile.vehicles) ? `${profile.vehicles.length} vehicle(s)` : 'Vehicles on file'}
                 </span>
               </div>
-            )}
+            ) : null}
           </div>
-        )}
+        ) : null}
       </SectionCard>
     </div>
   );
 }
 
-function LeaseSection({ lease }: { lease: any }) {
+function LeaseSection({ lease }: { lease?: TenantLease }) {
   if (!lease) {
     return (
       <div className="flex flex-col items-center justify-center py-16">
@@ -657,8 +659,8 @@ function LeaseSection({ lease }: { lease: any }) {
           {[
             { label: 'Status', value: lease.status },
             { label: 'Unit', value: `${lease.unit} · ${lease.property}` },
-            { label: 'Start', value: new Date(lease.startDate).toLocaleDateString() },
-            { label: 'End', value: new Date(lease.endDate).toLocaleDateString() },
+            { label: 'Start', value: new Date(lease.startDate ?? '').toLocaleDateString() },
+            { label: 'End', value: new Date(lease.endDate ?? '').toLocaleDateString() },
             { label: 'Days Remaining', value: lease.daysUntilEnd ?? '—' },
             { label: 'Rent', value: `$${(lease.rentAmountCents != null ? lease.rentAmountCents / 100 : lease.rentAmount)?.toLocaleString()}/mo` },
             { label: 'Deposit', value: `$${(lease.depositAmountCents != null ? lease.depositAmountCents / 100 : lease.depositAmount)?.toLocaleString()}` },
@@ -694,7 +696,7 @@ function LeaseSection({ lease }: { lease: any }) {
   );
 }
 
-function PaymentsSection({ payments }: { payments: any; lease: any }) {
+function PaymentsSection({ payments }: { payments?: Payments; lease?: TenantLease }) {
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
       <SectionCard title="Payment Summary">
@@ -725,11 +727,11 @@ function PaymentsSection({ payments }: { payments: any; lease: any }) {
           <p className="py-4 text-center text-xs text-[#8A99AD]">No recent payments</p>
         ) : (
           <div className="max-h-[350px] space-y-2 overflow-y-auto">
-            {(payments?.recentPayments ?? []).map((p: any) => (
+            {(payments?.recentPayments ?? []).map((p: PaymentRow) => (
               <div key={p.id} className="flex items-center justify-between rounded-[10px] border border-[#1E3350]/50 bg-[#0B1628] px-3 py-2">
                 <div>
                   <p className="text-xs font-medium text-[#F8FAFC]">${p.amount?.toLocaleString()}</p>
-                  <p className="text-[10px] text-[#8A99AD]">{new Date(p.date).toLocaleDateString()}</p>
+                  <p className="text-[10px] text-[#8A99AD]">{new Date(p.date ?? '').toLocaleDateString()}</p>
                 </div>
                 <span className={cn(
                   'rounded-full px-2 py-0.5 text-[10px] font-medium',
@@ -746,9 +748,9 @@ function PaymentsSection({ payments }: { payments: any; lease: any }) {
   );
 }
 
-function MaintenanceSection({ maintenance }: { maintenance: any[] }) {
-  const open = (maintenance ?? []).filter((m: any) => m.status !== 'COMPLETED');
-  const resolved = (maintenance ?? []).filter((m: any) => m.status === 'COMPLETED');
+function MaintenanceSection({ maintenance }: { maintenance?: MaintenanceRow[] }) {
+  const open = (maintenance ?? []).filter((m: MaintenanceRow) => m.status !== 'COMPLETED');
+  const resolved = (maintenance ?? []).filter((m: MaintenanceRow) => m.status === 'COMPLETED');
 
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -757,7 +759,7 @@ function MaintenanceSection({ maintenance }: { maintenance: any[] }) {
           <p className="flex items-center gap-2 py-4 text-center text-xs text-[#10B981]"><CheckCircle size={12} /> No open requests</p>
         ) : (
           <div className="space-y-2">
-            {open.map((m: any) => {
+            {open.map((m: MaintenanceRow) => {
               const sev: Severity = m.priority === 'EMERGENCY' ? 'critical' : m.priority === 'HIGH' ? 'high' : m.priority === 'MEDIUM' ? 'medium' : 'low';
               return (
                 <div key={m.id} className="rounded-[10px] border border-[#1E3350]/50 bg-[#0B1628] p-3">
@@ -765,7 +767,7 @@ function MaintenanceSection({ maintenance }: { maintenance: any[] }) {
                     <p className="text-xs font-medium text-[#F8FAFC]">{m.title}</p>
                     <RiskMeter level={sev} className="w-20" />
                   </div>
-                  <p className="mt-1 text-[10px] text-[#8A99AD]">{m.unit?.name} · {m.status} · {new Date(m.createdAt).toLocaleDateString()}</p>
+                  <p className="mt-1 text-[10px] text-[#8A99AD]">{m.unit?.name} · {m.status} · {new Date(m.createdAt ?? '').toLocaleDateString()}</p>
                 </div>
               );
             })}
@@ -778,7 +780,7 @@ function MaintenanceSection({ maintenance }: { maintenance: any[] }) {
           <p className="py-4 text-center text-xs text-[#8A99AD]">No resolved requests</p>
         ) : (
           <div className="max-h-[350px] space-y-2 overflow-y-auto">
-            {resolved.slice(0, 10).map((m: any) => (
+            {resolved.slice(0, 10).map((m: MaintenanceRow) => (
               <div key={m.id} className="flex items-center justify-between rounded-[10px] border border-[#1E3350]/50 bg-[#0B1628] px-3 py-2">
                 <div>
                   <p className="text-xs font-medium text-[#F8FAFC]">{m.title}</p>
@@ -794,12 +796,12 @@ function MaintenanceSection({ maintenance }: { maintenance: any[] }) {
   );
 }
 
-function CommsSection({ communications }: { communications: any[] }) {
-  const events = (communications ?? []).map((c: any) => ({
-    id: `comm-${c.id}`,
-    date: c.createdAt,
+function CommsSection({ communications }: { communications?: CommRow[] }) {
+  const events = (communications ?? []).map((c: CommRow) => ({
+    id: `comm-${c.id ?? 'unknown'}`,
+    date: c.createdAt ?? '',
     type: 'communication' as const,
-    title: `${c.channel} ${c.direction.toLowerCase()}`,
+    title: `${c.channel ?? 'Message'} ${(c.direction ?? 'inbound').toLowerCase()}`,
     details: c.subject ?? c.message?.slice(0, 100),
   }));
 
@@ -810,20 +812,20 @@ function CommsSection({ communications }: { communications: any[] }) {
   );
 }
 
-function DocumentsSection({ documents }: { documents: any[] }) {
+function DocumentsSection({ documents }: { documents?: DocumentRow[] }) {
   return (
     <SectionCard title="Documents">
       {(documents ?? []).length === 0 ? (
         <p className="py-4 text-center text-xs text-[#8A99AD]">No documents uploaded</p>
       ) : (
         <div className="space-y-2">
-          {(documents ?? []).map((d: any) => (
+          {(documents ?? []).map((d: DocumentRow) => (
             <div key={d.id} className="flex items-center justify-between rounded-[10px] border border-[#1E3350]/50 bg-[#0B1628] px-3 py-2">
               <div className="flex items-center gap-2">
                 <FileText size={14} className="text-[#3B82F6]" />
                 <div>
                   <p className="text-xs font-medium text-[#F8FAFC]">{d.fileName}</p>
-                  <p className="text-[10px] text-[#8A99AD]">{d.category} · {new Date(d.createdAt).toLocaleDateString()}</p>
+                  <p className="text-[10px] text-[#8A99AD]">{d.category} · {new Date(d.createdAt ?? '').toLocaleDateString()}</p>
                 </div>
               </div>
             </div>
@@ -834,7 +836,7 @@ function DocumentsSection({ documents }: { documents: any[] }) {
   );
 }
 
-function ComplianceSection({ violations, notices, onLogViolation }: { violations: any[]; notices: any[]; onLogViolation: () => void }) {
+function ComplianceSection({ violations, notices, onLogViolation }: { violations?: ViolationRow[]; notices?: NoticeRow[]; onLogViolation: () => void }) {
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
       <SectionCard title="Violations"
@@ -844,7 +846,7 @@ function ComplianceSection({ violations, notices, onLogViolation }: { violations
           <p className="flex items-center gap-2 py-4 text-center text-xs text-[#10B981]"><CheckCircle size={12} /> No open violations</p>
         ) : (
           <div className="space-y-2">
-            {(violations ?? []).map((v: any) => (
+            {(violations ?? []).map((v: ViolationRow) => (
               <div key={v.id} className="rounded-[10px] border border-[#F43F5E]/20 bg-[#F43F5E]/5 p-3">
                 <div className="flex items-center justify-between">
                   <p className="text-xs font-medium text-[#F8FAFC]">{v.type}</p>
@@ -856,7 +858,7 @@ function ComplianceSection({ violations, notices, onLogViolation }: { violations
                   </span>
                 </div>
                 <p className="mt-1 text-[10px] text-[#94A3B8]">{v.description}</p>
-                <p className="mt-1 text-[10px] text-[#8A99AD]">Issued {new Date(v.issuedAt ?? v.createdAt).toLocaleDateString()}</p>
+                <p className="mt-1 text-[10px] text-[#8A99AD]">Issued {new Date(v.issuedAt ?? v.createdAt ?? '').toLocaleDateString()}</p>
               </div>
             ))}
           </div>
@@ -868,13 +870,13 @@ function ComplianceSection({ violations, notices, onLogViolation }: { violations
           <p className="py-4 text-center text-xs text-[#8A99AD]">No notices on file</p>
         ) : (
           <div className="space-y-2">
-            {(notices ?? []).map((n: any) => (
+            {(notices ?? []).map((n: NoticeRow) => (
               <div key={n.id} className="flex items-center justify-between rounded-[10px] border border-[#1E3350]/50 bg-[#0B1628] px-3 py-2">
                 <div>
-                  <p className="text-xs font-medium text-[#F8FAFC]">{n.type.replace(/_/g, ' ')}</p>
+                  <p className="text-xs font-medium text-[#F8FAFC]">{(n.type ?? 'NOTICE').replace(/_/g, ' ')}</p>
                   <p className="text-[10px] text-[#8A99AD]">{n.message?.slice(0, 60) ?? ''}</p>
                 </div>
-                <span className="text-[10px] text-[#8A99AD]">{new Date(n.sentAt).toLocaleDateString()}</span>
+                <span className="text-[10px] text-[#8A99AD]">{new Date(n.sentAt ?? '').toLocaleDateString()}</span>
               </div>
             ))}
           </div>
@@ -884,7 +886,7 @@ function ComplianceSection({ violations, notices, onLogViolation }: { violations
   );
 }
 
-function HealthSection({ health }: { health: any }) {
+function HealthSection({ health }: { health: TenantHealth }) {
   const dims = health.dimensions ?? {};
   const bars = [
     { label: 'Payment Stability', value: dims.paymentStability ?? 0 },
@@ -899,8 +901,8 @@ function HealthSection({ health }: { health: any }) {
       <SectionCard title="Tenant Health">
         <div className="mb-4 flex items-center justify-between">
           <div>
-            <TenantHealthBadge classification={health.classification} />
-            <p className="mt-2 font-mono text-2xl font-bold text-[#F8FAFC]">{health.score}/100</p>
+            <TenantHealthBadge classification={health.classification ?? 'STABLE'} />
+            <p className="mt-2 font-mono text-2xl font-bold text-[#F8FAFC]">{health.score ?? 0}/100</p>
           </div>
         </div>
 
@@ -929,7 +931,7 @@ function HealthSection({ health }: { health: any }) {
         {(health.signals ?? []).length > 0 && (
           <div className="mb-4 space-y-2">
             <p className="text-[10px] uppercase tracking-wider text-[#8A99AD]">Signals</p>
-            {health.signals.map((s: string, i: number) => (
+            {(health.signals ?? []).map((s: string, i: number) => (
               <div key={i} className="flex items-start gap-2 rounded-[10px] border border-[#F59E0B]/10 bg-[#F59E0B]/5 px-3 py-2">
                 <AlertTriangle size={12} className="mt-0.5 shrink-0 text-[#F59E0B]" />
                 <span className="text-xs text-[#F8FAFC]">{s}</span>
@@ -942,7 +944,7 @@ function HealthSection({ health }: { health: any }) {
           <div className="space-y-2">
             <p className="text-[10px] uppercase tracking-wider text-[#8A99AD]">Actions</p>
             <div className="flex flex-wrap gap-2">
-              {health.actions.map((a: string, i: number) => (
+              {(health.actions ?? []).map((a: string, i: number) => (
                 <Button key={i} size="sm" variant="outline">{a}</Button>
               ))}
             </div>
@@ -953,7 +955,7 @@ function HealthSection({ health }: { health: any }) {
   );
 }
 
-function ActivitySection({ events }: { events: any[] }) {
+function ActivitySection({ events }: { events: TimelineEvent[] }) {
   return (
     <SectionCard title="Activity Timeline">
       <CommunicationTimeline events={events ?? []} />

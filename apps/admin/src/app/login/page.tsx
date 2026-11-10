@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Key, Lock, ArrowRight, AlertCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -163,9 +162,9 @@ export default function LoginPage() {
               </button>
             </div>
 
-            <Button
+            <button
               type="submit"
-              className="h-11 w-full bg-gradient-to-r from-[#3B82F6] to-[#2563EB] text-white hover:from-[#2563EB] hover:to-[#1D4ED8]"
+              className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#3B82F6] to-[#2563EB] text-sm font-medium text-white hover:from-[#2563EB] hover:to-[#1D4ED8] disabled:pointer-events-none disabled:opacity-50"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -198,7 +197,7 @@ export default function LoginPage() {
                   <ArrowRight size={16} />
                 </span>
               )}
-            </Button>
+            </button>
           </form>
 
           <div className="mt-6 text-center text-sm text-[#94A3B8]">

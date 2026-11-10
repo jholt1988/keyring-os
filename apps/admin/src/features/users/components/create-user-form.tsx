@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -279,7 +278,7 @@ export function CreateUserForm({ onSave, onCancel }: CreateUserFormProps) {
           <label className="text-xs uppercase tracking-wider text-[#94A3B8]">Role</label>
           <select 
             value={form.role || 'TENANT'} 
-            onChange={(e) => handleChange('role', e.target.value as unknown)}
+            onChange={(e) => handleChange('role', e.target.value as CreateUserFormData['role'])}
             className="flex h-11 w-full rounded-lg border border-white/10 bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC] mb-3"
           >
             <option value="TENANT">Tenant</option>

@@ -1,7 +1,8 @@
 packages:
   - apps/*
-  - packages/*
-  - shared-ui
+  - packages/config
+  - packages/types
+  - packages/ui
 
 onlyBuiltDependencies:
   - esbuild

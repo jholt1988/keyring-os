@@ -1,7 +1,7 @@
-// @ts-nocheck
 'use client';
 
 import type { ReactNode } from 'react';
+import { usePathname } from 'next/navigation';
 import { AmbientSignalCluster } from './ambient-signal-cluster';
 import { BriefingProvider, useBriefingContext } from './briefing-context';
 import { CommandComposer } from './command-composer';
@@ -23,10 +23,10 @@ function ShellInner({ children }: { children: ReactNode }) {
     // Use operator signals if available, fall back to briefing signals
     ambientSignals = operatorSignals.length > 0
       ? operatorSignals
-      : briefingSignals.map(s => ({ ...s, label: (s as unknown).title || (s as unknown).type || 'Signal' })) as unknown;
+      : briefingSignals.map(s => ({ id: s.id, severity: s.severity, label: s.title || 'Signal' }));
   } catch {
     // Operator context not available — use briefing signals
-    ambientSignals = briefingSignals.map(s => ({ ...s, label: (s as unknown).title || (s as unknown).type || 'Signal' })) as unknown;
+    ambientSignals = briefingSignals.map(s => ({ id: s.id, severity: s.severity, label: s.title || 'Signal' }));
   }
 
   return (
@@ -77,6 +77,13 @@ function ShellInner({ children }: { children: ReactNode }) {
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+  const bare = pathname === '/login' || pathname === '/register' || pathname === '/landing' || pathname === '/unauthorized';
+
+  if (bare) {
+    return <>{children}</>;
+  }
+
   return (
     <OperatorDataProvider>
       <BriefingProvider>

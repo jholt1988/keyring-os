@@ -58,6 +58,9 @@ const nextConfig: NextConfig = {
   // Emit a self-contained server bundle so the app can ship in a slim,
   // node_modules-free container image (see Dockerfile).
   output: "standalone",
+  // Playwright drives the portal at 127.0.0.1. Next 16 blocks that host's
+  // dev resources unless it is listed here.
+  allowedDevOrigins: ["127.0.0.1"],
   // Monorepo: pin Turbopack's filesystem root to the repo root so it resolves
   // workspace packages and doesn't mis-infer the root from stray lockfiles.
   turbopack: {

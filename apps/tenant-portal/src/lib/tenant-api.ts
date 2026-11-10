@@ -361,6 +361,24 @@ export async function fetchMaintenanceRequest(id: string): Promise<MaintenanceRe
   }
 }
 
+export interface TriageResult {
+  urgency: 'low' | 'medium' | 'high' | 'emergency';
+  category: string;
+  suggestedVendorType: string;
+  summary: string;
+  fallback: boolean;
+}
+
+export async function triageMaintenanceRequest(
+  tenantId: string,
+  description: string,
+  propertyContext?: string,
+): Promise<TriageResult> {
+  return api<TriageResult>('/ai/maintenance-triage', {
+    method: 'POST',
+    body: JSON.stringify({ tenantId, description, propertyContext }),
+  });
+}
 export async function createMaintenanceRequest(data: {
   title: string;
   description: string;

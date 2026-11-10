@@ -1,4 +1,3 @@
-// @ts-nocheck
 import type { BriefingData,Decision,PolicyEvaluation,Signal } from '@keyring/types';
 import { API_V2_BASE } from '../api-client';
 
@@ -10,14 +9,47 @@ const headers = (): HeadersInit => ({
   'Content-Type': 'application/json',
 });
 
-async function api<T>(path: string, opts?: RequestInit): Promise<T> {
+async function api<T = Json>(path: string, opts?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {
     credentials: 'include',
     headers: headers(),
     ...opts,
   });
   if (!res.ok) throw new Error(`API ${res.status}`);
-  return res.json();
+  return res.json() as Promise<T>;
+}
+
+type Json = null | boolean | number | string | Json[] | { [key: string]: Json };
+
+/** Loose read of an untyped API payload. Callers still narrow before use. */
+function asRecord(value: unknown): Record<string, Json> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value)
+    ? (value as Record<string, Json>)
+    : {};
+}
+
+function str(value: Json | undefined, fallback = ''): string {
+  return typeof value === 'string' ? value : fallback;
+}
+
+function amountOf(value: Json | undefined): number {
+  return typeof value === 'number' ? value : 0;
+}
+
+function recordList(value: Json | undefined): Record<string, Json>[] {
+  return Array.isArray(value) ? value.map((item) => asRecord(item)) : [];
+}
+
+const DOMAINS = ['portfolio', 'payments', 'leasing', 'screening', 'repairs', 'renewals', 'financials', 'workflows'] as const;
+function domainOf(value: Json | undefined) {
+  const text = typeof value === 'string' ? value : '';
+  return (DOMAINS as readonly string[]).includes(text) ? text as (typeof DOMAINS)[number] : 'payments';
+}
+
+const EVENT_TYPES = ['tour', 'move_in', 'move_out', 'inspection', 'maintenance', 'lease_expiration', 'signing'] as const;
+function eventTypeOf(value: Json | undefined) {
+  const text = typeof value === 'string' ? value.toLowerCase() : '';
+  return (EVENT_TYPES as readonly string[]).includes(text) ? text as (typeof EVENT_TYPES)[number] : 'maintenance';
 }
 
 function buildQuery(params?: Record<string, string | number | boolean | undefined | null>) {
@@ -52,66 +84,77 @@ async function buildFallbackBriefing(): Promise<BriefingData> {
   let atRiskAmount = 0;
 
   if (delinquency.status === 'fulfilled') {
-    const buckets = (delinquency.value as unknown)?.buckets ?? delinquency.value;
-    if (Array.isArray(buckets)) {
-      for (const b of buckets) {
-        for (const item of b.items ?? []) {
-          const amount = item.outstandingAmount ?? item.amount ?? 0;
-          atRiskAmount += amount;
-          signals.push({
-            id: `delinq-${item.leaseId ?? item.id}`,
-            severity: (item.daysOverdue ?? 0) > 30 ? 'critical' : (item.daysOverdue ?? 0) > 7 ? 'high' : 'medium',
-            domain: 'payments',
-            title: `${item.tenantName ?? 'Tenant'} - $${amount.toLocaleString()} overdue`,
-            summary: `${item.daysOverdue ?? 0} days past due. ${item.noticeStatus ?? 'No notice sent'}.`,
-            monetaryImpact: amount,
-            actionUrl: '/payments',
-            actionLabel: 'Review Payment',
-            createdAt: item.createdAt ?? new Date().toISOString(),
-          });
-        }
+    const payload = asRecord(delinquency.value);
+    const buckets = recordList(payload.buckets).length ? recordList(payload.buckets) : recordList(delinquency.value as Json);
+    for (const bucket of buckets) {
+      for (const item of recordList(bucket.items)) {
+        const amount = amountOf(item.outstandingAmount ?? item.amount);
+        atRiskAmount += amount;
+        signals.push({
+          id: `delinq-${str(item.leaseId, str(item.id, 'unknown'))}`,
+          severity: amountOf(item.daysOverdue) > 30 ? 'critical' : amountOf(item.daysOverdue) > 7 ? 'high' : 'medium',
+          domain: 'payments',
+          title: `${str(item.tenantName, 'Tenant')} - $${amount.toLocaleString()} overdue`,
+          summary: `${amountOf(item.daysOverdue)} days past due. ${str(item.noticeStatus, 'No notice sent')}.`,
+          monetaryImpact: amount,
+          actionUrl: '/payments',
+          actionLabel: 'Review Payment',
+          createdAt: str(item.createdAt, new Date().toISOString()),
+        });
       }
     }
   }
 
   if (feedData.status === 'fulfilled') {
-    const items = (feedData.value as unknown)?.items ?? feedData.value ?? [];
-    for (const item of (Array.isArray(items) ? items : []).slice(0, 10)) {
-      if (item.actions?.length) {
+    const payload = asRecord(feedData.value);
+    const items = recordList(payload.items).length ? recordList(payload.items) : recordList(feedData.value as Json);
+    for (const item of items.slice(0, 10)) {
+      const actions = recordList(item.actions);
+      if (actions.length) {
         decisions.push({
-          id: item.id ?? `feed-${Math.random().toString(36).slice(2)}`,
-          domain: item.domain ?? 'payments',
-          entityType: item.type ?? 'unknown',
-          entityId: item.entityId ?? item.id ?? '',
-          title: item.title ?? 'Action Required',
-          context: item.summary ?? item.description ?? '',
-          aiRecommendation: item.aiRecommendation,
-          actions: (item.actions ?? []).map((a: unknown) => ({
-            label: a.label ?? 'Take Action',
-            endpoint: a.endpoint ?? '#',
-            method: a.method ?? (a.type === 'navigation' ? 'GET' : 'POST'),
-            body: a.body,
-            variant: a.variant ?? 'primary',
-            confirmRequired: Boolean(a.confirmRequired || a.requiresConfirm),
-            confirmation: a.confirmation,
-          })),
-          urgency: item.priorityScore > 80 ? 'immediate' : item.priorityScore > 50 ? 'today' : 'this_week',
+          id: str(item.id, `feed-${Math.random().toString(36).slice(2)}`),
+          domain: domainOf(item.domain),
+          entityType: str(item.type, 'unknown'),
+          entityId: str(item.entityId, str(item.id)),
+          title: str(item.title, 'Action Required'),
+          context: str(item.summary, str(item.description)),
+          aiRecommendation: str(item.aiRecommendation) || undefined,
+          actions: actions.map((action) => {
+            const method = str(action.method, str(action.type) === 'navigation' ? 'GET' : 'POST');
+            const variant = str(action.variant, 'primary');
+            const confirmation = asRecord(action.confirmation);
+            return {
+              label: str(action.label, 'Take Action'),
+              endpoint: str(action.endpoint, '#'),
+              method: method === 'GET' || method === 'PUT' || method === 'PATCH' || method === 'DELETE' ? method : 'POST',
+              body: action.body && typeof action.body === 'object' && !Array.isArray(action.body) ? asRecord(action.body) : undefined,
+              variant: variant === 'danger' || variant === 'neutral' || variant === 'secondary' ? variant : 'primary',
+              confirmRequired: Boolean(action.confirmRequired || action.requiresConfirm),
+              confirmation: typeof confirmation.title === 'string' && typeof confirmation.message === 'string'
+                ? { title: confirmation.title, message: confirmation.message }
+                : undefined,
+            };
+          }),
+          urgency: amountOf(item.priorityScore) > 80 ? 'immediate' : amountOf(item.priorityScore) > 50 ? 'today' : 'this_week',
         });
       }
     }
   }
 
   if (schedule.status === 'fulfilled') {
-    const evts = (schedule.value as unknown)?.events ?? schedule.value ?? [];
-    const today = new Date().toISOString().split('T')[0];
-    for (const e of (Array.isArray(evts) ? evts : []).filter((ev: unknown) => (ev.date ?? ev.scheduledAt ?? '').startsWith(today)).slice(0, 8)) {
+    const payload = asRecord(schedule.value);
+    const evts = recordList(payload.events).length ? recordList(payload.events) : recordList(schedule.value as Json);
+    const today = new Date().toISOString().split('T')[0] ?? '';
+    for (const event of evts.filter((row) => str(row.date, str(row.scheduledAt)).startsWith(today)).slice(0, 8)) {
+      const property = asRecord(event.property);
+      const unit = asRecord(event.unit);
       events.push({
-        id: e.id ?? `evt-${Math.random().toString(36).slice(2)}`,
-        type: (e.type ?? 'maintenance').toLowerCase() as unknown,
-        title: e.title ?? e.type ?? 'Event',
-        scheduledAt: e.date ?? e.scheduledAt ?? '',
-        propertyName: e.propertyName ?? e.property?.name ?? '',
-        unitName: e.unitName ?? e.unit?.name,
+        id: str(event.id, `evt-${Math.random().toString(36).slice(2)}`),
+        type: eventTypeOf(event.type),
+        title: str(event.title, str(event.type, 'Event')),
+        scheduledAt: str(event.date, str(event.scheduledAt)),
+        propertyName: str(event.propertyName, str(property.name)),
+        unitName: str(event.unitName, str(unit.name)) || undefined,
       });
     }
   }
@@ -186,7 +229,8 @@ async function _fetchRenewalsWorkspace() {
 async function _fetchScreeningWorkspace() {
   try {
     const apps = await api<unknown>('/rental-applications');
-    return { applications: Array.isArray(apps) ? apps : apps?.data ?? apps?.applications ?? [] };
+    const body = asRecord(apps);
+    return { applications: Array.isArray(apps) ? apps : body.data ?? body.applications ?? [] };
   } catch {
     return { applications: [] };
   }
@@ -208,7 +252,7 @@ async function _fetchFinancialsWorkspace() {
     api('/bookkeeping/chart-of-accounts'),
   ]);
   return {
-    ...(workspace.status === 'fulfilled' ? (workspace.value as unknown) : {
+    ...(workspace.status === 'fulfilled' ? asRecord(workspace.value) : {
       pendingTransactions: [],
       exceptions: [],
       reconciliation: { unmatchedCount: 0, matchedCount: 0, exceptionCount: 0, items: [] },
@@ -225,15 +269,16 @@ async function _fetchFinancialsWorkspace() {
 export async function fetchPortfolioWorkspace() {
   try {
     const propsRes = await api<unknown>('/properties');
-    const data = propsRes.data || propsRes || [];
+    const body = asRecord(propsRes);
+    const data = recordList(Array.isArray(propsRes) ? propsRes as Json : body.data ?? propsRes as Json);
     
-    const enriched = await Promise.all(data.map(async (p: unknown) => {
-      const rollupRes = await api<unknown>(`/properties/${p.id}/rollup`).catch(() => ({}));
+    const enriched = await Promise.all(data.map(async (property) => {
+      const rollupRes = asRecord(await api<unknown>(`/properties/${str(property.id)}/rollup`).catch(() => ({})));
       return {
-        id: p.id,
-        name: p.name,
-        address: p.address,
-        ...rollupRes
+        id: property.id,
+        name: property.name,
+        address: property.address,
+        ...rollupRes,
       };
     }));
     return enriched;
@@ -271,8 +316,9 @@ export async function fetchUnitWorkspace(propertyId: string, unitId: string) {
   ]);
   
   let unit = null;
-  if (property.status === 'fulfilled' && (property.value as unknown)?.units) {
-    unit = ((property.value as unknown).units).find((u: unknown) => u.id === unitId);
+  if (property.status === 'fulfilled') {
+    const units = recordList(asRecord(property.value).units);
+    unit = units.find((row) => str(row.id) === unitId) ?? null;
   }
   
   return {
@@ -319,7 +365,7 @@ export async function triggerWorkflow(id: string, input: Record<string, unknown>
 export async function fetchUnitRepairs(unitId: string) {
   try {
     const res = await api<unknown>(`/maintenance?unitId=${unitId}`);
-    return Array.isArray(res) ? res : res.data || [];
+    return Array.isArray(res) ? res : asRecord(res).data || [];
   } catch {
     return [];
   }
@@ -329,7 +375,7 @@ export async function fetchUnitRepairs(unitId: string) {
 export async function fetchPropertyRepairs(propertyId: string) {
   try {
     const res = await api<unknown>(`/maintenance?propertyId=${propertyId}`);
-    return Array.isArray(res) ? res : res.data || [];
+    return Array.isArray(res) ? res : asRecord(res).data || [];
   } catch {
     return [];
   }
@@ -365,7 +411,7 @@ export async function fetchPortfolioAuditLogs() {
 export async function fetchPortfolioRepairs() {
   try {
     const res = await api<unknown>('/maintenance');
-    return Array.isArray(res) ? res : res.data || [];
+    return Array.isArray(res) ? res : asRecord(res).data || [];
   } catch {
     return [];
   }
@@ -876,11 +922,11 @@ export async function fetchCapexAnalytics(params?: { propertyId?: string; upgrad
 export async function fetchTours(params?: { leadId?: string; propertyId?: string; status?: string; dateFrom?: string; dateTo?: string; limit?: number; offset?: number }) {
   if (params?.leadId) {
     const res = await api<unknown>(`/api/tours/lead/${params.leadId}`);
-    return res?.tours ?? res;
+    return asRecord(res).tours ?? res;
   }
 
   const res = await api<unknown>(`/api/tours${buildQuery(params as Record<string, string | number | boolean | undefined | null>)}`);
-  return res?.tours ?? res;
+  return asRecord(res).tours ?? res;
 }
 
 /** @deprecated Use Operator API instead */
@@ -1099,7 +1145,8 @@ export async function fetchFeeScheduleVersions() {
 /** @deprecated Use Operator API instead */
 export async function fetchLeadApplications(params?: { propertyId?: string; status?: string; dateFrom?: string; dateTo?: string; limit?: number; offset?: number }) {
   const res = await api<unknown>(`/applications${buildQuery(params as Record<string, string | number | boolean | undefined | null>)}`);
-  return res?.applications ?? res?.items ?? res?.data ?? res;
+  const body = asRecord(res);
+  return body.applications ?? body.items ?? body.data ?? res;
 }
 
 /** @deprecated Use Operator API instead */
@@ -1136,11 +1183,10 @@ export async function triggerSyndication(propertyId: string, data?: Record<strin
 
 /** @deprecated Use Operator API instead */
 export async function getQuickBooksAuthUrl(): Promise<{ authUrl?: string; url?: string }> {
-  const result = await api<unknown>('/quickbooks/auth-url');
+  const result = asRecord(await api<unknown>('/quickbooks/auth-url'));
   return {
-    ...result,
-    url: result?.url ?? result?.authUrl,
-    authUrl: result?.authUrl ?? result?.url,
+    url: str(result.url, str(result.authUrl)) || undefined,
+    authUrl: str(result.authUrl, str(result.url)) || undefined,
   };
 }
 
@@ -1390,15 +1436,16 @@ export async function fetchLeaseAbstractionAnalytics(): Promise<{
   accuracyScore: number | string;
   [key: string]: unknown;
 }> {
-  const result = await api<unknown>('/lease-abstraction/analytics');
-  const reviewedCount = Number(result?.byStatus?.REVIEWED ?? 0);
-  const pendingCount = Number(result?.needsReview ?? result?.byStatus?.REVIEW_NEEDED ?? 0);
+  const result = asRecord(await api<unknown>('/lease-abstraction/analytics'));
+  const byStatus = asRecord(result.byStatus);
+  const reviewedCount = Number(byStatus.REVIEWED ?? 0);
+  const pendingCount = Number(result.needsReview ?? byStatus.REVIEW_NEEDED ?? 0);
   return {
     ...result,
-    totalAbstractions: Number(result?.totalAbstractions ?? 0),
+    totalAbstractions: Number(result.totalAbstractions ?? 0),
     reviewedCount,
     pendingCount,
-    accuracyScore: result?.averageConfidence ?? 'n/a',
+    accuracyScore: typeof result.averageConfidence === 'number' || typeof result.averageConfidence === 'string' ? result.averageConfidence : 'n/a',
   };
 }
 
@@ -1495,13 +1542,13 @@ export async function fetchCapexSummary(): Promise<{
   pendingCount: number;
   [key: string]: unknown;
 }> {
-  const result = await api<unknown>('/capex-forecasting/summary');
-  const byUrgency = result?.byUrgency ?? {};
-  const totalForecasts = Number(result?.totalForecasts ?? 0);
-  const approvedCount = Number(byUrgency?.APPROVED ?? 0);
+  const result = asRecord(await api<unknown>('/capex-forecasting/summary'));
+  const byUrgency = asRecord(result.byUrgency);
+  const totalForecasts = Number(result.totalForecasts ?? 0);
+  const approvedCount = Number(byUrgency.APPROVED ?? 0);
   return {
     ...result,
-    totalForecastedSpend: Number(result?.totalEstimatedCents ?? 0) / 100,
+    totalForecastedSpend: Number(result.totalEstimatedCents ?? 0) / 100,
     approvedCount,
     pendingCount: Math.max(0, totalForecasts - approvedCount),
   };

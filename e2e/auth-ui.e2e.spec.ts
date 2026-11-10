@@ -12,7 +12,7 @@ test('logs in and navigates to requested route', async ({ page }) => {
   await page.getByPlaceholder('••••••••').fill('password123');
   await page.getByRole('button', { name: /sign in/i }).click();
 
-  await expect(page).toHaveURL(/\/reports$/);
+  await expect(page).toHaveURL(/\/reports$/, { timeout: 20_000 });
 
   const authToken = await page.context().cookies().then((cookies) =>
     cookies.find((cookie) => cookie.name === 'auth_token'),

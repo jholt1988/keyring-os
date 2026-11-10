@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use client';
 
 import { useMemo, useState } from 'react';
@@ -31,15 +30,51 @@ import {
   updateOperatorTourStatus,
 } from '@/lib/operator/read-only-data';
 
+type ParityRow = {
+  id?: string;
+  leadName?: string;
+  prospectName?: string;
+  propertyName?: string;
+  propertyId?: string;
+  agentName?: string;
+  agentId?: string;
+  scheduledAt?: string;
+  date?: string;
+  time?: string;
+  status?: string;
+  tenantName?: string;
+  amount?: number | string;
+  balance?: number | string;
+  leaseId?: string;
+  cadence?: string;
+  name?: string;
+  vendorName?: string;
+  vendorId?: string;
+  score?: number | string;
+  specialty?: string;
+  requestTitle?: string;
+  scope?: string;
+  paymentAmount?: number | string;
+  total?: number | string;
+  noticeStatus?: string;
+  description?: string;
+};
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object';
+}
+
 function getList<T>(value: unknown): T[] {
-  if (Array.isArray(value)) return value;
-  if (Array.isArray(value?.data)) return value.data;
-  if (Array.isArray(value?.items)) return value.items;
+  if (Array.isArray(value)) return value as T[];
+  if (isRecord(value) && Array.isArray(value.data)) return value.data as T[];
+  if (isRecord(value) && Array.isArray(value.items)) return value.items as T[];
   return [];
 }
 
 function getLink(value: unknown) {
-  return value?.url ?? value?.checkoutUrl ?? value?.redirectUrl ?? value?.link ?? value?.href ?? null;
+  if (!isRecord(value)) return null;
+  const link = value.url ?? value.checkoutUrl ?? value.redirectUrl ?? value.link ?? value.href;
+  return typeof link === 'string' ? link : null;
 }
 
 export function ToursSection({ embeddedLeadId, title = 'Tours', subtitle = 'Schedule and manage property tours' }: {
@@ -50,8 +85,8 @@ export function ToursSection({ embeddedLeadId, title = 'Tours', subtitle = 'Sche
   const qc = useQueryClient();
   const { toast } = useToast();
   const [scheduleOpen, setScheduleOpen] = useState(false);
-  const [assignTarget, setAssignTarget] = useState(null as unknown);
-  const [rescheduleTarget, setRescheduleTarget] = useState(null as unknown);
+  const [assignTarget, setAssignTarget] = useState<ParityRow | null>(null);
+  const [rescheduleTarget, setRescheduleTarget] = useState<ParityRow | null>(null);
   const [agentId, setAgentId] = useState('');
   const [form, setForm] = useState({ leadId: embeddedLeadId ?? '', propertyId: '', date: '', time: '', agentId: '' });
   const [rescheduleAt, setRescheduleAt] = useState('');
@@ -61,7 +96,7 @@ export function ToursSection({ embeddedLeadId, title = 'Tours', subtitle = 'Sche
     queryFn: () => loadOperatorTours(embeddedLeadId ? { leadId: embeddedLeadId } : {}),
   });
 
-  const tours = getList<unknown>(data);
+  const tours = getList<ParityRow>(data);
 
   const invalidate = () => {
     qc.invalidateQueries({ queryKey: ['parity', 'tours'] });
@@ -89,7 +124,7 @@ export function ToursSection({ embeddedLeadId, title = 'Tours', subtitle = 'Sche
   });
 
   const assignMutation = useMutation({
-    mutationFn: () => assignOperatorTour(assignTarget.id, agentId, {}),
+    mutationFn: () => assignOperatorTour(assignTarget?.id ?? '', agentId, {}),
     onSuccess: () => {
       toast('Tour assigned');
       setAssignTarget(null);
@@ -100,7 +135,7 @@ export function ToursSection({ embeddedLeadId, title = 'Tours', subtitle = 'Sche
   });
 
   const rescheduleMutation = useMutation({
-    mutationFn: () => rescheduleOperatorTour(rescheduleTarget.id, { scheduledAt: rescheduleAt }),
+    mutationFn: () => rescheduleOperatorTour(rescheduleTarget?.id ?? '', { scheduledAt: rescheduleAt }),
     onSuccess: () => {
       toast('Tour rescheduled');
       setRescheduleTarget(null);
@@ -121,7 +156,7 @@ export function ToursSection({ embeddedLeadId, title = 'Tours', subtitle = 'Sche
           <p className="text-sm text-[#94A3B8]">No tours scheduled</p>
         ) : (
           <div className="space-y-3">
-            {tours.map((tour: unknown) => (
+            {tours.map((tour: ParityRow) => (
               <div key={tour.id} className="rounded-[14px] border border-[#1E3350] bg-[#0F1B31] p-3">
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -134,7 +169,7 @@ export function ToursSection({ embeddedLeadId, title = 'Tours', subtitle = 'Sche
                   </span>
                 </div>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  <Button size="sm" variant="outline" onClick={() => statusMutation.mutate({ id: tour.id, status: 'CONFIRMED' })}>
+                  <Button size="sm" variant="outline" onClick={() => statusMutation.mutate({ id: tour.id ?? '', status: 'CONFIRMED' })}>
                     <CheckCircle size={12} /> Confirm
                   </Button>
                   <Button size="sm" variant="outline" onClick={() => setAssignTarget(tour)}>
@@ -164,17 +199,17 @@ export function ToursSection({ embeddedLeadId, title = 'Tours', subtitle = 'Sche
         }
       >
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-          {[
+          {([
             ['Lead ID', 'leadId'],
             ['Property ID', 'propertyId'],
             ['Date', 'date'],
             ['Time', 'time'],
             ['Agent ID', 'agentId'],
-          ].map(([label, key]) => (
+          ] as const).map(([label, key]) => (
             <label key={key} className="block text-sm text-[#94A3B8]">
               <span className="mb-1 block">{label}</span>
               <input
-                value={(form as unknown)[key]}
+                value={form[key]}
                 onChange={(e) => setForm((current) => ({ ...current, [key]: e.target.value }))}
                 className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC]"
               />
@@ -225,8 +260,8 @@ export function ToursSection({ embeddedLeadId, title = 'Tours', subtitle = 'Sche
 }
 
 export function PaymentOperationsSection({ delinquentItems = [], invoices = [], title = 'Payment Operations' }: {
-  delinquentItems?: unknown[];
-  invoices?: unknown[];
+  delinquentItems?: ParityRow[];
+  invoices?: ParityRow[];
   title?: string;
 }) {
   const qc = useQueryClient();
@@ -251,7 +286,7 @@ export function PaymentOperationsSection({ delinquentItems = [], invoices = [], 
     enabled: !!trackerLeaseId,
   });
 
-  const paymentPlans = getList<unknown>(plansQuery.data);
+  const paymentPlans = getList<ParityRow>(plansQuery.data);
 
   const invalidate = () => {
     qc.invalidateQueries({ queryKey: ['workspace', 'payments'] });
@@ -299,7 +334,11 @@ export function PaymentOperationsSection({ delinquentItems = [], invoices = [], 
   });
 
   const checkoutMutation = useMutation({
-    mutationFn: (invoice: unknown) => createOperatorStripeCheckoutSession({ invoiceId: invoice.id, leaseId: invoice.leaseId, amount: invoice.amount ?? invoice.balance }, {}),
+    mutationFn: (invoice: ParityRow) => createOperatorStripeCheckoutSession({
+      invoiceId: Number(invoice.id ?? 0),
+      leaseId: invoice.leaseId,
+      amount: typeof invoice.amount === 'number' ? invoice.amount : typeof invoice.balance === 'number' ? invoice.balance : undefined,
+    }, {}),
     onSuccess: (result) => {
       const link = getLink(result);
       if (link && typeof window !== 'undefined') window.open(link, '_blank', 'noopener,noreferrer');
@@ -322,7 +361,7 @@ export function PaymentOperationsSection({ delinquentItems = [], invoices = [], 
       >
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
           <div className="space-y-3 lg:col-span-2">
-            {(delinquentItems.length ? delinquentItems : []).slice(0, 6).map((item: unknown) => (
+            {(delinquentItems.length ? delinquentItems : []).slice(0, 6).map((item: ParityRow) => (
               <div key={item.id ?? item.leaseId} className="rounded-[14px] border border-[#1E3350] bg-[#0F1B31] p-3">
                 <div className="flex items-center justify-between gap-3">
                   <div>
@@ -343,7 +382,7 @@ export function PaymentOperationsSection({ delinquentItems = [], invoices = [], 
           <div className="space-y-3">
             <div className="rounded-[14px] border border-[#1E3350] bg-[#0F1B31] p-3">
               <p className="mb-2 text-xs uppercase tracking-wide text-[#94A3B8]">Payment Plans</p>
-              {paymentPlans.length === 0 ? <p className="text-sm text-[#94A3B8]">No plans created</p> : paymentPlans.slice(0, 5).map((plan: unknown) => (
+              {paymentPlans.length === 0 ? <p className="text-sm text-[#94A3B8]">No plans created</p> : paymentPlans.slice(0, 5).map((plan: ParityRow) => (
                 <div key={plan.id} className="mb-2 rounded-[10px] bg-[#13233C] p-2 last:mb-0">
                   <p className="text-xs text-[#F8FAFC]">{plan.leaseId ?? 'Lease'} · {plan.status ?? 'Active'}</p>
                   <p className="font-mono text-[10px] text-[#94A3B8]">{plan.cadence ?? 'Monthly'} · ${plan.amount ?? plan.paymentAmount ?? 0}</p>
@@ -352,7 +391,7 @@ export function PaymentOperationsSection({ delinquentItems = [], invoices = [], 
             </div>
             <div className="rounded-[14px] border border-[#1E3350] bg-[#0F1B31] p-3">
               <p className="mb-2 text-xs uppercase tracking-wide text-[#94A3B8]">Invoices</p>
-              {invoices.length === 0 ? <p className="text-sm text-[#94A3B8]">No invoices available</p> : invoices.slice(0, 5).map((invoice: unknown) => (
+              {invoices.length === 0 ? <p className="text-sm text-[#94A3B8]">No invoices available</p> : invoices.slice(0, 5).map((invoice: ParityRow) => (
                 <div key={invoice.id} className="mb-2 flex items-center justify-between rounded-[10px] bg-[#13233C] p-2 last:mb-0">
                   <div>
                     <p className="text-xs text-[#F8FAFC]">{invoice.tenantName ?? invoice.description ?? `Invoice ${invoice.id}`}</p>
@@ -414,15 +453,15 @@ export function PaymentOperationsSection({ delinquentItems = [], invoices = [], 
         }
       >
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-          {[
+          {([
             ['Lease ID', 'leaseId'],
             ['Amount', 'amount'],
             ['Cadence', 'cadence'],
             ['Start Date', 'startDate'],
-          ].map(([label, key]) => (
+          ] as const).map(([label, key]) => (
             <label key={key} className="block text-sm text-[#94A3B8]">
               <span className="mb-1 block">{label}</span>
-              <input value={(planForm as unknown)[key]} onChange={(e) => setPlanForm((current) => ({ ...current, [key]: e.target.value }))} className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC]" />
+              <input value={planForm[key]} onChange={(e) => setPlanForm((current) => ({ ...current, [key]: e.target.value }))} className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC]" />
             </label>
           ))}
         </div>
@@ -442,14 +481,14 @@ export function PaymentOperationsSection({ delinquentItems = [], invoices = [], 
         }
       >
         <div className="grid grid-cols-1 gap-3">
-          {[
+          {([
             ['Lease ID', 'leaseId'],
             ['Amount', 'amount'],
             ['Description', 'description'],
-          ].map(([label, key]) => (
+          ] as const).map(([label, key]) => (
             <label key={key} className="block text-sm text-[#94A3B8]">
               <span className="mb-1 block">{label}</span>
-              <input value={(chargeForm as unknown)[key]} onChange={(e) => setChargeForm((current) => ({ ...current, [key]: e.target.value }))} className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC]" />
+              <input value={chargeForm[key]} onChange={(e) => setChargeForm((current) => ({ ...current, [key]: e.target.value }))} className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC]" />
             </label>
           ))}
         </div>
@@ -478,8 +517,8 @@ export function ContractorBidsSection({ propertyId, requestId, title = 'Contract
     enabled: !!propertyId,
   });
 
-  const bids = getList<unknown>(bidsQuery.data);
-  const recommendations = getList<unknown>(recommendationsQuery.data);
+  const bids = getList<ParityRow>(bidsQuery.data);
+  const recommendations = getList<ParityRow>(recommendationsQuery.data);
 
   const invalidate = () => {
     qc.invalidateQueries({ queryKey: ['workspace', 'repairs'] });
@@ -509,7 +548,7 @@ export function ContractorBidsSection({ propertyId, requestId, title = 'Contract
       >
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
           <div className="space-y-3 lg:col-span-2">
-            {bids.length === 0 ? <p className="text-sm text-[#94A3B8]">No bids found</p> : bids.map((bid: unknown) => (
+            {bids.length === 0 ? <p className="text-sm text-[#94A3B8]">No bids found</p> : bids.map((bid: ParityRow) => (
               <div key={bid.id} className="rounded-[14px] border border-[#1E3350] bg-[#0F1B31] p-3">
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -520,16 +559,16 @@ export function ContractorBidsSection({ propertyId, requestId, title = 'Contract
                   <span className="rounded-full bg-[#F59E0B]/10 px-2 py-0.5 font-mono text-[10px] uppercase text-[#F59E0B]">{bid.status ?? 'PENDING'}</span>
                 </div>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  <Button size="sm" variant="outline" onClick={() => awardMutation.mutate(bid.id)}><CheckCircle size={12} /> Award</Button>
-                  <Button size="sm" variant="outline" onClick={() => rejectMutation.mutate(bid.id)}><XCircle size={12} /> Reject</Button>
-                  <Button size="sm" variant="outline" onClick={() => aiMutation.mutate(bid.id)}><Sparkles size={12} /> AI Score</Button>
+                  <Button size="sm" variant="outline" onClick={() => awardMutation.mutate(bid.id ?? '')}><CheckCircle size={12} /> Award</Button>
+                  <Button size="sm" variant="outline" onClick={() => rejectMutation.mutate(bid.id ?? '')}><XCircle size={12} /> Reject</Button>
+                  <Button size="sm" variant="outline" onClick={() => aiMutation.mutate(bid.id ?? '')}><Sparkles size={12} /> AI Score</Button>
                 </div>
               </div>
             ))}
           </div>
           <div className="rounded-[14px] border border-[#1E3350] bg-[#0F1B31] p-3">
             <p className="mb-2 text-xs uppercase tracking-wide text-[#94A3B8]">Recommendations</p>
-            {recommendations.length === 0 ? <p className="text-sm text-[#94A3B8]">No contractor recommendations</p> : recommendations.slice(0, 5).map((rec: unknown, index: number) => (
+            {recommendations.length === 0 ? <p className="text-sm text-[#94A3B8]">No contractor recommendations</p> : recommendations.slice(0, 5).map((rec: ParityRow, index: number) => (
               <div key={rec.id ?? index} className="mb-2 rounded-[10px] bg-[#13233C] p-2 last:mb-0">
                 <p className="text-xs text-[#F8FAFC]">{rec.name ?? rec.vendorName ?? 'Recommended Vendor'}</p>
                 <p className="font-mono text-[10px] text-[#94A3B8]">{rec.specialty ?? rec.score ?? 'General'}</p>
@@ -553,16 +592,16 @@ export function ContractorBidsSection({ propertyId, requestId, title = 'Contract
         }
       >
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-          {[
+          {([
             ['Request ID', 'requestId'],
             ['Property ID', 'propertyId'],
             ['Vendor ID', 'vendorId'],
             ['Amount', 'amount'],
             ['Scope', 'scope'],
-          ].map(([label, key]) => (
+          ] as const).map(([label, key]) => (
             <label key={key} className="block text-sm text-[#94A3B8]">
               <span className="mb-1 block">{label}</span>
-              <input value={(form as unknown)[key]} onChange={(e) => setForm((current) => ({ ...current, [key]: e.target.value }))} className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC]" />
+              <input value={form[key]} onChange={(e) => setForm((current) => ({ ...current, [key]: e.target.value }))} className="w-full rounded-lg border border-[#1E3350] bg-[#0F1B31] px-3 py-2 text-sm text-[#F8FAFC]" />
             </label>
           ))}
         </div>
@@ -586,9 +625,10 @@ export function SimpleKeyValueGrid({ data }: { data: Record<string, unknown> | n
   );
 }
 
-export function SimpleDataTable({ rows }: { rows: unknown[] }) {
-  if (!rows.length) return <p className="text-sm text-[#94A3B8]">No rows available.</p>;
-  const cols = Object.keys(rows[0]).filter((key) => typeof rows[0][key] !== 'object');
+export function SimpleDataTable({ rows }: { rows: Record<string, unknown>[] }) {
+  const first = rows[0];
+  if (!first) return <p className="text-sm text-[#94A3B8]">No rows available.</p>;
+  const cols = Object.keys(first).filter((key) => typeof first[key] !== 'object');
   return (
     <div className="overflow-x-auto rounded-[14px] border border-[#1E3350]">
       <table className="w-full text-xs">

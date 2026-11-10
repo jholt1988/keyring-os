@@ -91,7 +91,7 @@ export function MinimalSidebar() {
       <div className="flex h-full flex-col border-r border-[#1E3350] bg-[#0B1628]">
         {/* Logo / Brand */}
         <div className="flex h-16 items-center justify-center border-b border-[#1E3350] px-2">
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/" aria-label="Command Center" className="flex items-center gap-2">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#3B82F6]">
               <Zap className="h-5 w-5 text-white" />
             </div>
@@ -100,6 +100,8 @@ export function MinimalSidebar() {
 
         {/* Toggle Button */}
         <button
+          type="button"
+          aria-label={collapsed ? 'Expand navigation' : 'Collapse navigation'}
           onClick={() => setCollapsed(!collapsed)}
           className="absolute -right-3 top-20 flex h-6 w-6 items-center justify-center rounded-full border border-[#1E3350] bg-[#0B1628] text-[#94A3B8] transition-colors hover:bg-[#17304E] hover:text-white"
         >
@@ -143,6 +145,7 @@ function SidebarLink({ item, pathname, collapsed }: { item: NavItem; pathname: s
   return (
     <Link
       href={item.href}
+      aria-label={item.label}
       className={`group relative mx-2 flex items-center justify-center rounded-xl py-3 transition-all duration-150 hover:bg-[#17304E] ${
         isActive ? 'bg-[#17304E] text-white' : 'text-[#94A3B8]'
       }`}

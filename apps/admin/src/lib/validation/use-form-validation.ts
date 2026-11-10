@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Reusable form validation hooks for Keyring-OS
  */
@@ -195,7 +194,10 @@ export const ValidationRules = {
   }),
   
   numeric: (message = 'Must be a number'): ValidationRule<unknown> => ({
-    validator: (value) => !isNaN(parseFloat(value)) && isFinite(value),
+    validator: (value) => {
+      const parsed = typeof value === 'number' ? value : parseFloat(String(value));
+      return Number.isFinite(parsed);
+    },
     message
   }),
   

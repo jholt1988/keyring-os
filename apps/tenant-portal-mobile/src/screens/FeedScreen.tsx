@@ -15,23 +15,16 @@ import {
   getPaymentHistory,
   getNotifications,
 } from '../lib/api';
+import type { MobileFeedCard } from '@keyring/types';
 
-type FeedCard = {
-  id: string;
-  domain: 'lease' | 'maintenance' | 'payment' | 'notification';
-  title: string;
-  summary: string;
-  priority: number;
-};
-
-const DOMAIN_COLORS: Record<FeedCard['domain'], string> = {
+const DOMAIN_COLORS: Record<MobileFeedCard['domain'], string> = {
   lease: '#3B82F6',
   maintenance: '#F59E0B',
   payment: '#EF4444',
   notification: '#10B981',
 };
 
-const DOMAIN_LABELS: Record<FeedCard['domain'], string> = {
+const DOMAIN_LABELS: Record<MobileFeedCard['domain'], string> = {
   lease: 'Lease',
   maintenance: 'Maintenance',
   payment: 'Payment',
@@ -43,8 +36,8 @@ function buildCards(
   maintenance: unknown[],
   payments: unknown[],
   notifications: unknown[],
-): FeedCard[] {
-  const cards: FeedCard[] = [];
+): MobileFeedCard[] {
+  const cards: MobileFeedCard[] = [];
 
   if (lease) {
     const l = lease as Record<string, unknown>;
@@ -99,7 +92,7 @@ function buildCards(
 }
 
 export default function FeedScreen() {
-  const [cards, setCards] = useState([] as FeedCard[]);
+  const [cards, setCards] = useState<MobileFeedCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null as string | null);
   const [refreshing, setRefreshing] = useState(false);
