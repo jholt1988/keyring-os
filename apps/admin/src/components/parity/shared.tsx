@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { type ReactNode, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Calendar, CheckCircle, CreditCard, ExternalLink, FileText, Gavel, Plus, RefreshCw, Shield, Sparkles, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
