@@ -3,10 +3,9 @@
 import { type ReactNode, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Calendar, CheckCircle, CreditCard, ExternalLink, FileText, Gavel, Plus, RefreshCw, Shield, Sparkles, XCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Modal } from '@/components/ui/modal';
-import { SectionCard } from '@/components/copilot/section-card';
-import { useToast } from '@/components/ui/toast';
+import { Button } from '../ui/button';
+import { Modal } from '../ui/modal';
+import { useToast } from '../ui/toast';
 import {
   aiScoreOperatorBid,
   assignOperatorTour,
@@ -28,7 +27,7 @@ import {
   resolveOperatorLegalHold,
   scheduleOperatorTour,
   updateOperatorTourStatus,
-} from '@/lib/operator/read-only-data';
+} from '../../lib/operator/read-only-data';
 
 type ParityRow = {
   id?: string;
@@ -59,6 +58,26 @@ type ParityRow = {
   noticeStatus?: string;
   description?: string;
 };
+
+function SectionCard({ title, subtitle, actions, children }: {
+  title: string;
+  subtitle?: string;
+  actions?: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <section className="rounded-[18px] border border-[#1E3350] bg-[#0B1528] p-4">
+      <header className="mb-4 flex items-start justify-between gap-3">
+        <div>
+          <h2 className="text-base font-semibold text-[#F8FAFC]">{title}</h2>
+          {subtitle && <p className="mt-1 text-sm text-[#94A3B8]">{subtitle}</p>}
+        </div>
+        {actions}
+      </header>
+      {children}
+    </section>
+  );
+}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object';
