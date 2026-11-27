@@ -78,7 +78,7 @@ function ShellInner({ children }: { children: ReactNode }) {
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const bare = pathname === '/login' || pathname === '/register' || pathname === '/landing' || pathname === '/unauthorized';
+  const bare = pathname === '/login' || pathname === '/register' || pathname === '/landing' || pathname === '/pricing' || pathname === '/unauthorized';
 
   if (bare) {
     return <>{children}</>;
