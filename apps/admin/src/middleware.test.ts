@@ -19,6 +19,11 @@ describe('middleware', () => {
     expect(res.status).toBe(200);
   });
 
+  it('allows the pricing page without a session', () => {
+    const res = middleware(req('/pricing'));
+    expect(res.status).toBe(200);
+  });
+
   it('redirects first-time unauthenticated root user to landing', () => {
     const res = middleware(req('/'));
     expect(res.status).toBe(307);
